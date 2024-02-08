@@ -14,13 +14,41 @@ const LogIn = () => {
             const studentresponse = await fetch("http://localhost:5000/studentLogIn", {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
             const teacherresponse = await fetch("http://localhost:5000/teacherLogIn", {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
             const staffresponse = await fetch("http://localhost:5000/staffLogIn", {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
-            
-            if(staffresponse.ok){
+            const userresponse = await fetch("http://localhost:5000/userLogIn", {method: "POST", headers: {"Content-Type":"application/json"}, body: JSON.stringify(body)});
+            const type=await fetch(`http://localhost:5000/userLogIn/${PHONE}`);
+            const jd=await type.json();
+            console.log(jd[0].user_type);
+            const u_type=jd[0].user_type;
+            console.log(u_type);
+            if(userresponse.ok){
               try{
+                const jsonData = await userresponse.json();
+                if(u_type=="student"){
+                  navigate('/showBooks');
+                }
+                else if(u_type=="teacher"){
+                  navigate('/showBooks');
+                }
+                else if(u_type=="staff"){
+                  navigate(`/${jd[0].user_id}`);
+                }
+              }catch(err){
+                console.log(err.message);
+              }
+            }
+            else if(staffresponse.ok){
+              try{
+                console.log(PHONE);
                 const staff = await fetch(`http://localhost:5000/staffLogIn/${PHONE}`);
+                const type=await fetch(`http://localhost:5000/userLogIn/${PHONE}`);
+                const jd=await type.json();
+                console.log(jd[0].user_type);
                 const jsonData = await staff.json();
+                
+              // navigate('/showBooks');
                 navigate(`/${jsonData[0].staff_id}`);
               }catch(err){
+                console.log(PHONE);
                 console.log(err.message);
               }
             }

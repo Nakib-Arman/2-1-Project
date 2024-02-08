@@ -241,7 +241,9 @@ body {
   align-items: flex-start; /* Align children to the start (left) */
 }
 
-
+.request-status {
+  margin-left: auto; /* Align to the right side */
+}
 
 .accept-button {
   background-color: rgb(1, 162, 1);
@@ -268,18 +270,3 @@ body {
   background-color: rgb(203, 2, 2);
   border-color: red;
 }
-
-.day-hours-ago {
-  margin-left: auto; /* Align to the right side */
-  margin-top: 10px; /* Add some spacing from the top */
-}
-
-.request-status {
-  text-align: center;
-  margin-top: 10px; /* Add some spacing from the top */
-  width: 100%; /* Set the width to 100% to ensure it takes up the entire width of the box */
-}
-
-
-
-

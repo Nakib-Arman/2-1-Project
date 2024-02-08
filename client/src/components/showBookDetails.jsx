@@ -55,7 +55,7 @@ const ShowBookDetails = () => {
             <tr className="text-center mt-3">
               <td className="head-color">Publication</td>
               
-              <td className="table-row-2">{books.publication}</td>
+              <td className="table-row-2">{books.publication_name}</td>
             </tr>
             <tr className="text-center mt-3">
               <td className="head-color">Shelf No</td>

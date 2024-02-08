@@ -10,24 +10,31 @@ const AddBook = () => {
 
     const [authors, setAuthors] = useState([]);
     const [publishers, setPublishers] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [shelves, setShelves] = useState([]);
 
     const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch authors and publishers data from the backend
         const fetchAuthorsAndPublishers = async () => {
             try {
                 const authorsResponse = await fetch("http://localhost:5000/authors");
                 const publishersResponse = await fetch("http://localhost:5000/publishers");
+                const categoryResponse = await fetch("http://localhost:5000/categories");
+                const shelfResponse = await fetch("http://localhost:5000/shelves");
 
-                if (authorsResponse.ok && publishersResponse.ok) {
+                if (authorsResponse.ok && publishersResponse.ok && categoryResponse.ok && shelfResponse.ok) {
                     const authorsData = await authorsResponse.json();
                     const publishersData = await publishersResponse.json();
+                    const categoryData = await categoryResponse.json();
+                    const shelfData = await shelfResponse.json();
 
                     setAuthors(authorsData);
                     setPublishers(publishersData);
+                    setCategories(categoryData);
+                    setShelves(shelfData);
                 } else {
-                    console.error("Failed to fetch authors or publishers");
+                    console.error("Failed to fetch authors, publishers, categories, or shelves");
                 }
             } catch (err) {
                 console.error(err.message);
@@ -40,11 +47,27 @@ const AddBook = () => {
     const submit = async (e) => {
         e.preventDefault();
         try {
-            const body = {TITLE,CATEGORY,AUTHOR: parseInt(AUTHOR),PUBLISHER: parseInt(PUBLISHER),SHELF_ID: parseInt(SHELF_ID)};
-            const response = await fetch("http://localhost:5000/addBooks", {method: "POST",headers: { "Content-Type": "application/json" },body: JSON.stringify(body)});
+            const body = {
+                TITLE,
+                CATEGORY,
+                AUTHOR: parseInt(AUTHOR),
+                PUBLISHER: parseInt(PUBLISHER),
+                SHELF_ID: parseInt(SHELF_ID)
+            };
+            const response = await fetch("http://localhost:5000/addBooks", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(body)
+            });
 
             if (response.ok) {
                 console.log("Book added successfully");
+                // Reset state values
+                setTITLE("");
+                setCATEGORY("");
+                setAUTHOR(0);
+                setPUBLISHER(0);
+                setSHELF_ID(0);
             } else {
                 console.error("Failed to add book");
             }
@@ -92,13 +115,19 @@ const AddBook = () => {
                         <label htmlFor="category" className="mt-3">
                             Category:
                         </label>
-                        <input
-                            type="text"
-                            id="category"
+                        <select
+                            id="Category"
                             className="form-control"
                             value={CATEGORY}
                             onChange={(e) => setCATEGORY(e.target.value)}
-                        />
+                        >
+                            <option value=""> Select Category </option>
+                            {categories.map((ct) => (
+                                <option key={ct.category} value={ct.category}>
+                                    {ct.category}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <div>
                         <label htmlFor="author" className="mt-3">
@@ -137,16 +166,22 @@ const AddBook = () => {
                         </select>
                     </div>
                     <div>
-                        <label htmlFor="shelfId" className="mt-3">
-                            Shelf ID:
+                        <label htmlFor="shelf" className="mt-3">
+                            Shelf:
                         </label>
-                        <input
-                            type="number"
-                            id="shelfId"
+                        <select
+                            id="Shelf"
                             className="form-control"
                             value={SHELF_ID}
                             onChange={(e) => setSHELF_ID(e.target.value)}
-                        />
+                        >
+                            <option value=""> Select Shelf </option>
+                            {shelves.map((shelf) => (
+                                <option key={shelf.shelf_id} value={shelf.shelf_id}>
+                                    {shelf.shelf_id}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                     <button className="btn btn-success mt-3">Add</button>
                 </form>

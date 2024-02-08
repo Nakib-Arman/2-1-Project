@@ -9,7 +9,7 @@ app.use(express.json());
 app.post("/studentLogIn", async (req, res) => {
     try {
         const { PHONE, PASSWORD } = req.body;
-        const staff = await pool.query("SELECT * FROM STUDENTS WHERE PHONE_NUMBER=$1 AND LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
+        const staff = await pool.query("SELECT * FROM USERS U JOIN STUDENTS S ON (U.USER_ID = S.STUDENT_ID) WHERE U.PHONE_NUMBER = $1 AND U.LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
         if (staff.rows.length > 0) {
             res.json(staff.rows[0]);
         }
@@ -24,7 +24,7 @@ app.post("/studentLogIn", async (req, res) => {
 app.post("/teacherLogIn", async (req, res) => {
     try {
         const { PHONE, PASSWORD } = req.body;
-        const staff = await pool.query("SELECT * FROM TEACHERS WHERE PHONE_NUMBER=$1 AND LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
+        const staff = await pool.query("SELECT * FROM USERS U JOIN TEACHERS T ON (U.USER_ID = T.TEACHER_ID) WHERE U.PHONE_nUMBER = $1 AND U.LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
         if (staff.rows.length > 0) {
             res.json(staff.rows[0]);
         }
@@ -36,10 +36,26 @@ app.post("/teacherLogIn", async (req, res) => {
     }
 })
 
-app.post("/staffLogIn", async (req, res) => {
+app.post("/userLogIn", async (req, res) => {
     try {
         const { PHONE, PASSWORD } = req.body;
-        const staff = await pool.query("SELECT * FROM STAFFS WHERE PHONE_NUMBER=$1 AND LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
+        const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER = $1 AND LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
+        if (user.rows.length > 0) {
+            res.json(user.rows[0]);
+        }
+        else {
+            res.status(401).json({ message: "Invalid credentials" });
+        }
+    } catch (err) {
+        console.log(err.message);
+    }
+})
+
+app.post("/staffLogIn", async (req, res) => {
+    try {
+
+        const { PHONE, PASSWORD } = req.body;
+        const staff = await pool.query("SELECT * FROM USERS U JOIN STAFFS S ON (U.USER_ID = S.STAFF_ID) WHERE U.PHONE_NUMBER = $1 AND U.LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
         if (staff.rows.length > 0) {
             console.log(staff.rows[0]);
             res.json(staff.rows[0]);
@@ -52,11 +68,23 @@ app.post("/staffLogIn", async (req, res) => {
     }
 })
 
+app.get("/userLogIn/:PHONE", async (req, res) => {
+    try {
+        const { PHONE } = req.params;
+        const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER = $1", [PHONE]);
+        res.json(user.rows);
+    } catch (err) {
+        console.log(err.message);
+    }
+})
+
 app.get("/staffLogIn/:PHONE",async (req,res) => {
     try{
+        console.log("staff log in")
         const {PHONE} = req.params;
-        const staff = await pool.query("SELECT * FROM STAFFS WHERE PHONE_NUMBER=$1", [PHONE]);
+        const staff = await pool.query("SELECT * FROM USERS U JOIN STAFFS S ON (U.USER_ID=S.STAFF_ID) WHERE U.PHONE_NUMBER=$1", [PHONE]);
         res.json(staff.rows)
+        console.log(staff.rows);
     }catch(err){
         console.log(err.message);
     }
@@ -109,6 +137,25 @@ app.get("/authors",async(req,res)=>{
     }
 });
 
+app.get("/shelves",async(req,res)=>{
+    try{
+        const shelves= await pool.query("SELECT * FROM SHELVES ORDER BY SHELF_ID");
+        res.json(shelves.rows);
+    }catch(err){
+        console.log(err.message);
+    }
+});
+
+app.get("/categories",async(req,res)=>{
+    try{
+        const categories= await pool.query("SELECT * FROM CATEGORIES ORDER BY CATEGORY");
+        res.json(categories.rows);
+    }
+    catch(err){
+        console.log(err.message);
+    }
+});
+
 app.get("/publishers",async(req,res)=>{
     try{
         const publishers= await pool.query("SELECT * FROM PUBLISHERS ORDER BY PUBLICATION_NAME");
@@ -129,7 +176,7 @@ app.get("/showBooks", async (req, res) => {
 
 app.get("/myProfile/:id",async (req,res) =>{
     try{
-        const staff = await pool.query("SELECT S.STAFF_ID,S.FIRST_NAME ||' '|| S.LAST_NAME AS NAME,S.PHONE_NUMBER,SH.SHELF_ID,SH.CATEGORY FROM STAFFS S JOIN SHELVES SH ON (S.STAFF_ID=SH.STAFF_ID) WHERE S.STAFF_ID=$1",[req.params.id]);
+        const staff = await pool.query("SELECT ST.STAFF_ID, U.FIRST_NAME||' '|| U.LAST_NAME AS NAME, U.PHONE_NUMBER, SH.SHELF_ID, SH.CATEGORY FROM USERS U JOIN STAFFS ST ON(U.USER_ID=ST.STAFF_ID) JOIN SHELVES SH ON(ST.STAFF_ID=SH.STAFF_ID) WHERE U.USER_ID=$1",[req.params.id]);
         res.json(staff.rows);
     }catch (err) {
         console.error(err.message);
@@ -153,7 +200,7 @@ app.get("/searchBooks/:title", async (req, res) => {
 app.get("/showBookDetails/:id", async (req, res) => {
     try {
         const books = await pool.query
-            ("SELECT B.BOOK_ID,B.TITLE,B.CATEGORY,A.AUTHOR_NAME,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION, B.SHELF_ID FROM BOOK_AUTHOR_RELATION BA JOIN AUTHORS A ON(BA.AUTHOR_ID=A.AUTHOR_ID) JOIN BOOKS B ON (B.BOOK_ID=BA.BOOK_ID) WHERE BA.BOOK_ID=$1", [req.params.id]);
+            ("SELECT B.BOOK_ID, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
