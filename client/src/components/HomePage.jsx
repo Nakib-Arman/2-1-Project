@@ -1,7 +1,7 @@
 import React,{useState} from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-const HomePage = () => {
+const HomePage = ({setAuth}) => {
   const navigate = useNavigate();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const {id} = useParams();
@@ -14,8 +14,16 @@ const HomePage = () => {
     navigate('/addBooks');
   }
 
-  const MyProfile =() =>{
-    navigate(`/myProfile/${id}`);
+  async function MyProfile() {
+    navigate('/myProfile');
+    //e.preventDefault();
+    /*try {
+      const response = await fetch("http://localhost:5000/getID",{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
+      const user = await response.json();
+
+    } catch (err) {
+      console.error(err.message);
+    }*/
   }
 
   const toggleDropdown = () => {
@@ -32,7 +40,7 @@ const HomePage = () => {
       // Example: navigate to the add publisher page
       navigate('/addPublisher');
     } else if (action === 'logOut'){
-      navigate('/LogIn');
+      setAuth(setAuth);
     }
   }
 

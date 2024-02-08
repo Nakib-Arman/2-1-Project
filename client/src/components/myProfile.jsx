@@ -4,11 +4,14 @@ import { useParams } from "react-router-dom";
 const MyProfile = () => {
   const [user, setUser] = useState([]);
   const [shelves, setShelves] = useState([]);
-  const { id } = useParams();
+  //const { id } = useParams();
 
   const getInfo = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/myProfile/${id}`);
+      const user = await fetch("http://localhost:5000/getID",{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
+      const user_id = await user.json();
+      console.log(user_id);
+      const response = await fetch(`http://localhost:5000/myProfile/${user_id}`);
       const jsonData = await response.json();
       setUser(jsonData[0]);
       setShelves(jsonData);

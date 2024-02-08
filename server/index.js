@@ -2,11 +2,13 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 const pool = require("./db");
+const authorization = require("./middleware/authorization");
+const jwtGenerator = require("./jwtGenerator");
 
 app.use(cors());
 app.use(express.json());
 
-app.post("/studentLogIn", async (req, res) => {
+/*app.post("/studentLogIn", async (req, res) => {
     try {
         const { PHONE, PASSWORD } = req.body;
         const staff = await pool.query("SELECT * FROM USERS U JOIN STUDENTS S ON (U.USER_ID = S.STUDENT_ID) WHERE U.PHONE_NUMBER = $1 AND U.LIBRARY_PASSWORD=$2", [PHONE, PASSWORD]);
@@ -68,15 +70,7 @@ app.post("/staffLogIn", async (req, res) => {
     }
 })
 
-app.get("/userLogIn/:PHONE", async (req, res) => {
-    try {
-        const { PHONE } = req.params;
-        const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER = $1", [PHONE]);
-        res.json(user.rows);
-    } catch (err) {
-        console.log(err.message);
-    }
-})
+
 
 app.get("/staffLogIn/:PHONE",async (req,res) => {
     try{
@@ -88,7 +82,58 @@ app.get("/staffLogIn/:PHONE",async (req,res) => {
     }catch(err){
         console.log(err.message);
     }
+})*/
+
+app.post("/LogIn", async (req,res) => {
+    try{
+        const { PHONE, PASSWORD } = req.body;
+        const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER=$1 AND LIBRARY_PASSWORD=$2",[PHONE,PASSWORD]);
+        if(user.rows.length >0 ){
+            
+            const token = jwtGenerator(user.rows[0].user_id);
+            
+            res.json({token});
+            //res.json(user.rows[0]);
+        }
+        else{
+            res.status(401).json({ message: "Invalid credentials" }); 
+        }
+    }catch(err){
+        console.log(err.message);
+    }
+});
+
+app.get("/userLogIn/:PHONE", async (req, res) => {
+    try {
+        const { PHONE } = req.params;
+        const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER = $1", [PHONE]);
+        res.json(user.rows);
+    } catch (err) {
+        console.log(err.message);
+    }
+});
+
+app.get("/getID",authorization, async (req,res) =>{
+    try {
+        //console.log("Hello");
+        //const user = await pool.query("SELECT USER_ID FROM USERS WHERE USER_ID = $1",[req.user]);
+        res.json(req.user);
+        
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json("server Error");
+    }
+});
+
+app.get("/verify", authorization,async (req,res) =>{
+    try {
+        res.json(true);
+    } catch (err) {
+        console.error(err.message); 
+        res.status(500).send("Server Error");
+    }
 })
+
 
 app.post("/addBooks", async (req, res) => {
     try {
