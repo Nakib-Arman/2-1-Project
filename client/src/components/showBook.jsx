@@ -56,13 +56,13 @@ const ShowBook = () => {
 
   return (
     <Fragment>
-      <div className="container mt-5">
-        <h2 className="text-center mb-4">Search Books</h2>
-        <form onSubmit={searchBooks} className="row g-3 search-form">
-          <div className="col-md-6">
+      <div className="container">
+        <h1 className="text-center head-color mb-4">Search Books</h1>
+        <form onSubmit={searchBooks} className="row search-form">
+          <div className="col-md-3">
             <input type="text" className="form-control" placeholder="Enter Title" value={title} onChange={(e) => setTitle(e.target.value)} />
           </div>
-          <div className="col-md-4">
+          <div className="col-md-3">
             <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
               <option value="">Select Category</option>
               {categories.map((ct) => (
