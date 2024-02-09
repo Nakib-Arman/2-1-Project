@@ -1,34 +1,42 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./showBook.css"; // Import the provided CSS file
 
 const ShowBook = () => {
-
-  const [books, setbooks] = useState([]);
-  const [title, settitle] = useState("");
+  const [books, setBooks] = useState([]);
+  const [title, setTitle] = useState("");
+  const [category, setCategory] = useState("");
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [isSearched, setIsSearched] = useState(false);
+  const [categories, setCategories] = useState([]);
 
   let navigate = useNavigate();
 
   const getBooks = async () => {
     try {
       const response = await fetch("http://localhost:5000/showBooks");
+      const categoryResponse = await fetch("http://localhost:5000/categories");
       const jsonData = await response.json();
-      // console.log(response);
-      // console.log(jsonData);
-      setbooks(jsonData);
+      const categoryData = await categoryResponse.json();
+      setBooks(jsonData);
+      setCategories(categoryData);
     } catch (err) {
       console.error(err.message);
     }
   }
 
-  const searchBooks = async (e) => {
-    e.preventDefault();
-
+  const searchBooks = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/searchBOoks/${title}`);
+      let url;
+      if (category !== "") {
+        url = `http://localhost:5000/showBooksByCategory?title=${title}&category=${category}`;
+      } else {
+        url = `http://localhost:5000/searchBooks/${title}`;
+      }
+      const response = await fetch(url);
       const jsonData = await response.json();
       setSearchedBooks(jsonData);
+      setIsSearched(true);
     } catch (err) {
       console.error(err.message);
     }
@@ -37,56 +45,64 @@ const ShowBook = () => {
   useEffect(() => {
     getBooks();
   }, []);
-  console.log(books);
+
+  useEffect(() => {
+    searchBooks();
+  }, [title, category]);
 
   const showBookByID = (id) => {
     navigate(`/showBookDetails/${id}`);
   }
 
-  const toggleIsSearched =() =>{
-    if(title!="") setIsSearched(true);
-    else setIsSearched(false);
-  }
-
-  return (<Fragment>
-    <header className="head-color">
-    <form onSubmit={searchBooks} className="search-form mx-3" >
-      <div>
-        <label htmlFor="title" className="mt-3">Title:</label>
-        <input type="text" id="title" className="form-control " style={{width: '300px'}} value={title} onChange={(e) => settitle(e.target.value)} />
+  return (
+    <Fragment>
+      <div className="container mt-5">
+        <h2 className="text-center mb-4">Search Books</h2>
+        <form onSubmit={searchBooks} className="row g-3 search-form">
+          <div className="col-md-6">
+            <input type="text" className="form-control" placeholder="Enter Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+          </div>
+          <div className="col-md-4">
+            <select className="form-select" value={category} onChange={(e) => setCategory(e.target.value)}>
+              <option value="">Select Category</option>
+              {categories.map((ct) => (
+                <option key={ct.category} value={ct.category}>{ct.category}</option>
+              ))}
+            </select>
+          </div>
+          {/* No separate search button */}
+        </form>
       </div>
-      <button className="btn button-color mt-3 mb-3" style={{background: 'rgb(233, 229, 229)',color: '#333'}} onClick={toggleIsSearched}>Search</button>
-    </form>
-    </header>
 
-    <table class="table mt-5">
-      <thead>
-        <tr>
-          <th>TITLE</th>
-          <th>PUBLICATION</th>
-          <th>CATEGORY</th>
-        </tr>
-      </thead>
-      <tbody>
-        {isSearched
-          ? searchedBooks.map((book) => (
-            <tr onClick={() => showBookByID(book.book_id)} key={book.book_id} className="table-row">
-              <td>{book.title}</td>
-              <td>{book.publication}</td>
-              <td>{book.category}</td>
-            </tr>
-          ))
-          : books.map(book => (
-            <tr onClick={() => showBookByID(book.book_id)} key={book.book_id} className="table-row">
-              <td>{book.title}</td>
-              <td>{book.publication}</td>
-              <td>{book.category}</td>
-            </tr>
-          ))
-        }
-      </tbody>
-    </table>
-  </Fragment>);
+      <div className="container mt-5">
+        <div className="row">
+          {isSearched
+            ? searchedBooks.map((book) => (
+              <div key={book.book_id} className="col-md-4 mb-4">
+                <div className="card h-100 book-card" onClick={() => showBookByID(book.book_id)} style={{ cursor: "pointer" }}>
+                  <div className="card-body">
+                    <h5 className="card-title book-title">{book.title}</h5>
+                    <p className="card-text"><strong>Publication:</strong> {book.publication}</p>
+                    <p className="card-text"><strong>Category:</strong> {book.category}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+            : books.map((book) => (
+              <div key={book.book_id} className="col-md-4 mb-4">
+                <div className="card h-100 book-card" onClick={() => showBookByID(book.book_id)} style={{ cursor: "pointer" }}>
+                  <div className="card-body">
+                    <h5 className="card-title book-title">{book.title}</h5>
+                    <p className="card-text"><strong>Publication:</strong> {book.publication}</p>
+                    <p className="card-text"><strong>Category:</strong> {book.category}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+        </div>
+      </div>
+    </Fragment>
+  );
 };
 
-export default ShowBook; 
+export default ShowBook;

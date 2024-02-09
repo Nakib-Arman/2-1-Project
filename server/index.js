@@ -212,12 +212,25 @@ app.get("/publishers",async(req,res)=>{
 
 app.get("/showBooks", async (req, res) => {
     try {
-        const books = await pool.query("SELECT BOOK_ID,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY BOOK_ID");
+        const books = await pool.query("SELECT BOOK_ID,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY TITLE");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
     }
 })
+
+app.get("/showBooksByCategory", async (req, res) => {
+    try {
+        const { title, category } = req.query; // Destructure title and category from query parameters
+        const books = await pool.query("SELECT BOOK_ID, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
+        res.json(books.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: 'Internal Server Error' }); // Respond with an error status
+    }
+});
+
+
 
 app.get("/myProfile/:id",async (req,res) =>{
     try{
@@ -233,7 +246,7 @@ app.get("/searchBooks/:title", async (req, res) => {
         const { title } = req.params;
         const searchResults = await pool.query(
             "SELECT BOOK_ID, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE LOWER(TITLE) LIKE $1 ORDER BY BOOK_ID",
-            [`${title.toLowerCase()}%`]
+            [`%${title.toLowerCase()}%`]
         );
         res.json(searchResults.rows);
     } catch (err) {
