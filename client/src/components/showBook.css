@@ -31,6 +31,14 @@
     transition: background-color 0.3s; /* Smooth transition */
 }
 
+.book-card2{
+    width: 500%;
+    background-color: #fff; /* White background */
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s; /* Smooth transition */
+}
+
 .book-card:hover {
     background-color: #f0f0f0; /* Light gray background on hover */
 }

@@ -125,6 +125,30 @@ app.get("/getID",authorization, async (req,res) =>{
     }
 });
 
+app.post("/addToCart", authorization, async (req, res) => {
+    try {
+        const { book_id } = req.body;
+        const user_id = req.user;
+
+        const cart = await pool.query("INSERT INTO CART (USER_ID, BOOK_ID) VALUES ($1, $2) RETURNING *", [user_id, book_id]);
+        res.json(cart.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
+app.get("/showCart", authorization, async (req, res) => {
+    try {
+        const user_id = req.user;
+        const cart = await pool.query("SELECT C.BOOK_ID, B.TITLE, B.CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM CART C JOIN BOOKS B ON (C.BOOK_ID = B.BOOK_ID) WHERE C.USER_ID = $1", [user_id]);
+        res.json(cart.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 app.get("/verify", authorization,async (req,res) =>{
     try {
         res.json(true);

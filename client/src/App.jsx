@@ -10,6 +10,7 @@ import ShowBookDetails from "./components/showBookDetails";
 import MyProfile from "./components/myProfile";
 import BorrowRequests from "./components/borrowRequest";
 // import CommonLogIn from "./components/CommonLogIn";
+import ShowCart from "./components/showCart";
 
 const App = () => {
 
@@ -30,6 +31,7 @@ const App = () => {
           <Route exact path="/myProfile" element={<MyProfile />} />
           <Route exact path="/showBookDetails/:id" element={<ShowBookDetails />} />
           <Route exact path="/borrowRequests/:id" element={<BorrowRequests />} />
+          <Route exact path="/showCart" element={<ShowCart />} />
         </Routes>
       </Router>
     </div>
