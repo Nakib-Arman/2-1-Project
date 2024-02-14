@@ -2,7 +2,7 @@
 
 /* Style for the search form */
 .search-form {
-    background-color: #f8f9fa; /* Light gray background */
+    background-color: #bdbdbe; /* Light gray background */
     padding: 20px;
     border-radius: 5px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -45,9 +45,41 @@
 
 /* Style for the book titles */
 .book-title {
-    color: #007bff; /* Blue color for the title */
+    color: #0a4d95; /* Blue color for the title */
     font-size: 1.2rem;
     font-weight: bold;
 }
 
 /* Additional custom styles can be added as needed */
+/* Assuming these classes are part of a larger form or component */
+.col-md-6 {
+    margin-bottom: 15px;
+  }
+  
+  .col-md-3 input {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 40px;
+  }
+  
+  .col-md-3 select {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 40px;
+  }
+  
+  /* Optional: Add some styling to make it visually appealing */
+  .col-md-3 select:hover,
+  .col-md-3 select:focus,
+  .col-md-3 input:hover,
+  .col-md-3 input:focus {
+    border-color: #4e5154; /* Change the color as per your design */
+    box-shadow: 0 0 5px #4e5154; /* Optional: Add a subtle box shadow */
+  }
+  

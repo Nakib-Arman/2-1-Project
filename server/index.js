@@ -161,41 +161,35 @@ app.get("/verify", authorization,async (req,res) =>{
 
 app.post("/addBooks", async (req, res) => {
     try {
-        const { TITLE, CATEGORY, AUTHOR, PUBLISHER, SHELF_ID } = req.body;
+        const { TITLE, CATEGORY, AUTHORS, PUBLISHER, SHELF_ID } = req.body;
 
-        /*const checkAuthor = await pool.query("SELECT * FROM AUTHORS WHERE AUTHOR_NAME=$1", [AUTHOR]);
-        const checkPublisher = await pool.query("SELECT * FROM PUBLISHERS WHERE PUBLICATION_NAME = $1", [PUBLISHER]);
+        // Insert the book into the BOOKS table
+        const book = await pool.query(
+            "INSERT INTO BOOKS (TITLE, CATEGORY, PUBLISHER_ID, SHELF_ID) VALUES ($1, $2, $3, $4) RETURNING *",
+            [TITLE, CATEGORY, PUBLISHER, SHELF_ID]
+        );
 
-        let author = undefined;
-        if (checkAuthor.rows.length > 0) {
-            //author = checkAuthor.rows[0];
-            console.log("check author");
-        }
-        else {
-            let count = await pool.query("SELECT COUNT(*) FROM AUTHORS");
-            author = await pool.query("INSERT INTO AUTHORS (AUTHOR_ID,AUTHOR_NAME) VALUES ($1,$2) RETURNING *", [parseInt(count.rows[0].count) + 1, AUTHOR]);
-        }
+        const bookId = book.rows[0].book_id;
 
-        let publisher = undefined;
-        if (checkPublisher.rows.length > 0) {
-            publisher = checkPublisher.rows[0];
-            console.log("check publisher");
-        }
-        else {
-            let count = await pool.query("SELECT COUNT(*) FROM PUBLISHERS")
-            publisher = await pool.query("INSERT INTO PUBLISHERS (PUBLISHER_ID,PUBLICATION_NAME) VALUES ($1,$2) RETURNING *", [parseInt(count.rows[0].count) + 1, PUBLISHER]);
-            console.log("write publisher");
-        }*/
+        // Insert the book-author relationships into the BOOK_AUTHOR_RELATION table
+        const authorPromises = AUTHORS.map(async (authorId) => {
+            const bookAuthorRelation = await pool.query(
+                "INSERT INTO BOOK_AUTHOR_RELATION (BOOK_ID, AUTHOR_ID) VALUES ($1, $2) RETURNING *",
+                [bookId, authorId]
+            );
+            return bookAuthorRelation.rows[0];
+        });
 
-        const book = await pool.query("INSERT INTO BOOKS (TITLE, CATEGORY,PUBLISHER_ID,SHELF_ID) VALUES ($1, $2, $3, $4) RETURNING *", [TITLE, CATEGORY, PUBLISHER, SHELF_ID]);
-        const book_author = await pool.query("INSERT INTO BOOK_AUTHOR_RELATION (BOOK_ID,AUTHOR_ID) VALUES($1,$2) RETURNING *", [book.rows[0].book_id, AUTHOR]);
-        res.json(book_author.rows[0]);
+        const bookAuthorRelations = await Promise.all(authorPromises);
+
+        res.json({ book: book.rows[0], authors: bookAuthorRelations });
 
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Internal Server Error");
     }
 });
+
 
 app.get("/authors",async(req,res)=>{
     try{
