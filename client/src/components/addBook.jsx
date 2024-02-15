@@ -55,13 +55,13 @@ const AddBook = () => {
                 PUBLISHER: parseInt(PUBLISHER),
                 SHELF_ID: parseInt(SHELF_ID)
             };
-    
+
             const response = await fetch("http://localhost:5000/addBooks", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(body)
             });
-    
+
             if (response.ok) {
                 console.log("Book added successfully");
                 // Reset state values
@@ -73,13 +73,13 @@ const AddBook = () => {
             } else {
                 console.error("Failed to add book");
             }
-    
+
             navigate('/addBooks');
         } catch (err) {
             console.error(err.message);
         }
     };
-    
+
 
     const showAllBooks = () => {
         navigate('/showBooks');
@@ -87,7 +87,8 @@ const AddBook = () => {
 
     return (
         <Fragment>
-            <h1 className="text-center head-color">Add Book</h1>
+            <h1 className="text-center mb-4" style={{ color: "white" }}>BIBLIOPHILE</h1>
+            <h1 className="text-center head-color fixed-header">Add Book</h1>
             <div
                 className="add-book-container"
                 style={{
@@ -133,16 +134,16 @@ const AddBook = () => {
                         </select>
                     </div>
                     <div>
-    <label htmlFor="author" className="mt-3">
-        Authors:
-    </label>
-    <Select
-        isMulti
-        options={authors.map((author) => ({ value: author.author_id, label: author.author_name }))}
-        value={AUTHORS.map((authorId) => ({ value: authorId, label: authors.find(author => author.author_id === authorId).author_name }))}
-        onChange={(selectedOptions) => setAUTHORS(selectedOptions.map(option => option.value))}
-    />
-</div>
+                        <label htmlFor="author" className="mt-3">
+                            Authors:
+                        </label>
+                        <Select
+                            isMulti
+                            options={authors.map((author) => ({ value: author.author_id, label: author.author_name }))}
+                            value={AUTHORS.map((authorId) => ({ value: authorId, label: authors.find(author => author.author_id === authorId).author_name }))}
+                            onChange={(selectedOptions) => setAUTHORS(selectedOptions.map(option => option.value))}
+                        />
+                    </div>
                     <div>
                         <label htmlFor="publisher" className="mt-3">
                             Publisher:

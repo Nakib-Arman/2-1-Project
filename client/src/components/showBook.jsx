@@ -1,4 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./showBook.css"; // Import the provided CSS file
 
@@ -109,8 +111,8 @@ const goToCart = () => {
 
   return (
     <Fragment>
-      <div className="container">
-        <h1 className="text-center head-color mb-4">Search Books</h1>
+        <h1 className="text-center mb-4" style={{ color: "white" }}>Search Books</h1>
+        <div className="container">
         <form onSubmit={searchBooks} className="row search-form">
           <div className="col-md-3">
             <input type="text" className="form-control" placeholder="Enter Title" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -148,7 +150,12 @@ const goToCart = () => {
         </div>
       </div>
       {/* Cart Button */}
-      <button onClick={goToCart} className="btn btn-primary cart-btn">Cart</button>
+      <div className="head-color fixed-header">
+        <h1 className="text-center">Search Books</h1>
+        <button onClick={goToCart} className="cart-btn" style={{background: 'transparent',color: 'white',border: 'white'}}>
+        <FontAwesomeIcon style={{height: '25px'}} icon={faCartShopping} />
+        </button>
+      </div>
     </Fragment>
   );
 };

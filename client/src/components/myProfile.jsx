@@ -26,8 +26,9 @@ const MyProfile = () => {
 
   return (
     <Fragment>
+      <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
+      <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
       <div className="book-details-container">
-        <h1 className="text-center head-color mb-5" style={{ fontSize: '50px' }}>My Profile</h1>
         <table className="table mx-auto">
           <tbody>
             <tr className="text-center">

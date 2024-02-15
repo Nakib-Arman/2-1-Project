@@ -7,7 +7,7 @@ body {
 .app-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  height: 120vh;
 }
 
 .header {
@@ -218,7 +218,19 @@ body {
 .head-color{
   background-color: #333;
   color: rgb(233, 229, 229);
+  height: 65px;
 }
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Adjust the background color as needed */
+  z-index: 1000; /* Adjust the z-index as needed to ensure the header is above other elements */
+  padding: 10px; /* Add padding for better visibility */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+}
+
 
 /* BorrowRequests.css */
 
@@ -275,4 +287,29 @@ body {
   position: fixed;
   top: 20px;
   right: 20px;
+}
+
+/* Add these styles to your stylesheet */
+.custom-slick-arrow {
+  background-color: #333;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  color: white;
+  cursor: pointer;
+  display: block;
+  font-size: 16px;
+  outline: none;
+  padding: 10px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 1;
+}
+
+.custom-slick-next {
+  right: 10px;
+}
+
+.custom-slick-prev {
+  left: 10px;
 }
