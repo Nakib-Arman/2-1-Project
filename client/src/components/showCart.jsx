@@ -67,8 +67,23 @@ const ShowCart = () => {
     navigate(`/showBookDetails/${id}`);
   };
 
-  const handleSubmitRequest = () => {
-    console.log("Submit request button clicked");
+  const handleSubmitRequest = async (book_id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/borrowBook/${book_id}`, {
+        method: "POST",
+        headers: {
+          "token": localStorage.token,
+          "Content-Type": "application/json"
+        }
+      });
+      if (!response.ok) {
+        throw new Error('Failed to submit borrow request');
+      }
+      // Update the cart after submission
+      getBooksFromCart();
+    } catch (err) {
+      console.error(err.message);
+    }
   };
 
   return (
@@ -82,6 +97,7 @@ const ShowCart = () => {
               <th>PUBLICATION</th>
               <th>CATEGORY</th>
               <th>ACTIONS</th>
+              <th>Submit Request</th> {/* New column for submit button */}
             </tr>
           </thead>
           <tbody>
@@ -93,13 +109,13 @@ const ShowCart = () => {
                 <td>
                   <button onClick={() => deleteBookFromCart(book.book_id)}>Delete</button>
                 </td>
+                <td>
+                  <button onClick={() => handleSubmitRequest(book.book_id)}>Submit Request</button> {/* Submit button */}
+                </td>
               </tr>
             ))}
           </tbody>
         </table>
-        <div className="text-center">
-          <button onClick={handleSubmitRequest} className="submit-button">Submit Request</button>
-        </div>
       </div>
     </Fragment>
   );
