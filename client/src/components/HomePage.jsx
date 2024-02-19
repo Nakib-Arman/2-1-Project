@@ -8,6 +8,7 @@ const HomePage = ({ setAuth }) => {
   const navigate = useNavigate();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [topPriorityBooks, setTopPriorityBooks] = useState([]);
+  const [userType, setUserType] = useState(null);
 
   const getPriorityBooks = async () => {
     try {
@@ -18,6 +19,22 @@ const HomePage = ({ setAuth }) => {
       console.error(err.message);
     }
   }
+  
+  const getUserType = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/getUserType", {
+        method: "GET",
+        headers: { token: localStorage.token, "Content-Type": "application/json" }
+      });
+      const jsonData = await response.json();
+      setUserType(jsonData[0].user_type);
+      console.log(jsonData[0].user_type);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
+  
 
   const showBooks = () => {
     navigate('/showBooks');
@@ -85,11 +102,16 @@ const HomePage = ({ setAuth }) => {
   useEffect(() => {
     getPriorityBooks();
   }, []);
+  useEffect(() => {
+    getUserType();
+    console.log(userType);
+  }, []);
 
   return (
     <Fragment>
       <div className="app-container">
         <header className="header left-container fixed-header" style={{ height: '70px' }}>
+          
           <div className="transparent-buttons">
             <button onClick={addBook}>Add New Book</button>
             <button onClick={showBooks}>Search Books</button>

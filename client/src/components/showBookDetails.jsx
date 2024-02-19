@@ -62,6 +62,11 @@ const ShowBookDetails = () => {
               
               <td className="table-row-2">{books.shelf_id}</td>
             </tr>
+            <tr class name="text-center mt -3">
+              <td className="head-color">Copies Available</td>
+              
+              <td className="table-row-2">{books.copy}</td>
+            </tr>
           </tbody>
         </table>
       </div>

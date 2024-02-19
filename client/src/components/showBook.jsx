@@ -140,6 +140,7 @@ const goToCart = () => {
                   <h5 className="card-title book-title">{book.title}</h5>
                   <p className="card-text"><strong>Publication:</strong> {book.publication}</p>
                   <p className="card-text"><strong>Category:</strong> {book.category}</p>
+                  <p className="card-text" style={{ color: book.copy > 0 ? "green" : "red" }}>{book.copy > 0 ? "(Available)" : "(Not Available)"}</p>
                 </div>
                 <div className="card-footer">
                   <button onClick={(e) => addToCart(book.book_id, e)} className="btn btn-primary w-100">Add to Cart</button>

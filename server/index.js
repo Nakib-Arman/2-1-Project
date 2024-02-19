@@ -230,7 +230,7 @@ app.get("/publishers",async(req,res)=>{
 
 app.get("/showBooks", async (req, res) => {
     try {
-        const books = await pool.query("SELECT BOOK_ID,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY TITLE");
+        const books = await pool.query("SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY TITLE");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -240,7 +240,7 @@ app.get("/showBooks", async (req, res) => {
 app.get("/showBooksByCategory", async (req, res) => {
     try {
         const { title, category } = req.query; // Destructure title and category from query parameters
-        const books = await pool.query("SELECT BOOK_ID, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
+        const books = await pool.query("SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -263,7 +263,7 @@ app.get("/searchBooks/:title", async (req, res) => {
     try {
         const { title } = req.params;
         const searchResults = await pool.query(
-            "SELECT BOOK_ID, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE LOWER(TITLE) LIKE $1 ORDER BY BOOK_ID",
+            "SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE LOWER(TITLE) LIKE $1 ORDER BY BOOK_ID",
             [`%${title.toLowerCase()}%`]
         );
         res.json(searchResults.rows);
@@ -276,7 +276,7 @@ app.get("/searchBooks/:title", async (req, res) => {
 app.get("/showBookDetails/:id", async (req, res) => {
     try {
         const books = await pool.query
-            ("SELECT B.BOOK_ID, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
+            ("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -311,6 +311,58 @@ app.get("/staffborrowRequests/:id",async (req,res) =>{
             "SELECT B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1",[req.params.id]);
         res.json(staffs.rows);
     }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.post("/addToUserRequest", authorization, async (req, res) => {
+    try {
+        const { book_id } = req.body;
+        const user_id = req.user;
+
+        const userRequest = await pool.query("INSERT INTO USER_REQUEST (USER_ID,REQUEST_DATE) VALUES ($1,CURRENT_DATE) RETURNING *", [user_id]);
+        
+
+        res.json(userRequest.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+})
+
+app.post("/addToRequestBookRelation", authorization, async (req, res) => {
+    try {
+        const { book_id } = req.body;
+        const user_id = req.user;
+
+        const userRequest = await pool.query("INSERT INTO REQUEST_BOOK_RELATION (USER_REQUEST_ID,BOOK_ID,REQUEST_STATUS) VALUES ((SELECT USER_REQUEST_ID FROM USER_REQUEST WHERE USER_ID=$1 AND REQUEST_DATE=CURRENT_DATE),$2,'PENDING') RETURNING *", [user_id, book_id]);
+        
+
+        res.json(userRequest.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ message: "Server Error" });
+    }
+})
+
+app.get("/getUserType", authorization, async (req, res) => {
+    try {
+      const user = await pool.query("SELECT TYPE_OF_USER($1)", [req.user]);
+      console.log(user.rows[0]);
+      res.json(user.rows);
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json({ error: 'Internal server error' }); // You can handle errors as per your application's requirements
+    }
+  })
+
+app.post("/deleteBookFromCart/:id", authorization, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user_id = req.user;
+        const book = await pool.query("DELETE FROM CART WHERE USER_ID = $1 AND BOOK_ID = $2", [user_id, id]);
+        res.json({ message: "Book deleted from cart" });
+    } catch (err) {
         console.error(err.message);
     }
 })
