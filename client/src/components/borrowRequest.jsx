@@ -66,12 +66,10 @@ const BorrowRequests = () => {
     };
 
     const handleAcceptClick = (requestId) => {
-        // Logic to handle accepting the request
         console.log(`Accept request with ID: ${requestId}`);
     };
 
     const handleDenyClick = (requestId) => {
-        // Logic to handle denying the request
         console.log(`Deny request with ID: ${requestId}`);
     };
 
@@ -99,7 +97,7 @@ const BorrowRequests = () => {
                     <div key={index} className="box">
                         <span className="option-text">
                             Name :
-                            <Link to={`/showStudentDetails/${student.student_id}`} className="option-link">
+                            <Link to={`/studentProfile/${student.student_id}`} className="option-link">
                                 {student.name}
                             </Link>
                         </span>
@@ -175,7 +173,7 @@ const BorrowRequests = () => {
                     <div key={index} className="box">
                         <span className="option-text">
                             Name :
-                            <Link to={`/showStudentDetails/${staff.staff_id}`} className="option-link">
+                            <Link to={`/staffProfile/${staff.staff_id}`} className="option-link">
                                 {staff.name}
                             </Link>
                         </span>

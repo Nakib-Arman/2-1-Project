@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import "./showBook.css"; // Import the provided CSS file
+import "./showBook.css"; 
 
 const ShowBook = () => {
   const [books, setBooks] = useState([]);
@@ -11,9 +11,9 @@ const ShowBook = () => {
   const [searchedBooks, setSearchedBooks] = useState([]);
   const [isSearched, setIsSearched] = useState(false);
   const [categories, setCategories] = useState([]);
-  const [user, setUser] = useState(null); // Initialize user state as null
-  const [uId, setUId] = useState(null); // Initialize uId state as null
-  const [cartbook, setCartBook] = useState(0); // Initialize cartbook state as empty array
+  const [user, setUser] = useState(null);
+  const [uId, setUId] = useState(null); 
+  const [cartbook, setCartBook] = useState(0);
 
   let navigate = useNavigate();
 
@@ -83,20 +83,19 @@ const ShowBook = () => {
   };
 
   const addToCart = async (id, e) => {
-    e.stopPropagation(); // Prevent event propagation
+    e.stopPropagation(); 
     try {
         const body = { book_id: id };
         const response = await fetch("http://localhost:5000/addToCart", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                token: localStorage.token // Send the authentication token
+                token: localStorage.token 
             },
             body: JSON.stringify(body)
         });
         if (response.ok) {
             console.log("Added book with ID", id, "to cart");
-            // Optionally, you can do something here after adding to cart
         } else {
             console.error("Failed to add book to cart");
         }
@@ -125,9 +124,7 @@ const goToCart = () => {
               ))}
             </select>
           </div>
-          <div className="col-md-2">
-            <button type="submit" className="btn btn-primary">Search</button>
-          </div>
+          
         </form>
       </div>
 
@@ -140,17 +137,21 @@ const goToCart = () => {
                   <h5 className="card-title book-title">{book.title}</h5>
                   <p className="card-text"><strong>Publication:</strong> {book.publication}</p>
                   <p className="card-text"><strong>Category:</strong> {book.category}</p>
-                  <p className="card-text" style={{ color: book.copy > 0 ? "green" : "red" }}>{book.copy > 0 ? "(Available)" : "(Not Available)"}</p>
+                  {/*<p className="card-text" style={{ color: book.copy > 0 ? "green" : "red" }}>{book.copy > 0 ? "(Available)" : "(Not Available)"}</p>*/}
                 </div>
                 <div className="card-footer">
-                  <button onClick={(e) => addToCart(book.book_id, e)} className="btn btn-primary w-100">Add to Cart</button>
+                  {book.copy >0 &&
+                    <button onClick={(e) => addToCart(book.book_id, e)} className="btn btn-primary w-100">Add to Cart</button>
+                  }
+                  {book.copy ==0 &&
+                    <button className="btn deny-button">Unavailable</button>
+                  }
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-      {/* Cart Button */}
       <div className="head-color fixed-header">
         <h1 className="text-center">Search Books</h1>
         <button onClick={goToCart} className="cart-btn" style={{background: 'transparent',color: 'white',border: 'white'}}>

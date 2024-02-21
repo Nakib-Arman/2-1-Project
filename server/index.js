@@ -84,6 +84,58 @@ app.get("/staffLogIn/:PHONE",async (req,res) => {
     }
 })*/
 
+app.post("/userRequest/:id", authorization, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user_id = req.user;
+        // const book_id=id;
+        const request = await pool.query("INSERT INTO USER_REQUEST (USER_ID,REQUEST_DATE) VALUES ($1,CURRENT_DATE) RETURNING *", [user_id]);
+        const userRequest = request.rows[0].user_request_id;
+        console.log(userRequest);
+        // const requestBook = await pool.query("INSERT INTO REQUEST_BOOK_RELATION (USER_REQUEST_ID, BOOK_ID, REQUEST_STATUS) VALUES ($1, $2, 'PENDING') RETURNING *", [userRequest, id]);
+        res.json(userRequest);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.post("/userBorrowRelation/:id", authorization, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const user_id = req.user;
+        const response = await pool.query("INSERT INTO USER_BORROW_RELATION VALUES($1,$2,NULL,NULL) RETURNING *",[user_id,id]);
+        //console.log(response.json().)
+        res.json(response.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/checkRequest/:id",authorization, async (req,res) =>{
+    try{
+        console.log("called");
+        const {id} = req.params;
+        const user_id = req.user;
+        const response = await pool.query("SELECT * FROM USER_BORROW_RELATION WHERE USER_ID=$1 AND BOOK_ID=$2",[user_id,id]);
+        //console.log(response.rows);
+        res.json(response.rows);
+    }catch(err) {
+        console.error(err.message);
+    }
+})
+
+app.post("/requestBorrowRelation", (req, res) => {
+    try {
+        const {requestID,book_id} = req.query;
+        
+        const response = pool.query("INSERT INTO REQUEST_BOOK_RELATION (USER_REQUEST_ID,BOOK_ID,REQUEST_STATUS) VALUES($1,$2,'Pending') RETURNING *",[requestID,book_id]);
+        res.json(response);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  });
+
 app.post("/LogIn", async (req,res) => {
     try{
         const { PHONE, PASSWORD } = req.body;
@@ -163,7 +215,6 @@ app.post("/addBooks", async (req, res) => {
     try {
         const { TITLE, CATEGORY, AUTHORS, PUBLISHER, SHELF_ID } = req.body;
 
-        // Insert the book into the BOOKS table
         const book = await pool.query(
             "INSERT INTO BOOKS (TITLE, CATEGORY, PUBLISHER_ID, SHELF_ID) VALUES ($1, $2, $3, $4) RETURNING *",
             [TITLE, CATEGORY, PUBLISHER, SHELF_ID]
@@ -171,7 +222,6 @@ app.post("/addBooks", async (req, res) => {
 
         const bookId = book.rows[0].book_id;
 
-        // Insert the book-author relationships into the BOOK_AUTHOR_RELATION table
         const authorPromises = AUTHORS.map(async (authorId) => {
             const bookAuthorRelation = await pool.query(
                 "INSERT INTO BOOK_AUTHOR_RELATION (BOOK_ID, AUTHOR_ID) VALUES ($1, $2) RETURNING *",
@@ -239,20 +289,37 @@ app.get("/showBooks", async (req, res) => {
 
 app.get("/showBooksByCategory", async (req, res) => {
     try {
-        const { title, category } = req.query; // Destructure title and category from query parameters
+        const { title, category } = req.query; 
         const books = await pool.query("SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({ error: 'Internal Server Error' }); // Respond with an error status
+        res.status(500).json({ error: 'Internal Server Error' }); 
     }
 });
 
-
-
-app.get("/myProfile/:id",async (req,res) =>{
+app.get("/studentProfile/:id",async (req,res) => {
     try{
-        const staff = await pool.query("SELECT ST.STAFF_ID, U.FIRST_NAME||' '|| U.LAST_NAME AS NAME, U.PHONE_NUMBER, SH.SHELF_ID, SH.CATEGORY FROM USERS U JOIN STAFFS ST ON(U.USER_ID=ST.STAFF_ID) JOIN SHELVES SH ON(ST.STAFF_ID=SH.STAFF_ID) WHERE U.USER_ID=$1",[req.params.id]);
+        const student = await pool.query("SELECT S.STUDENT_ID,U.FIRST_NAME||' '||LAST_NAME NAME,U.PHONE_NUMBER,S.CURRENT_LEVEL,S.CURRENT_TERM,D.DEPARTMENT_NAME,TOTAL_DUE(U.USER_ID) DUE FROM STUDENTS S JOIN USERS U ON(U.USER_ID=S.STUDENT_ID) JOIN DEPARTMENTS D ON (S.DEPARTMENT_CODE=D.DEPARTMENT_CODE) WHERE U.USER_ID=$1",[req.params.id]);
+        res.json(student.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+
+app.get("/teacherProfile/:id",async (req,res) =>{
+    try{
+        //const teacher = await pool.query("SELECT S.STUDENT_ID ID, U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME, U.PHONE_NUMBER PN, S.CURRENT_LEVEL Cl, S.CURRENT_TERM CT,TOTAL_DUE(2105128) AS DUE FROM STUDENTS S JOIN USERS U ON (U.USER_ID=S.STUDENT_ID) WHERE U.USER_ID=$1",[req.params.id]);
+        res.json(teacher.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/staffProfile/:id",async (req,res) => {
+    try{
+        const staff = await pool.query("SELECT ST.STAFF_ID, U.FIRST_NAME||' '|| U.LAST_NAME AS NAME, U.PHONE_NUMBER, SH.SHELF_ID,TOTAL_DUE(U.USER_ID) DUE, SH.CATEGORY FROM USERS U JOIN STAFFS ST ON(U.USER_ID=ST.STAFF_ID) JOIN SHELVES SH ON(ST.STAFF_ID=SH.STAFF_ID) WHERE U.USER_ID=$1",[req.params.id]);
         res.json(staff.rows);
     }catch (err) {
         console.error(err.message);

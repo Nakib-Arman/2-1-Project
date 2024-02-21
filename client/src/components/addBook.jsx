@@ -51,7 +51,7 @@ const AddBook = () => {
             const body = {
                 TITLE,
                 CATEGORY,
-                AUTHORS: AUTHORS.map(authorId => parseInt(authorId)), // Convert each author ID to an integer
+                AUTHORS: AUTHORS.map(authorId => parseInt(authorId)), 
                 PUBLISHER: parseInt(PUBLISHER),
                 SHELF_ID: parseInt(SHELF_ID)
             };
@@ -64,7 +64,6 @@ const AddBook = () => {
 
             if (response.ok) {
                 console.log("Book added successfully");
-                // Reset state values
                 setTITLE("");
                 setCATEGORY("");
                 setAUTHORS([]);

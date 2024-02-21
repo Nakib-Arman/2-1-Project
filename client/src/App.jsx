@@ -11,6 +11,9 @@ import MyProfile from "./components/myProfile";
 import BorrowRequests from "./components/borrowRequest";
 // import CommonLogIn from "./components/CommonLogIn";
 import ShowCart from "./components/showCart";
+import HomePageForStudentTeacher from "./components/HomePageForStudentTeacher";
+import StudentProfile from "./components/studentProfile";
+import StaffProfile from "./components/staffProfile";
 
 const App = () => {
 
@@ -32,7 +35,9 @@ const App = () => {
           <Route exact path="/showBookDetails/:id" element={<ShowBookDetails />} />
           <Route exact path="/borrowRequests" element={<BorrowRequests />} />
           <Route exact path="/showCart" element={<ShowCart />} />
-        </Routes>
+          <Route exact path="/HomePageForStudentTeacher" element={<HomePageForStudentTeacher />} />
+          <Route exact path="/studentProfile/:id" element={<StudentProfile/>}/>
+          <Route exact path="/staffProfile/:id" element={<StaffProfile/>}/>        </Routes>
       </Router>
     </div>
   );

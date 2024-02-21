@@ -1,10 +1,11 @@
+// HomePageForStudentTeacher.js
 import React, { Fragment, useEffect, useState } from "react";
 import Slider from "react-slick";
+import { useNavigate } from "react-router-dom";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { useNavigate, useParams } from "react-router-dom";
 
-const HomePage = ({ setAuth }) => {
+const HomePageForStudentTeacher = ({ setAuth }) => {
   const navigate = useNavigate();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [topPriorityBooks, setTopPriorityBooks] = useState([]);
@@ -18,69 +19,51 @@ const HomePage = ({ setAuth }) => {
     } catch (err) {
       console.error(err.message);
     }
-  }
-  
+  };
+
   const getUserType = async () => {
     try {
       const response = await fetch("http://localhost:5000/getUserType", {
         method: "GET",
-        headers: { token: localStorage.token, "Content-Type": "application/json" }
+        headers: {
+          token: localStorage.token,
+          "Content-Type": "application/json",
+        },
       });
       const jsonData = await response.json();
       setUserType(jsonData[0].user_type);
-      console.log(jsonData[0].user_type);
     } catch (err) {
       console.error(err.message);
     }
-  }
-
-  
+  };
 
   const showBooks = () => {
-    navigate('/showBooks');
-  }
+    navigate("/showBooks");
+  };
 
-  const addBook = () => {
-    navigate('/addBooks');
-  }
-
-  async function MyProfile() {
-    navigate('/myProfile');
-    //e.preventDefault();
-    /*try {
-      const response = await fetch("http://localhost:5000/getID",{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
-      const user = await response.json();
-
-    } catch (err) {
-      console.error(err.message);
-    }*/
-  }
+  const MyProfile = () => {
+    navigate("/myProfile");
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
-  }
+  };
 
   const handleDropdownItemClick = (action) => {
-    if (action === 'viewBorrowRequests') {
-      navigate('/borrowRequests');
-    } else if (action === 'addAuthor') {
-      navigate('/addAuthor');
-    } else if (action === 'addPublisher') {
-      navigate('/addPublisher');
-    } else if (action === 'logOut') {
-      setAuth(setAuth);
+    if (action === "logOut") {
+      setAuth(false);
     }
-  }
+  };
 
   const NextArrow = ({ onClick }) => (
     <button className="custom-slick-arrow custom-slick-next" onClick={onClick}>
-      {'>'}
+      {">"}
     </button>
   );
 
   const PrevArrow = ({ onClick }) => (
     <button className="custom-slick-arrow custom-slick-prev" onClick={onClick}>
-      {'<'}
+      {"<"}
     </button>
   );
 
@@ -91,36 +74,28 @@ const HomePage = ({ setAuth }) => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,   
-    nextArrow: <NextArrow style={{ fontSize: '24px', color: '#000' }} />,
-    prevArrow: <PrevArrow style={{ fontSize: '24px', color: '#000' }} />,
+    autoplaySpeed: 3000,
+    nextArrow: <NextArrow style={{ fontSize: "24px", color: "#000" }} />,
+    prevArrow: <PrevArrow style={{ fontSize: "24px", color: "#000" }} />,
   };
 
   useEffect(() => {
     getPriorityBooks();
-  }, []);
-  useEffect(() => {
     getUserType();
-    console.log(userType);
   }, []);
 
   return (
     <Fragment>
       <div className="app-container">
         <header className="header left-container fixed-header" style={{ height: '70px' }}>
-          
           <div className="transparent-buttons">
-            <button onClick={addBook}>Add New Book</button>
             <button onClick={showBooks}>Search Books</button>
-            <button onClick={MyProfile} >My Profile</button>
+            <button onClick={MyProfile}>My Profile</button>
             <div className="hamburger-icon" onClick={toggleDropdown}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
               <div className="dropdown-menu">
-                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')}>View Borrow Requests</button>
-                <button onClick={() => handleDropdownItemClick('addAuthor')}>Add Author</button>
-                <button onClick={() => handleDropdownItemClick('addPublisher')}>Add Publisher</button>
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button">Log Out</button>
               </div>
             )}
@@ -158,4 +133,4 @@ const HomePage = ({ setAuth }) => {
   );
 };
 
-export default HomePage;
+export default HomePageForStudentTeacher;

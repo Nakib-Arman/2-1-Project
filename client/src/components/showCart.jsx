@@ -56,7 +56,6 @@ const ShowCart = () => {
       if (!response.ok) {
         throw new Error('Failed to delete book from cart');
       }
-      // Update the cart after deletion
       getBooksFromCart();
     } catch (err) {
       console.error(err.message);
@@ -69,18 +68,53 @@ const ShowCart = () => {
 
   const handleSubmitRequest = async (book_id) => {
     try {
-      const response = await fetch(`http://localhost:5000/borrowBook/${book_id}`, {
-        method: "POST",
-        headers: {
-          "token": localStorage.token,
-          "Content-Type": "application/json"
-        }
-      });
-      if (!response.ok) {
-        throw new Error('Failed to submit borrow request');
+      const selectedBook = cart.find(book => book.book_id === book_id);
+
+      const existRequest = await fetch(`http://localhost:5000/checkRequest/${book_id}`,{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
+      console.log(existRequest);
+      const existRequestData = await existRequest.json();
+      if (existRequestData.length>0) {
+        alert("Book already requested");
       }
-      // Update the cart after submission
-      getBooksFromCart();
+      else {
+        const requestID = await fetch(`http://localhost:5000/userRequest/${book_id}`, {
+          method: "POST",
+          headers: {
+            "token": localStorage.token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(selectedBook)
+        });
+        const requestIDData = await requestID.json(); // Await the JSON promise
+        //console.log(requestIDData);
+        const response2 = await fetch(`http://localhost:5000/userBorrowRelation/${book_id}`, {
+          method: "POST",
+          headers: {
+            "token": localStorage.token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(selectedBook)
+        });
+        if (response2.length>0) {
+          //console.alert("Book Already Requested");
+          console.log("Book already requested");
+        }
+
+        const response3 = await fetch(`http://localhost:5000/requestBorrowRelation?requestID=${requestIDData}&book_id=${book_id}`, {
+          method: "POST",
+          headers: {
+            "token": localStorage.token,
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(selectedBook)
+        });
+
+
+        //const jsonData = await requestID.json();
+
+
+        getBooksFromCart();
+      }
     } catch (err) {
       console.error(err.message);
     }
@@ -97,7 +131,7 @@ const ShowCart = () => {
               <th>PUBLICATION</th>
               <th>CATEGORY</th>
               <th>ACTIONS</th>
-              <th>Submit Request</th> {/* New column for submit button */}
+              <th>Submit Request</th>
             </tr>
           </thead>
           <tbody>
@@ -107,11 +141,12 @@ const ShowCart = () => {
                 <td onClick={() => showBookByID(book.book_id)}>{book.publication}</td>
                 <td onClick={() => showBookByID(book.book_id)}>{book.category}</td>
                 <td>
-                  <button onClick={() => deleteBookFromCart(book.book_id)}>Delete</button>
+                  <button className="btn deny-button" onClick={() => deleteBookFromCart(book.book_id)}>Remove From Cart</button>
                 </td>
                 <td>
-                  <button onClick={() => handleSubmitRequest(book.book_id)}>Submit Request</button> {/* Submit button */}
+                  <button className="btn btn-success" onClick={() => { handleSubmitRequest(book.book_id); deleteBookFromCart(book.book_id); }}>Submit Request</button>
                 </td>
+
               </tr>
             ))}
           </tbody>

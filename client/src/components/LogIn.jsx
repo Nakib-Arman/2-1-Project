@@ -72,7 +72,7 @@ const LogIn = ({ setAuth }) => {
         switch (userType) {
           case "student":
             setAuth(true);
-            navigate('/showBooks');
+            navigate('/HomePageForStudentTeacher');
             break;
           case "teacher":
             setAuth(true);
