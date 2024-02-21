@@ -144,7 +144,7 @@ const goToCart = () => {
                     <button onClick={(e) => addToCart(book.book_id, e)} className="btn btn-primary w-100">Add to Cart</button>
                   }
                   {book.copy ==0 &&
-                    <button className="btn deny-button">Unavailable</button>
+                    <button className="btn w-100" style={{ color: 'white',backgroundColor: '#0065d1' }}>Unavailable</button>
                   }
                 </div>
               </div>
