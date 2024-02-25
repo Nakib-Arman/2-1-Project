@@ -2,86 +2,114 @@
 
 /* Style for the search form */
 .search-form {
-    background-color: #bdbdbe; /* Light gray background */
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #bdbdbe; /* Light gray background */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Style for the search button */
 .search-button {
-    background-color: #0065d1; /* Blue color for the button */
-    color: #fff; /* White text color */
-    border: none;
-    border-radius: 5px;
-    padding: 10px 20px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  background-color: #0065d1; /* Blue color for the button */
+  color: #fff; /* White text color */
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .search-button:hover {
-    background-color: #0056b3; /* Darker blue color on hover */
+  background-color: #0056b3; /* Darker blue color on hover */
 }
 
 /* Style for the book cards */
 .book-card {
-    background-color: #fff; /* White background */
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s; /* Smooth transition */
+  background-color: #fff; /* White background */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s; /* Smooth transition */
 }
 
 .book-card2{
-    width: 500%;
-    background-color: #fff; /* White background */
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    transition: background-color 0.3s; /* Smooth transition */
+  width: 500%;
+  background-color: #fff; /* White background */
+  border-radius: 5px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s; /* Smooth transition */
 }
 
 .book-card:hover {
-    background-color: #f0f0f0; /* Light gray background on hover */
+  background-color: #f0f0f0; /* Light gray background on hover */
 }
 
 /* Style for the book titles */
 .book-title {
-    color: #0a4d95; /* Blue color for the title */
-    font-size: 1.2rem;
-    font-weight: bold;
+  color: #0a4d95; /* Blue color for the title */
+  font-size: 1.2rem;
+  font-weight: bold;
 }
 
 /* Additional custom styles can be added as needed */
 /* Assuming these classes are part of a larger form or component */
 .col-md-6 {
-    margin-bottom: 15px;
-  }
-  
-  .col-md-3 input {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 40px;
-  }
-  
-  .col-md-3 select {
-    width: 100%;
-    padding: 10px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    height: 40px;
-  }
-  
-  /* Optional: Add some styling to make it visually appealing */
-  .col-md-3 select:hover,
-  .col-md-3 select:focus,
-  .col-md-3 input:hover,
-  .col-md-3 input:focus {
-    border-color: #4e5154; /* Change the color as per your design */
-    box-shadow: 0 0 5px #4e5154; /* Optional: Add a subtle box shadow */
-  }
+  margin-bottom: 15px;
+}
 
-  
-  
+.col-md-3 input {
+  width: 300%; /* Adjusted width for the search bar */
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 40px;
+}
+
+.col-md-3 select {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  height: 40px;
+}
+
+/* Optional: Add some styling to make it visually appealing */
+.col-md-3 select:hover,
+.col-md-3 select:focus,
+.col-md-3 input:hover,
+.col-md-3 input:focus {
+  border-color: #4e5154; /* Change the color as per your design */
+  box-shadow: 0 0 5px #4e5154; /* Optional: Add a subtle box shadow */
+}
+
+
+.book-image {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+}
+
+.fixed-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #333; /* Change this to your desired header background color */
+  color: white;
+  padding: 10px 0;
+  text-align: center;
+}
+
+.cart-btn {
+  border: none;
+  background: transparent;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.search-form {
+  margin-bottom: 20px;
+}

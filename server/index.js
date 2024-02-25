@@ -84,6 +84,8 @@ app.get("/staffLogIn/:PHONE",async (req,res) => {
     }
 })*/
 
+
+
 app.post("/userRequest/:id", authorization, async (req, res) => {
     try {
         const { id } = req.params;
@@ -280,7 +282,7 @@ app.get("/publishers",async(req,res)=>{
 
 app.get("/showBooks", async (req, res) => {
     try {
-        const books = await pool.query("SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY TITLE");
+        const books = await pool.query("SELECT BOOK_ID,IMAGE(B.BOOK_ID) IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY TITLE");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -290,7 +292,7 @@ app.get("/showBooks", async (req, res) => {
 app.get("/showBooksByCategory", async (req, res) => {
     try {
         const { title, category } = req.query; 
-        const books = await pool.query("SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
+        const books = await pool.query("SELECT BOOK_ID,IMAGE(B.BOOK_ID) IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -330,8 +332,7 @@ app.get("/searchBooks/:title", async (req, res) => {
     try {
         const { title } = req.params;
         const searchResults = await pool.query(
-            "SELECT BOOK_ID,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE LOWER(TITLE) LIKE $1 ORDER BY BOOK_ID",
-            [`%${title.toLowerCase()}%`]
+            "SELECT IMAGE(B.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B.BOOK_ID), B.TITLE, B.CATEGORY, P.PUBLICATION_NAME, B.BOOK_ID FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID = P.PUBLISHER_ID) JOIN BOOK_AUTHOR_RELATION BAR ON (B.BOOK_ID = BAR.BOOK_ID) JOIN AUTHORS A ON (BAR.AUTHOR_ID = A.AUTHOR_ID) WHERE LOWER(A.AUTHOR_NAME) LIKE $1 UNION SELECT IMAGE(B2.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B2.BOOK_ID), B2.TITLE, B2.CATEGORY, P2.PUBLICATION_NAME, B2.BOOK_ID FROM BOOKS B2 JOIN PUBLISHERS P2 ON (B2.PUBLISHER_ID = P2.PUBLISHER_ID) WHERE LOWER (P2.PUBLICATION_NAME) LIKE $1 UNION SELECT IMAGE(B3.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B3.BOOK_ID), B3.TITLE, B3.CATEGORY, P3.PUBLICATION_NAME, B3.BOOK_ID FROM BOOKS B3 JOIN PUBLISHERS P3 ON (B3.PUBLISHER_ID = P3.PUBLISHER_ID) WHERE LOWER(B3.TITLE) LIKE $1 UNION SELECT IMAGE(B4.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B4.BOOK_ID), B4.TITLE, B4.CATEGORY, P4.PUBLICATION_NAME, B4.BOOK_ID FROM BOOKS B4  JOIN PUBLISHERS P4 ON (B4.PUBLISHER_ID = P4.PUBLISHER_ID) WHERE LOWER(B4.CATEGORY) LIKE $1 ORDER BY TITLE", [`%${title.toLowerCase()}%`]
         );
         res.json(searchResults.rows);
     } catch (err) {
@@ -344,6 +345,15 @@ app.get("/showBookDetails/:id", async (req, res) => {
     try {
         const books = await pool.query
             ("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
+        res.json(books.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.post("/addToBookSearched/:id", async (req, res) => {
+    try {
+        const books= await pool.query("INSERT INTO BOOK_SEARCHED VALUES ($1)",[req.params.id]);
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
