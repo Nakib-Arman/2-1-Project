@@ -25,7 +25,6 @@ const ShowBook = () => {
         },
       });
       const user_id = await userResponse.json();
-      console.log(user_id);
       setUId(user_id);
       const response = await fetch(`http://localhost:5000/myProfile/${user_id}`);
       const jsonData = await response.json();
@@ -160,12 +159,19 @@ const ShowBook = () => {
                   </p>
                 </div>
                 <div className="card-footer">
+                  {book.copy==0 &&
+                  <button className="btn w-100" style={{backgroundColor: "#0358b4",color: "white"}}>
+                    Unavailable  
+                  </button>
+                  }
+                  {book.copy>0 &&
                   <button
                     onClick={(e) => addToCart(book.book_id, e)}
                     className="btn btn-primary w-100"
                   >
                     Add to Cart
                   </button>
+}
                 </div>
               </div>
             </div>

@@ -77,19 +77,19 @@ const LogIn = ({ setAuth }) => {
           case "teacher":
             setAuth(true);
             navigate('/showBooks');
-            
+
             break;
           case "staff":
             setAuth(true);
             navigate('/');
-            
+
             break;
           default:
             alert("Unknown user type");
         }
 
       }
-      else{
+      else {
         alert("Wrong Phone or Password");
       }
 
@@ -97,12 +97,17 @@ const LogIn = ({ setAuth }) => {
       console.log(err.message);
     }
   }
+
+  const gotoSignUp = () => {
+    navigate("/signUp");
+  }
+
   return (
     <body className="login-page">
       <div className="app-container">
         <header className="header">
           <div className="transparent-buttons">
-            <button>Sign Up</button>
+            <button onClick={gotoSignUp}>Sign Up</button>
           </div>
         </header>
         <main className="main-content">

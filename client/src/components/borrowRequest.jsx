@@ -65,12 +65,32 @@ const BorrowRequests = () => {
         return formattedDate;
     };
 
-    const handleAcceptClick = (requestId) => {
-        console.log(`Accept request with ID: ${requestId}`);
+    const handleAcceptClick = async (request_id,user_id,book_id) => {
+        const response1 = await fetch(`http://localhost:5000/updateStatus/${request_id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          });
+          const body= {user_id,book_id};
+          const response2 = await fetch("http://localhost:5000/updateUserBook", {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
+          });
+          fetchData();
     };
 
-    const handleDenyClick = (requestId) => {
-        console.log(`Deny request with ID: ${requestId}`);
+    const handleDenyClick = async (request_id) => {
+        const response1 = await fetch(`http://localhost:5000/denyStatus/${request_id}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+            }
+        });
+        fetchData();
     };
 
     useEffect(() => {
@@ -113,7 +133,7 @@ const BorrowRequests = () => {
                         <div className="buttons-container mt-2">
                             <button
                                 className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(student.request_id)}
+                                onClick={() => handleAcceptClick(student.request_id,student.student_id,student.book_id)}
                             >
                                 Accept
                             </button>
@@ -151,7 +171,7 @@ const BorrowRequests = () => {
                         <div className="buttons-container mt-2">
                             <button
                                 className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(teacher.request_id)}
+                                onClick={() => handleAcceptClick(teacher.request_id,teacher.teacher_id,teacher.book_id)}
                             >
                                 Accept
                             </button>
@@ -189,7 +209,7 @@ const BorrowRequests = () => {
                         <div className="buttons-container mt-2">
                             <button
                                 className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(staff.request_id)}
+                                onClick={() => handleAcceptClick(staff.request_id,staff.staff_id,staff.book_id)}
                             >
                                 Accept
                             </button>

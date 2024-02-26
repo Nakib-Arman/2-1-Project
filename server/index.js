@@ -332,7 +332,7 @@ app.get("/searchBooks/:title", async (req, res) => {
     try {
         const { title } = req.params;
         const searchResults = await pool.query(
-            "SELECT IMAGE(B.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B.BOOK_ID), B.TITLE, B.CATEGORY, P.PUBLICATION_NAME, B.BOOK_ID FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID = P.PUBLISHER_ID) JOIN BOOK_AUTHOR_RELATION BAR ON (B.BOOK_ID = BAR.BOOK_ID) JOIN AUTHORS A ON (BAR.AUTHOR_ID = A.AUTHOR_ID) WHERE LOWER(A.AUTHOR_NAME) LIKE $1 UNION SELECT IMAGE(B2.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B2.BOOK_ID), B2.TITLE, B2.CATEGORY, P2.PUBLICATION_NAME, B2.BOOK_ID FROM BOOKS B2 JOIN PUBLISHERS P2 ON (B2.PUBLISHER_ID = P2.PUBLISHER_ID) WHERE LOWER (P2.PUBLICATION_NAME) LIKE $1 UNION SELECT IMAGE(B3.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B3.BOOK_ID), B3.TITLE, B3.CATEGORY, P3.PUBLICATION_NAME, B3.BOOK_ID FROM BOOKS B3 JOIN PUBLISHERS P3 ON (B3.PUBLISHER_ID = P3.PUBLISHER_ID) WHERE LOWER(B3.TITLE) LIKE $1 UNION SELECT IMAGE(B4.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B4.BOOK_ID), B4.TITLE, B4.CATEGORY, P4.PUBLICATION_NAME, B4.BOOK_ID FROM BOOKS B4  JOIN PUBLISHERS P4 ON (B4.PUBLISHER_ID = P4.PUBLISHER_ID) WHERE LOWER(B4.CATEGORY) LIKE $1 ORDER BY TITLE", [`%${title.toLowerCase()}%`]
+            "SELECT IMAGE(B.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, P.PUBLICATION_NAME, B.BOOK_ID FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID = P.PUBLISHER_ID) JOIN BOOK_AUTHOR_RELATION BAR ON (B.BOOK_ID = BAR.BOOK_ID) JOIN AUTHORS A ON (BAR.AUTHOR_ID = A.AUTHOR_ID) WHERE LOWER(A.AUTHOR_NAME) LIKE $1 UNION SELECT IMAGE(B2.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B2.BOOK_ID), B2.TITLE, B2.CATEGORY, P2.PUBLICATION_NAME, B2.BOOK_ID FROM BOOKS B2 JOIN PUBLISHERS P2 ON (B2.PUBLISHER_ID = P2.PUBLISHER_ID) WHERE LOWER (P2.PUBLICATION_NAME) LIKE $1 UNION SELECT IMAGE(B3.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B3.BOOK_ID), B3.TITLE, B3.CATEGORY, P3.PUBLICATION_NAME, B3.BOOK_ID FROM BOOKS B3 JOIN PUBLISHERS P3 ON (B3.PUBLISHER_ID = P3.PUBLISHER_ID) WHERE LOWER(B3.TITLE) LIKE $1 UNION SELECT IMAGE(B4.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B4.BOOK_ID), B4.TITLE, B4.CATEGORY, P4.PUBLICATION_NAME, B4.BOOK_ID FROM BOOKS B4  JOIN PUBLISHERS P4 ON (B4.PUBLISHER_ID = P4.PUBLISHER_ID) WHERE LOWER(B4.CATEGORY) LIKE $1 ORDER BY TITLE", [`%${title.toLowerCase()}%`]
         );
         res.json(searchResults.rows);
     } catch (err) {
@@ -364,7 +364,7 @@ app.get("/studentborrowRequests/:id",async (req,res) =>{
     try{
         //const user_id=req.user;
         const students = await pool.query(
-            "SELECT B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE US.USER_ID=$1",[req.params.id]);
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Pending'",[req.params.id]);
         res.json(students.rows);
     }catch (err) {
         console.error(err.message);
@@ -375,7 +375,7 @@ app.get("/teacherborrowRequests/:id",async (req,res) =>{
     try{
         //const user_id=req.user;
         const teachers = await pool.query(
-            "SELECT B.BOOK_ID,U.USER_ID AS TEACHER_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN TEACHERS T ON (T.TEACHER_ID = U.USER_ID) WHERE US.USER_ID=$1",[req.params.id]);
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS TEACHER_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN TEACHERS T ON (T.TEACHER_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Pending'",[req.params.id]);
         res.json(teachers.rows);
     }catch (err) {
         console.error(err.message);
@@ -385,7 +385,7 @@ app.get("/teacherborrowRequests/:id",async (req,res) =>{
 app.get("/staffborrowRequests/:id",async (req,res) =>{
     try{
         const staffs = await pool.query(
-            "SELECT B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1",[req.params.id]);
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Pending'",[req.params.id]);
         res.json(staffs.rows);
     }catch (err) {
         console.error(err.message);
@@ -436,7 +436,7 @@ app.get("/getUserType", authorization, async (req, res) => {
 app.post("/deleteBookFromCart/:id", authorization, async (req, res) => {
     try {
         const { id } = req.params;
-        const user_id = req.user;
+        const user_id=req.user;
         const book = await pool.query("DELETE FROM CART WHERE USER_ID = $1 AND BOOK_ID = $2", [user_id, id]);
         res.json({ message: "Book deleted from cart" });
     } catch (err) {
@@ -444,6 +444,72 @@ app.post("/deleteBookFromCart/:id", authorization, async (req, res) => {
     }
 })
 
+app.put("/updateStatus/:request_id",async (req,res) =>{
+    try{
+        const {request_id} = req.params;
+        const response = await pool.query("UPDATE REQUEST_BOOK_RELATION SET REQUEST_STATUS='Accepted' WHERE USER_REQUEST_ID=$1",[request_id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.put("/updateUserBook",async (req,res) => {
+    try{
+        const {user_id,book_id} = req.body;
+        const response = await pool.query("UPDATE USER_BORROW_RELATION SET DATE_BORROWED=CURRENT_DATE WHERE USER_ID=$1 AND BOOK_ID=$2",[user_id,book_id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.put("/denyStatus/:request_id",async (req,res) => {
+    try{
+        const {request_id} = req.params;
+        const response = await pool.query("UPDATE REQUEST_BOOK_RELATION SET REQUEST_STATUS='Rejected' WHERE USER_REQUEST_ID=$1",[request_id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/getlevels",async (req,res) =>{
+    try{
+        const response = await pool.query("SELECT * FROM LEVELS");
+        console.log(response.rows);
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/getterms",async (req,res) =>{
+    try{
+        const response = await pool.query("SELECT * FROM TERMS");
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/getdepartments",async (req,res) =>{
+    try{
+        const response = await pool.query("SELECT * FROM DEPARTMENTS");
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/getdesignations",async (req,res) =>{
+    try{
+        const response = await pool.query("SELECT * FROM TEACHER_DESIGNATION");
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
 
 app.listen(5000, () => {
     console.log("server has started on port 5000");

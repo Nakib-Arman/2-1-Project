@@ -14,6 +14,7 @@ import ShowCart from "./components/showCart";
 import HomePageForStudentTeacher from "./components/HomePageForStudentTeacher";
 import StudentProfile from "./components/studentProfile";
 import StaffProfile from "./components/staffProfile";
+import SignUp from "./components/SignUp";
 
 const App = () => {
 
@@ -37,7 +38,9 @@ const App = () => {
           <Route exact path="/showCart" element={<ShowCart />} />
           <Route exact path="/HomePageForStudentTeacher" element={<HomePageForStudentTeacher />} />
           <Route exact path="/studentProfile/:id" element={<StudentProfile/>}/>
-          <Route exact path="/staffProfile/:id" element={<StaffProfile/>}/>        </Routes>
+          <Route exact path="/staffProfile/:id" element={<StaffProfile/>}/>
+          <Route exact path="/signUp" element={<SignUp/>}/>     
+        </Routes>
       </Router>
     </div>
   );
