@@ -94,7 +94,9 @@ const SignUp = () => {
     <Fragment>
       <header className="header">
         <div className="transparent-buttons">
-          <button >Log In</button>
+          <button 
+          onClick={() => navigate("/LogIn")}
+          >Log In</button>
         </div>
       </header>
       <div
