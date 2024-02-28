@@ -511,6 +511,52 @@ app.get("/getdesignations",async (req,res) =>{
     }
 })
 
+app.post("/addCategory",async (req,res) =>{
+    try{
+        const { newCategory } = req.body;
+        console.log(req.body);
+        console.log(newCategory);
+        const response = await pool.query("INSERT INTO CATEGORIES VALUES ($1) RETURNING *",[newCategory]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.post("/addAuthor",async (req,res) =>{
+    try{
+        const { newAuthor } = req.body;
+        const response = await pool.query("INSERT INTO AUTHORS (AUTHOR_NAME) VALUES ($1) RETURNING *",[newAuthor]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.post("/addPublisher",async (req,res) =>{
+    try{
+        const { newPublisher } = req.body;
+        console.log(req.body);
+        console.log(newPublisher);
+        const response = await pool.query("INSERT INTO PUBLISHERS (PUBLICATION_NAME) VALUES ($1) RETURNING *",[newPublisher]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.post("/addShelf",async (req,res) =>{
+    try{
+        const { newShelf } = req.body;
+        console.log(req.body);
+        console.log(newShelf);
+        const response = await pool.query("INSERT INTO SHELVES (CATEGORY,STAFF_ID) VALUES ($1,$2) RETURNING *",['Knowledge',newShelf]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 app.listen(5000, () => {
     console.log("server has started on port 5000");
 })

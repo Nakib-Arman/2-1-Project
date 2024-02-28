@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
+import { Modal, Button } from 'react-bootstrap';
 
 const AddBook = () => {
     const [TITLE, setTITLE] = useState("");
@@ -16,32 +17,33 @@ const AddBook = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const fetchAuthorsAndPublishers = async () => {
-            try {
-                const authorsResponse = await fetch("http://localhost:5000/authors");
-                const publishersResponse = await fetch("http://localhost:5000/publishers");
-                const categoryResponse = await fetch("http://localhost:5000/categories");
-                const shelfResponse = await fetch("http://localhost:5000/shelves");
 
-                if (authorsResponse.ok && publishersResponse.ok && categoryResponse.ok && shelfResponse.ok) {
-                    const authorsData = await authorsResponse.json();
-                    const publishersData = await publishersResponse.json();
-                    const categoryData = await categoryResponse.json();
-                    const shelfData = await shelfResponse.json();
+    const fetchAuthorsAndPublishers = async () => {
+        try {
+            const authorsResponse = await fetch("http://localhost:5000/authors");
+            const publishersResponse = await fetch("http://localhost:5000/publishers");
+            const categoryResponse = await fetch("http://localhost:5000/categories");
+            const shelfResponse = await fetch("http://localhost:5000/shelves");
 
-                    setAuthors(authorsData);
-                    setPublishers(publishersData);
-                    setCategories(categoryData);
-                    setShelves(shelfData);
-                } else {
-                    console.error("Failed to fetch authors, publishers, categories, or shelves");
-                }
-            } catch (err) {
-                console.error(err.message);
+            if (authorsResponse.ok && publishersResponse.ok && categoryResponse.ok && shelfResponse.ok) {
+                const authorsData = await authorsResponse.json();
+                const publishersData = await publishersResponse.json();
+                const categoryData = await categoryResponse.json();
+                const shelfData = await shelfResponse.json();
+
+                setAuthors(authorsData);
+                setPublishers(publishersData);
+                setCategories(categoryData);
+                setShelves(shelfData);
+            } else {
+                console.error("Failed to fetch authors, publishers, categories, or shelves");
             }
-        };
+        } catch (err) {
+            console.error(err.message);
+        }
+    };
 
+    useEffect(() => {
         fetchAuthorsAndPublishers();
     }, []);
 
@@ -51,7 +53,7 @@ const AddBook = () => {
             const body = {
                 TITLE,
                 CATEGORY,
-                AUTHORS: AUTHORS.map(authorId => parseInt(authorId)), 
+                AUTHORS: AUTHORS.map(authorId => parseInt(authorId)),
                 PUBLISHER: parseInt(PUBLISHER),
                 SHELF_ID: parseInt(SHELF_ID)
             };
@@ -83,6 +85,57 @@ const AddBook = () => {
     const showAllBooks = () => {
         navigate('/showBooks');
     };
+
+    const [showCategoryForm, setShowCategoryForm] = useState(false);
+    const [showAuthorForm, setShowAuthorForm] = useState(false);
+    const [showPublisherForm, setShowPublisherForm] = useState(false);
+    const [showShelfForm, setShowShelfForm] = useState(false);
+
+    const [newCategory, setNewCategory] = useState("");
+    const [newAuthor, setNewAuthor] = useState("");
+    const [newPublisher, setNewPublisher] = useState("");
+    const [newShelf, setNewShelf] = useState(0);
+
+    const addCategory = async() => {
+        console.log(newCategory);
+        const body = {newCategory};
+        const response = await fetch("http://localhost:5000/addCategory", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        fetchAuthorsAndPublishers();
+        setShowCategoryForm(false);
+    }
+
+    const addAuthor = async() => {
+        console.log(newAuthor);
+        const body = {newAuthor};
+        const response = await fetch("http://localhost:5000/addAuthor", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        fetchAuthorsAndPublishers();
+        setShowAuthorForm(false);
+    }
+
+    const addPublisher = async() => {
+        console.log(newPublisher);
+        const body = {newPublisher};
+        const response = await fetch("http://localhost:5000/addPublisher", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+        });
+        fetchAuthorsAndPublishers();
+        setShowPublisherForm(false);
+    }
+
+    const addShelf = () => {
+        console.log(newShelf);
+    }
+
 
     return (
         <Fragment>
@@ -131,6 +184,33 @@ const AddBook = () => {
                                 </option>
                             ))}
                         </select>
+                        <label className="text-center text-button" onClick={() => setShowCategoryForm(true)}>
+                            Add New Category
+                        </label>
+
+                        <Modal show={showCategoryForm} onHide={() => setShowCategoryForm(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Add New Category</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <form onSubmit={addCategory}>
+                                    <div>
+                                        <label htmlFor="category">Category Name:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={newCategory}
+                                            onChange={(e) => setNewCategory(e.target.value)} />
+                                    </div>
+                                    <button type="submit" className="btn btn-success mt-3">Add</button>
+                                </form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button className="button-color" variant="secondary" onClick={() => setShowCategoryForm(false)}>
+                                    Close
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     <div>
                         <label htmlFor="author" className="mt-3">
@@ -142,6 +222,31 @@ const AddBook = () => {
                             value={AUTHORS.map((authorId) => ({ value: authorId, label: authors.find(author => author.author_id === authorId).author_name }))}
                             onChange={(selectedOptions) => setAUTHORS(selectedOptions.map(option => option.value))}
                         />
+                        <label className="text-center text-button" onClick={() => setShowAuthorForm(true)}>Add New Author</label>
+                        <Modal show={showAuthorForm} onHide={() => setShowAuthorForm(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Add New Author</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <form onSubmit={addAuthor}>
+                                    <div>
+                                        <label htmlFor="author">Author Name:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={newAuthor}
+                                            onChange={(e) => setNewAuthor(e.target.value)}
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn btn-success mt-3">Add</button>
+                                </form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button className="button-color" variant="secondary" onClick={() => setShowAuthorForm(false)}>
+                                    Close
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     <div>
                         <label htmlFor="publisher" className="mt-3">
@@ -160,6 +265,31 @@ const AddBook = () => {
                                 </option>
                             ))}
                         </select>
+                        <label className="text-center text-button" onClick={() => setShowPublisherForm(true)}>Add New Publisher</label>
+                        <Modal show={showPublisherForm} onHide={() => setShowPublisherForm(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Add New Publication</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <form onSubmit={addPublisher}>
+                                    <div>
+                                        <label htmlFor="publisher">Publication Name:</label>
+                                        <input
+                                            type="text"
+                                            className="form-control"
+                                            value={newPublisher}
+                                            onChange={(e) => setNewPublisher(e.target.value)}
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn btn-success mt-3">Add</button>
+                                </form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button className="button-color" variant="secondary" onClick={() => setShowPublisherForm(false)}>
+                                    Close
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     <div>
                         <label htmlFor="shelf" className="mt-3">
@@ -178,6 +308,31 @@ const AddBook = () => {
                                 </option>
                             ))}
                         </select>
+                        <label className="text-center text-button" onClick={() => setShowShelfForm(true)}>Add New Shelf</label>
+                        <Modal show={showShelfForm} onHide={() => setShowShelfForm(false)}>
+                            <Modal.Header closeButton>
+                                <Modal.Title>Add New Shelf</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                <form onSubmit={addShelf}>
+                                    <div>
+                                        <label htmlFor="shelf">Shelf No:</label>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            value={newShelf}
+                                            onChange={(e) => setNewShelf(e.target.value)}
+                                        />
+                                    </div>
+                                    <button type="submit" className="btn btn-success mt-3">Add</button>
+                                </form>
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button className="button-color" variant="secondary" onClick={() => setShowShelfForm(false)}>
+                                    Close
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
                     </div>
                     <button className="btn btn-success mt-3">Add</button>
                 </form>

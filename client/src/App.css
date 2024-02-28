@@ -313,3 +313,15 @@ body {
 .custom-slick-prev {
   left: 10px;
 }
+
+/* styles.css */
+
+.text-button {
+  cursor: pointer;
+  color: #505050;
+  transition: color 0.3s;
+}
+
+.text-button:hover {
+  color: black; 
+}

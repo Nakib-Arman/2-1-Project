@@ -118,7 +118,7 @@ const ShowBook = () => {
 
   return (
     <Fragment>
-      <h1 className="text-center mb-4" style={{ color: "white" }}>
+      <h1 className="text-center mb-4" style={{ color: "fff" }}>
         Search Books
       </h1>
       <div className="container">

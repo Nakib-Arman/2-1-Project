@@ -6,6 +6,7 @@ const BorrowRequests = () => {
     const [teachers, setTeachers] = useState([]);
     const [staffs, setStaffs] = useState([]);
     const [selectedOption, setSelectedOption] = useState('students');
+    const [requestType, setRequestType] = useState('Pending');
 
     const fetchData = async () => {
         switch (selectedOption) {
@@ -102,6 +103,18 @@ const BorrowRequests = () => {
             <h1 className="text-center head-color mb-5 fixed-header">Borrow Requests</h1>
             <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
             <div>
+                    <select
+                        className="form-control custom-select"
+                        style={{width: '200px'}}
+                        value={requestType}
+                        onChange={(e)=>setRequestType(e.target.value)}
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="Accepted">Accepted</option>
+                        <option value="Denied">Denied</option>
+                    </select>
+                </div>
+            <div className="mt-5">
                 <button style={{ width: '33%', border: '1px solid grey' }} onClick={() => setSelectedOption('students')}>
                     Student
                 </button>
@@ -146,7 +159,7 @@ const BorrowRequests = () => {
                         </div>
                         <p> </p>
                         <p>
-                            {student.request_status}...
+                            {student.request_status}
                         </p>
                     </div>
                 ))}

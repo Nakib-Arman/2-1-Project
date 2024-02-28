@@ -1,13 +1,13 @@
 .book-details-container {
-    padding: 20px;
-  }
+  padding: 20px;
+}
   
-  .book-details-grid {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-column-gap: 20px;
-    align-items: center;
-  }
+.book-details-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-column-gap: 20px;
+  align-items: center;
+}
   
   .book-cover img {
     width: 400px; /* Adjust width as needed */
@@ -28,9 +28,5 @@
   
   .author-list li {
     margin-bottom: 5px;
-  }
-  
-  .head-color {
-    color: #333; /* Adjust color as needed */
   }
   

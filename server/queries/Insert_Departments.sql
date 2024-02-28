@@ -1,0 +1,12 @@
+vINSERT INTO DEPARTMENTS VALUES(05,'Computer Science and Engineering');
+INSERT INTO DEPARTMENTS VALUES(06,'Electrical and Electronics Engineering');
+INSERT INTO DEPARTMENTS VALUES(14,'Architecture');
+INSERT INTO DEPARTMENTS VALUES(04,'Civil Engineering');
+INSERT INTO DEPARTMENTS VALUES(10,'Mechanical Engineering');
+INSERT INTO DEPARTMENTS VALUES(02,'Chemical Engineering');
+INSERT INTO DEPARTMENTS VALUES(08,'Industrial and Production Engineering');
+INSERT INTO DEPARTMENTS VALUES(11,'Materials and Metallurgical Engineering');
+INSERT INTO DEPARTMENTS VALUES(12,'Naval Architecture and Marine Engineering');
+INSERT INTO DEPARTMENTS VALUES(15,'Urban and Regional Planning');
+INSERT INTO DEPARTMENTS VALUES(16,'Water Resources Engineering');
+INSERT INTO DEPARTMENTS VALUES(18,'Biomedical Engineering');

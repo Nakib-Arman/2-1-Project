@@ -1,0 +1,1 @@
+INSERT INTO USER_TYPE VALUES('student'), ('teacher'),('staff');

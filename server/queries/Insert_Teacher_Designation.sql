@@ -1,0 +1,1 @@
+INSERT INTO TEACHER_DESIGNATION VALUES('Professor'), ('Associate Professor'), ('Assistant Professor'), ('Lecturer');
