@@ -28,9 +28,22 @@ const BorrowRequests = () => {
         try {
             const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
             const user_id = await user.json();
-            const response = await fetch(`http://localhost:5000/studentborrowRequests/${user_id}`);
-            const jsonData = await response.json();
-            setStudents(jsonData);
+            const Pendingresponse = await fetch(`http://localhost:5000/studentborrowRequests/${user_id}`);
+            const PendingData = await Pendingresponse.json();
+            const Acceptedresponse = await fetch(`http://localhost:5000/studentacceptRequests/${user_id}`);
+            const AcceptedData = await Acceptedresponse.json();
+            const Deniedresponse = await fetch(`http://localhost:5000/studentrejectedRequests/${user_id}`);
+            const DeniedData = await Deniedresponse.json();
+            if(Pendingresponse.length>0){
+                setStudents(PendingData);
+            }
+            else if (AcceptedData.length>0){
+                setStudents(AcceptedData);
+            }
+            else if (DeniedData.length>0){
+                setStudents(DeniedData);
+            }
+
         } catch (err) {
             console.error(err.message);
         }

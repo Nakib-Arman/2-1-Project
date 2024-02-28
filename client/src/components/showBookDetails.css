@@ -1,32 +1,45 @@
 .book-details-container {
   padding: 20px;
 }
-  
+
 .book-details-grid {
   display: grid;
   grid-template-columns: auto 1fr;
   grid-column-gap: 20px;
   align-items: center;
 }
-  
-  .book-cover img {
-    width: 400px; /* Adjust width as needed */
-    height: 600px; /* Adjust height as needed */
-    object-fit: cover; /* Maintain aspect ratio and cover entire space */
-  }
-  
-  
-  .book-info {
-    font-size: 18px;
-  }
-  
-  .author-list {
-    padding: 0;
-    margin: 0;
-    list-style-type: none;
-  }
-  
-  .author-list li {
-    margin-bottom: 5px;
-  }
-  
+
+.book-cover img {
+  width: 400px; /* Adjust width as needed */
+  height: 600px; /* Adjust height as needed */
+  object-fit: cover; /* Maintain aspect ratio and cover entire space */
+}
+
+
+.book-info {
+  font-size: 18px;
+}
+
+.author-list {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+}
+
+.author-list li {
+  margin-bottom: 5px;
+}
+
+.slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+}
+
+.slide {
+  flex: 0 0 auto;
+  width: 300px; /* Adjust width as needed */
+  scroll-snap-align: start;
+  margin-right: 10px; /* Adjust spacing between slides */
+}
+

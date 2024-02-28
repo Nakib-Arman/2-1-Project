@@ -282,7 +282,7 @@ app.get("/publishers",async(req,res)=>{
 
 app.get("/showBooks", async (req, res) => {
     try {
-        const books = await pool.query("SELECT BOOK_ID,IMAGE(B.BOOK_ID) IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B ORDER BY TITLE");
+        const books = await pool.query("SELECT BOOK_ID,IMAGE(B.BOOK_ID) IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION_NAME FROM BOOKS B ORDER BY TITLE");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -365,6 +365,28 @@ app.get("/studentborrowRequests/:id",async (req,res) =>{
         //const user_id=req.user;
         const students = await pool.query(
             "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Pending'",[req.params.id]);
+        res.json(students.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/studentacceptRequests/:id",async (req,res) =>{
+    try{
+        //const user_id=req.user;
+        const students = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Accepted'",[req.params.id]);
+        res.json(students.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/studentrejectedRequests/:id",async (req,res) =>{
+    try{
+        //const user_id=req.user;
+        const students = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Rejected'",[req.params.id]);
         res.json(students.rows);
     }catch (err) {
         console.error(err.message);
@@ -553,6 +575,16 @@ app.post("/addShelf",async (req,res) =>{
         const response = await pool.query("INSERT INTO SHELVES (CATEGORY,STAFF_ID) VALUES ($1,$2) RETURNING *",['Knowledge',newShelf]);
         res.json(response);
     }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/showRelatedBooks/:id", async (req, res) => {
+    try {
+        console.log(req.params.id);
+        const books = await pool.query("SELECT DISTINCT B.TITLE, P.PUBLICATION_NAME, B.CATEGORY FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS A ON(BAR.AUTHOR_ID=A.AUTHOR_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE A.AUTHOR_ID IN(SELECT BAR2.AUTHOR_ID FROM BOOK_AUTHOR_RELATION BAR2 WHERE BAR2.BOOK_ID=$1) UNION (SELECT DISTINCT B.TITLE, P.PUBLICATION_NAME, B.CATEGORY FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS A ON(BAR.AUTHOR_ID=A.AUTHOR_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.PUBLISHER_ID=(SELECT PUBLISHER_ID FROM BOOKS WHERE BOOK_ID=$1))", [req.params.id]);
+        res.json(books.rows);
+    } catch (err) {
         console.error(err.message);
     }
 })
