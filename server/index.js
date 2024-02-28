@@ -404,10 +404,52 @@ app.get("/teacherborrowRequests/:id",async (req,res) =>{
     }
 })
 
+app.get("/teacheracceptRequests/:id",async (req,res) =>{
+    try{
+        //const user_id=req.user;
+        const teachers = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS TEACHER_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN TEACHERS T ON (T.TEACHER_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Accepted'",[req.params.id]);
+        res.json(teachers.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/teacherrejectedRequests/:id",async (req,res) =>{
+    try{
+        //const user_id=req.user;
+        const teachers = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS TEACHER_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN TEACHERS T ON (T.TEACHER_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Rejected'",[req.params.id]);
+        res.json(teachers.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
 app.get("/staffborrowRequests/:id",async (req,res) =>{
     try{
         const staffs = await pool.query(
             "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Pending'",[req.params.id]);
+        res.json(staffs.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/staffacceptRequests/:id",async (req,res) =>{
+    try{
+        const staffs = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Accepted'",[req.params.id]);
+        res.json(staffs.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/staffrejectedRequests/:id",async (req,res) =>{
+    try{
+        const staffs = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Rejected'",[req.params.id]);
         res.json(staffs.rows);
     }catch (err) {
         console.error(err.message);

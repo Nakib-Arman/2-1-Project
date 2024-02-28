@@ -34,13 +34,13 @@ const BorrowRequests = () => {
             const AcceptedData = await Acceptedresponse.json();
             const Deniedresponse = await fetch(`http://localhost:5000/studentrejectedRequests/${user_id}`);
             const DeniedData = await Deniedresponse.json();
-            if(Pendingresponse.length>0){
+            if(requestType==='Pending'){
                 setStudents(PendingData);
             }
-            else if (AcceptedData.length>0){
+            else if (requestType==='Accepted'){
                 setStudents(AcceptedData);
             }
-            else if (DeniedData.length>0){
+            else if (requestType==='Rejected'){
                 setStudents(DeniedData);
             }
 
@@ -53,9 +53,21 @@ const BorrowRequests = () => {
         try {
             const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
             const user_id = await user.json();
-            const response = await fetch(`http://localhost:5000/teacherborrowRequests/${user_id}`);
-            const jsonData = await response.json();
-            setTeachers(jsonData);
+            const Pendingresponse = await fetch(`http://localhost:5000/teacherborrowRequests/${user_id}`);
+            const PendingData = await Pendingresponse.json();
+            const Acceptedresponse = await fetch(`http://localhost:5000/teacheracceptRequests/${user_id}`);
+            const AcceptedData = await Acceptedresponse.json();
+            const Deniedresponse = await fetch(`http://localhost:5000/teacherrejectedRequests/${user_id}`);
+            const DeniedData = await Deniedresponse.json();
+            if(requestType==='Pending'){
+                setTeachers(PendingData);
+            }
+            else if (requestType==='Accepted'){
+                setTeachers(AcceptedData);
+            }
+            else if (requestType==='Rejected'){
+                setTeachers(DeniedData);
+            }
         } catch (err) {
             console.error(err.message);
         }
@@ -65,9 +77,21 @@ const BorrowRequests = () => {
         try {
             const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
             const user_id = await user.json();
-            const response = await fetch(`http://localhost:5000/staffborrowRequests/${user_id}`);
-            const jsonData = await response.json();
-            setStaffs(jsonData);
+            const Pendingresponse = await fetch(`http://localhost:5000/staffborrowRequests/${user_id}`);
+            const PendingData = await Pendingresponse.json();
+            const Acceptedresponse = await fetch(`http://localhost:5000/staffacceptRequests/${user_id}`);
+            const AcceptedData = await Acceptedresponse.json();
+            const Deniedresponse = await fetch(`http://localhost:5000/staffrejectedRequests/${user_id}`);
+            const DeniedData = await Deniedresponse.json();
+            if(requestType==='Pending'){
+                setStaffs(PendingData);
+            }
+            else if (requestType==='Accepted'){
+                setStaffs(AcceptedData);
+            }
+            else if (requestType==='Rejected'){
+                setStaffs(DeniedData);
+            }
         } catch (err) {
             console.error(err.message);
         }
@@ -107,9 +131,15 @@ const BorrowRequests = () => {
         fetchData();
     };
 
+    const handleDropdownChange = (selectedType) => {
+        setRequestType(selectedType);
+        fetchData();
+    }
+
     useEffect(() => {
         fetchData();
-    }, [selectedOption]);
+    }, [selectedOption,requestType]);
+
 
     return (
         <Fragment>
@@ -120,11 +150,11 @@ const BorrowRequests = () => {
                         className="form-control custom-select"
                         style={{width: '200px'}}
                         value={requestType}
-                        onChange={(e)=>setRequestType(e.target.value)}
+                        onChange={(e) => setRequestType(e.target.value)}
                     >
                         <option value="Pending">Pending</option>
                         <option value="Accepted">Accepted</option>
-                        <option value="Denied">Denied</option>
+                        <option value="Rejected">Rejected</option>
                     </select>
                 </div>
             <div className="mt-5">
