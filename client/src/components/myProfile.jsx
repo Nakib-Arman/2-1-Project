@@ -67,7 +67,7 @@ const MyProfile = () => {
                 <td className="table-row-2">
                   <ul className="author-list">
                     {shelves.map(shelf => (
-                      <li key={shelf.shelf_id}>Shelf ID - {shelf.shelf_id} ({shelf.category})</li>
+                      <li key={shelf.shelf_id}>Shelf ID - {shelf.shelf_id}</li>
                     ))}
                   </ul>
                 </td>
