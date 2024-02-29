@@ -631,6 +631,19 @@ app.get("/showRelatedBooks/:id", async (req, res) => {
     }
 })
 
+app.put("/updateStaffProfile/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newFirstName, newLastName, newPhoneNumber } = req.body;
+    // console.log(firstName, lastName, phoneNumber, id)
+    const response = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2, PHONE_NUMBER=$3 WHERE USER_ID=$4", [newFirstName, newLastName, newPhoneNumber, id]);
+    res.json("Updated Successfully");
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json("Failed to update profile");
+  }
+});
+
 app.listen(5000, () => {
     console.log("server has started on port 5000");
 })

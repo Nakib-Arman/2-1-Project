@@ -16,6 +16,7 @@ import HomePageForStudentTeacher from "./components/HomePageForStudentTeacher";
 import StudentProfile from "./components/studentProfile";
 import StaffProfile from "./components/staffProfile";
 import SignUp from "./components/SignUp";
+// import editProfile from "./components/editProfile";
 
 const App = () => {
 
@@ -40,7 +41,8 @@ const App = () => {
           <Route exact path="/HomePageForStudentTeacher" element={<HomePageForStudentTeacher />} />
           <Route exact path="/studentProfile/:id" element={<StudentProfile/>}/>
           <Route exact path="/staffProfile/:id" element={<StaffProfile/>}/>
-          <Route exact path="/signUp" element={<SignUp/>}/>     
+          <Route exact path="/signUp" element={<SignUp/>}/>   
+          {/* <Route exact path="/editProfile" element={<editProfile/>}/> */}
         </Routes>
       </Router>
     </div>
