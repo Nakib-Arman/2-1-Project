@@ -686,14 +686,26 @@ app.get("/showRelatedBooks/:id", async (req, res) => {
 app.put("/updateStaffProfile/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { newFirstName, newLastName} = req.body;
+    const { staffFirstName, staffLastName} = req.body;
+    console.log(staffFirstName, staffLastName, id)
     // console.log(firstName, lastName, phoneNumber, id)
-    const response = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2 WHERE USER_ID=$3", [newFirstName, newLastName, id]);
+    const response = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2 WHERE USER_ID=$3", [staffFirstName, staffLastName, id]);
     res.json("Updated Successfully");
   } catch (err) {
     console.error(err.message);
     res.status(500).json("Failed to update profile");
   }
+});
+
+app.post("/payDue/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { payment } = req.body;
+        const response = await pool.query("INSERT INTO USER_TRANSACTON (USER_ID,PAID) VALUES ($1,$2)", [id,payment]);
+        res.json(response);
+    } catch (err) {
+        console.error(err.message);
+    }
 });
 
 app.listen(5000, () => {

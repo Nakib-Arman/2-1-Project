@@ -7,20 +7,21 @@ const MyProfile = () => {
   const [shelves, setShelves] = useState([]);
   const [userType, setUserType] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
-
+  const [showPayDueModal, setShowPayDueModal] = useState(false);
+  const [payment, setPayment] = useState(0);
+  const [accountHolderName, setAccountHolderName] = useState("");
+  const [accountNumber, setAccountNumber] = useState("");
+  const [pin, setPin] = useState("");
 
   const [departments, setDepartments] = useState([]);
   const [levels, setLevels] = useState([]);
   const [terms, setTerms] = useState([]);
-  
-  //const { id } = useParams();
 
   const getInfo = async () => {
     try {
       const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
       const user_id = await user.json();
       console.log(user_id);
-
 
       const levelsResponse = await fetch("http://localhost:5000/getlevels");
       const termsResponse = await fetch("http://localhost:5000/getterms");
@@ -36,20 +37,15 @@ const MyProfile = () => {
         setTerms(termsData);
         setDepartments(departmentsData);
       } else {
-        console.error("Failed to fetch authors, publishers, categories, or shelves");
+        console.error("Failed to fetch levels, terms, departments, or designations");
       }
 
-      
       const studentResponse = await fetch(`http://localhost:5000/studentProfile/${user_id}`);
       const studentData = await studentResponse.json();
       if (studentData.length > 0) {
         setUserType('student');
         setStudent(studentData[0]);
       }
-
-      // const teacher = await fetch(`http://localhost:5000/teacherProfile/${user_id}`);
-      // const teacherData = await teacher.json();
-      // setTeacher(teacherData[0]);
 
       const staffResponse = await fetch(`http://localhost:5000/staffProfile/${user_id}`);
       const staffData = await staffResponse.json();
@@ -59,7 +55,7 @@ const MyProfile = () => {
         setShelves(staffData);
       }
     } catch (err) {
-      console.error("Failed to fetch user details");
+      console.error("Failed to fetch user details", err.message);
     }
   };
 
@@ -67,36 +63,34 @@ const MyProfile = () => {
     getInfo();
   }, []);
 
-
-  const[staffFirstName, setStaffFirstName] = useState("");
-  const[staffLastName, setStaffLastName] = useState("");
+  const [staffFirstName, setStaffFirstName] = useState("");
+  const [staffLastName, setStaffLastName] = useState("");
 
   const [studentFirstName, setStudentFirstName] = useState("");
   const [studentLastName, setStudentLastName] = useState("");
-  const [studentDept, setStudentDept] = useState();
-  const [studentLevel, setStudentLevel] = useState(0);
-  const [studentTerm, setStudentTerm] = useState(0);
-
+  const [studentDept, setStudentDept] = useState("");
+  const [studentLevel, setStudentLevel] = useState("");
+  const [studentTerm, setStudentTerm] = useState("");
 
   const updateStaffChange = async () => {
     try {
-      if (!staffFirstName && !staffLastName) {
+      if (!staffFirstName || !staffLastName) {
         alert("Please enter the new information to update");
         return;
       }
-      
-      const body = { staffFirstName, staffLastName};
+
+      const body = { staffFirstName, staffLastName };
       console.log(body);
       const url = `http://localhost:5000/updateStaffProfile/${staff.staff_id}`;
-      
+
       const response = await fetch(url, {
         method: "PUT",
         headers: { "Content-Type": "application/json", token: localStorage.token },
         body: JSON.stringify(body)
       });
-      
+
       const parseRes = await response.json();
-      
+
       if (parseRes === "Updated Successfully") {
         alert("Profile Updated Successfully");
         window.location.reload();
@@ -105,26 +99,46 @@ const MyProfile = () => {
       }
       setShowEditModal(false);
     } catch (err) {
-      console.error(err.message);
+      console.error("Error updating staff profile", err.message);
     }
   };
 
-  const updateStudentChange = () =>{
-    console.log("Hello student");
-    console.log(studentFirstName);
-    console.log(studentLastName);
-    console.log(studentDept);
-    console.log(studentLevel);
-    console.log(studentTerm);
-  }
-  
-  // Function to toggle modal visibility
+  const updateStudentChange = async () => {
+    try {
+      if (!studentFirstName || !studentLastName || !studentDept || !studentLevel || !studentTerm) {
+        alert("Please enter the new information to update");
+        return;
+      }
+
+      const body = { studentFirstName, studentLastName, studentDept, studentLevel, studentTerm };
+      console.log(body);
+      const url = `http://localhost:5000/updateStudentProfile/${student.student_id}`;
+
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", token: localStorage.token },
+        body: JSON.stringify(body)
+      });
+
+      const parseRes = await response.json();
+
+      if (parseRes === "Updated Successfully") {
+        alert("Profile Updated Successfully");
+        window.location.reload();
+      } else {
+        alert("Failed to update profile");
+      }
+      setShowEditModal(false);
+    } catch (err) {
+      console.error("Error updating student profile", err.message);
+    }
+  };
+
   const toggleEditModal = () => {
-    if(userType==='staff'){
+    if (userType === 'staff') {
       setStaffFirstName(staff.first_name);
       setStaffLastName(staff.last_name);
-    }
-    else if(userType==='student'){
+    } else if (userType === 'student') {
       setStudentFirstName(student.first_name);
       setStudentLastName(student.last_name);
       setStudentDept(student.department_code);
@@ -133,6 +147,42 @@ const MyProfile = () => {
     }
     setShowEditModal(!showEditModal);
   };
+
+  const togglePayDueModal = () => {
+    setShowPayDueModal(!showPayDueModal);
+  };
+
+  const payDue = async () => {
+    try {
+      if (payment <= 0) {
+        alert("Please enter a valid amount to pay");
+        return;
+      }
+      if (accountHolderName.length < 3 || accountNumber.length < 10 || pin.length < 4) {
+        alert("Please enter valid account holder name, account number, and pin");
+        return;
+      }
+      let url;
+      let body;
+      if (userType === 'staff') {
+        url = `http://localhost:5000/payDue/${staff.staff_id}`;
+        body = { payment };
+      } else if (userType === 'student') {
+        url = `http://localhost:5000/payDue/${student.student_id}`;
+        body = { payment };
+      }
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", token: localStorage.token },
+        body: JSON.stringify(body)
+      });
+      setShowPayDueModal(false);
+      window.location.reload();
+    } catch (err) {
+      console.error("Error paying due", err.message);
+    }
+  };
+  
 
   return (
     <Fragment>
@@ -207,15 +257,14 @@ const MyProfile = () => {
           </table>
         }
       </div>
-      {/* Button to trigger modal */}
       <div>
-      <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
+        <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
       </div>
       <div>
-      <button className="btn button-color mt-2 ml-3">Change Password</button>
+        <button className="btn button-color mt-2 ml-3">Change Password</button>
       </div>
 
-      {showEditModal && userType==='staff' &&
+      {showEditModal && userType === 'staff' &&
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
@@ -226,12 +275,10 @@ const MyProfile = () => {
                 </button>
               </div>
               <div className="modal-body">
-                {/* Add your form fields for editing profile here */}
-                {/* Example: */}
                 <label>First Name:</label>
-                <input type="text" id='f_name' className="form-control mb-4" value={staffFirstName} onChange={(e)=>setStaffFirstName(e.target.value)} />
+                <input type="text" id='f_name' className="form-control mb-4" value={staffFirstName} onChange={(e) => setStaffFirstName(e.target.value)} />
                 <label>Last Name:</label>
-                <input type="text" id='l_name' className="form-control mb-3" value={staffLastName} onChange={(e)=>setStaffLastName(e.target.value)}/>
+                <input type="text" id='l_name' className="form-control mb-3" value={staffLastName} onChange={(e) => setStaffLastName(e.target.value)} />
               </div>
               <div className="modal-footer">
                 <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
@@ -241,7 +288,7 @@ const MyProfile = () => {
           </div>
         </div>
       }
-      {showEditModal && userType==='student' &&
+      {showEditModal && userType === 'student' &&
         <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
           <div className="modal-dialog" role="document">
             <div className="modal-content">
@@ -253,9 +300,9 @@ const MyProfile = () => {
               </div>
               <div className="modal-body">
                 <label>First Name:</label>
-                <input type="text" id='f_name' className="form-control mb-3" value={studentFirstName} onChange={(e)=>setStudentFirstName(e.target.value)} />
+                <input type="text" id='f_name' className="form-control mb-3" value={studentFirstName} onChange={(e) => setStudentFirstName(e.target.value)} />
                 <label>Last Name:</label>
-                <input type="text" id='l_name' className="form-control mb-3" value={studentLastName} onChange={(e)=>setStudentLastName(e.target.value)}/>
+                <input type="text" id='l_name' className="form-control mb-3" value={studentLastName} onChange={(e) => setStudentLastName(e.target.value)} />
                 <label htmlFor="department_code">
                   Department:
                 </label>
@@ -306,6 +353,40 @@ const MyProfile = () => {
               <div className="modal-footer">
                 <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
                 <button type="button" className="btn btn-primary" onClick={updateStudentChange}>Save changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+
+      <div>
+        <button className="btn button-color mt-2 ml-3" onClick={togglePayDueModal}>Pay Due</button>
+      </div>
+
+      {showPayDueModal &&
+        <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+          <div className="modal-dialog" role="document">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Pay Due - {staff.due}</h5>
+                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={togglePayDueModal}>
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div className="modal-body">
+                <label >Account Holder Name </label>
+                <input type="text" className="form-control mb-3" onChange={(e)=>setAccountHolderName(e.target.value)}/>
+                <label >Account Number </label>
+                <input type="text" className="form-control mb-3" onChange={(e)=>setAccountNumber(e.target.value)}/>
+                <label>Amount:</label>
+                <input type="number" className="form-control mb-3" onChange={(e)=> setPayment(e.target.value)}/>
+                <label>PIN</label>
+                <input type="password" className="form-control mb-3" onChange={(e)=>setPin(e.target.value)} />
+                
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn button-color" onClick={togglePayDueModal}>Close</button>
+                <button type="button" className="btn btn-primary" onClick={payDue}>Pay Due</button>
               </div>
             </div>
           </div>
