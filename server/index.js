@@ -302,7 +302,7 @@ app.get("/showBooksByCategory", async (req, res) => {
 
 app.get("/studentProfile/:id",async (req,res) => {
     try{
-        const student = await pool.query("SELECT S.STUDENT_ID,U.FIRST_NAME||' '||LAST_NAME NAME,U.PHONE_NUMBER,S.CURRENT_LEVEL,S.CURRENT_TERM,D.DEPARTMENT_NAME,TOTAL_DUE(U.USER_ID) DUE FROM STUDENTS S JOIN USERS U ON(U.USER_ID=S.STUDENT_ID) JOIN DEPARTMENTS D ON (S.DEPARTMENT_CODE=D.DEPARTMENT_CODE) WHERE U.USER_ID=$1",[req.params.id]);
+        const student = await pool.query("SELECT S.STUDENT_ID,U.FIRST_NAME,LAST_NAME,U.PHONE_NUMBER,S.CURRENT_LEVEL,S.CURRENT_TERM,S.DEPARTMENT_CODE,D.DEPARTMENT_NAME,TOTAL_DUE(U.USER_ID) DUE FROM STUDENTS S JOIN USERS U ON(U.USER_ID=S.STUDENT_ID) JOIN DEPARTMENTS D ON (S.DEPARTMENT_CODE=D.DEPARTMENT_CODE) WHERE U.USER_ID=$1",[req.params.id]);
         res.json(student.rows);
     }catch (err) {
         console.error(err.message);
@@ -321,7 +321,7 @@ app.get("/teacherProfile/:id",async (req,res) =>{
 
 app.get("/staffProfile/:id",async (req,res) => {
     try{
-        const staff = await pool.query("SELECT ST.STAFF_ID, U.FIRST_NAME||' '|| U.LAST_NAME AS NAME, U.PHONE_NUMBER, SH.SHELF_ID,TOTAL_DUE(U.USER_ID) DUE FROM USERS U JOIN STAFFS ST ON(U.USER_ID=ST.STAFF_ID) JOIN SHELVES SH ON(ST.STAFF_ID=SH.STAFF_ID) WHERE U.USER_ID=$1",[req.params.id]);
+        const staff = await pool.query("SELECT ST.STAFF_ID, U.FIRST_NAME, U.LAST_NAME, U.PHONE_NUMBER, SH.SHELF_ID,TOTAL_DUE(U.USER_ID) DUE FROM USERS U JOIN STAFFS ST ON(U.USER_ID=ST.STAFF_ID) JOIN SHELVES SH ON(ST.STAFF_ID=SH.STAFF_ID) WHERE U.USER_ID=$1",[req.params.id]);
         res.json(staff.rows);
     }catch (err) {
         console.error(err.message);
@@ -332,7 +332,59 @@ app.get("/searchBooks/:title", async (req, res) => {
     try {
         const { title } = req.params;
         const searchResults = await pool.query(
-            "SELECT IMAGE(B.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, BOOK_PUBLICATION(B.BOOK_ID) PUBLICATION_NAME, B.BOOK_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON (B.BOOK_ID = BAR.BOOK_ID) JOIN AUTHORS A ON (BAR.AUTHOR_ID = A.AUTHOR_ID) WHERE LOWER(A.AUTHOR_NAME) LIKE $1 UNION SELECT IMAGE(B2.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B2.BOOK_ID), B2.TITLE, B2.CATEGORY, BOOK_PUBLICATION(B2.BOOK_ID) PUBLICATION_NAME, B2.BOOK_ID FROM BOOKS B2  WHERE LOWER (PUBLICATION_NAME) LIKE $1 UNION SELECT IMAGE(B3.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B3.BOOK_ID), B3.TITLE, B3.CATEGORY, P3.PUBLICATION_NAME, B3.BOOK_ID FROM BOOKS B3 JOIN PUBLISHERS P3 ON (B3.PUBLISHER_ID = P3.PUBLISHER_ID) WHERE LOWER(B3.TITLE) LIKE $1 UNION SELECT IMAGE(B4.BOOK_ID) IMAGE_URL, COPIES_AVAILABLE(B4.BOOK_ID), B4.TITLE, B4.CATEGORY, P4.PUBLICATION_NAME, B4.BOOK_ID FROM BOOKS B4  JOIN PUBLISHERS P4 ON (B4.PUBLISHER_ID = P4.PUBLISHER_ID) WHERE LOWER(B4.CATEGORY) LIKE $1 ORDER BY TITLE", [`%${title.toLowerCase()}%`]
+            `SELECT 
+                IMAGE(B.BOOK_ID) AS IMAGE_URL, 
+                COPIES_AVAILABLE(B.BOOK_ID) AS COPY, 
+                B.TITLE, 
+                B.CATEGORY, 
+                BOOK_PUBLICATION(B.BOOK_ID) AS PUBLICATION_NAME, 
+                B.BOOK_ID 
+            FROM 
+                BOOKS B 
+                JOIN BOOK_AUTHOR_RELATION BAR ON (B.BOOK_ID = BAR.BOOK_ID) 
+                JOIN AUTHORS A ON (BAR.AUTHOR_ID = A.AUTHOR_ID) 
+            WHERE 
+                LOWER(A.AUTHOR_NAME) LIKE $1 
+            UNION 
+            SELECT 
+                IMAGE(B2.BOOK_ID) AS IMAGE_URL, 
+                COPIES_AVAILABLE(B2.BOOK_ID) AS COPY, 
+                B2.TITLE, 
+                B2.CATEGORY, 
+                BOOK_PUBLICATION(B2.BOOK_ID) AS PUBLICATION_NAME, 
+                B2.BOOK_ID 
+            FROM 
+                BOOKS B2  
+            WHERE 
+                LOWER(BOOK_PUBLICATION(B2.BOOK_ID)) LIKE $1 
+            UNION 
+            SELECT 
+                IMAGE(B3.BOOK_ID) AS IMAGE_URL, 
+                COPIES_AVAILABLE(B3.BOOK_ID) AS COPY, 
+                B3.TITLE, 
+                B3.CATEGORY, 
+                BOOK_PUBLICATION(B3.BOOK_ID) AS PUBLICATION_NAME, 
+                B3.BOOK_ID 
+            FROM 
+                BOOKS B3 
+            WHERE 
+                LOWER(B3.TITLE) LIKE $1 
+            UNION 
+            SELECT 
+                IMAGE(B4.BOOK_ID) AS IMAGE_URL, 
+                COPIES_AVAILABLE(B4.BOOK_ID) AS COPY, 
+                B4.TITLE, 
+                B4.CATEGORY, 
+                P4.PUBLICATION_NAME, 
+                B4.BOOK_ID 
+            FROM 
+                BOOKS B4  
+                JOIN PUBLISHERS P4 ON (B4.PUBLISHER_ID = P4.PUBLISHER_ID) 
+            WHERE 
+                LOWER(B4.CATEGORY) LIKE $1 
+            ORDER BY 
+                TITLE`, 
+            [`%${title.toLowerCase()}%`]
         );
         res.json(searchResults.rows);
     } catch (err) {
@@ -634,9 +686,9 @@ app.get("/showRelatedBooks/:id", async (req, res) => {
 app.put("/updateStaffProfile/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const { newFirstName, newLastName, newPhoneNumber } = req.body;
+    const { newFirstName, newLastName} = req.body;
     // console.log(firstName, lastName, phoneNumber, id)
-    const response = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2, PHONE_NUMBER=$3 WHERE USER_ID=$4", [newFirstName, newLastName, newPhoneNumber, id]);
+    const response = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2 WHERE USER_ID=$3", [newFirstName, newLastName, id]);
     res.json("Updated Successfully");
   } catch (err) {
     console.error(err.message);
