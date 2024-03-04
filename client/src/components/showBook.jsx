@@ -68,7 +68,7 @@ const ShowBook = () => {
     navigate(`/showBookDetails/${id}`);
   };
 
-  const addToSearched=async(id,e)=>{
+  const addToSearched = async (id, e) => {
     e.stopPropagation();
     try {
       const body = { book_id: id };
@@ -118,7 +118,8 @@ const ShowBook = () => {
 
   return (
     <Fragment>
-      <h1 className="text-center mb-4" style={{ color: "fff" }}>
+      <div className="page-container">
+      <h1 className="text-center mb-4" style={{ color: 'white' }}>
         Search Books
       </h1>
       <div className="container">
@@ -159,19 +160,19 @@ const ShowBook = () => {
                   </p>
                 </div>
                 <div className="card-footer">
-                  {book.copy==0 &&
-                  <button className="btn w-100" style={{backgroundColor: "#0358b4",color: "white"}}>
-                    Unavailable  
-                  </button>
+                  {book.copy == 0 &&
+                    <button className="btn w-100" style={{ backgroundColor: "#0358b4", color: "white" }}>
+                      Unavailable
+                    </button>
                   }
-                  {book.copy>0 &&
-                  <button
-                    onClick={(e) => addToCart(book.book_id, e)}
-                    className="btn btn-primary w-100"
-                  >
-                    Add to Cart
-                  </button>
-}
+                  {book.copy > 0 &&
+                    <button
+                      onClick={(e) => addToCart(book.book_id, e)}
+                      className="btn btn-primary w-100"
+                    >
+                      Add to Cart
+                    </button>
+                  }
                 </div>
               </div>
             </div>
@@ -191,6 +192,7 @@ const ShowBook = () => {
         >
           <FontAwesomeIcon style={{ height: "25px" }} icon={faCartShopping} />
         </button>
+      </div>
       </div>
     </Fragment>
   );

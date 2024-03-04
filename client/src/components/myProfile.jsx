@@ -182,216 +182,218 @@ const MyProfile = () => {
       console.error("Error paying due", err.message);
     }
   };
-  
+
 
   return (
     <Fragment>
-      <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
-      <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
-      <div className="book-details-container">
-        {userType === 'staff' && staff &&
-          <table className="table mx-auto">
-            <tbody>
-              <tr className="text-center">
-                <td className="head-color">ID</td>
-                <td className="table-row-2">{staff.staff_id}</td>
-              </tr>
-              <tr className="text-center">
-                <td className="head-color">Name</td>
-                <td className="table-row-2">{staff.first_name} {staff.last_name}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Phone Number</td>
-                <td className="table-row-2">{staff.phone_number}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Shelves Managed</td>
-                <td className="table-row-2">
-                  <ul className="author-list">
-                    {shelves.map(shelf => (
-                      <li key={shelf.shelf_id}>Shelf ID - {shelf.shelf_id}</li>
+      <div className="page-container">
+        <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
+        <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
+        <div className="book-details-container">
+          {userType === 'staff' && staff &&
+            <table className="table mx-auto">
+              <tbody>
+                <tr className="text-center">
+                  <td className="head-color">ID</td>
+                  <td className="table-row-2">{staff.staff_id}</td>
+                </tr>
+                <tr className="text-center">
+                  <td className="head-color">Name</td>
+                  <td className="table-row-2">{staff.first_name} {staff.last_name}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Phone Number</td>
+                  <td className="table-row-2">{staff.phone_number}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Shelves Managed</td>
+                  <td className="table-row-2">
+                    <ul className="author-list">
+                      {shelves.map(shelf => (
+                        <li key={shelf.shelf_id}>Shelf ID - {shelf.shelf_id}</li>
+                      ))}
+                    </ul>
+                  </td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Fine Status</td>
+                  <td className="table-row-2">{staff.due} TK Due</td>
+                </tr>
+              </tbody>
+            </table>
+          }
+
+          {userType === 'student' && student &&
+            <table className="table mx-auto">
+              <tbody>
+                <tr className="text-center">
+                  <td className="head-color">ID</td>
+                  <td className="table-row-2">{student.student_id}</td>
+                </tr>
+                <tr className="text-center">
+                  <td className="head-color">Name</td>
+                  <td className="table-row-2">{student.first_name} {student.last_name}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Phone Number</td>
+                  <td className="table-row-2">{student.phone_number}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Department</td>
+                  <td className="table-row-2">{student.department_name}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Current Level</td>
+                  <td className="table-row-2">{student.current_level}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Current Term</td>
+                  <td className="table-row-2">{student.current_term}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Fine Status</td>
+                  <td className="table-row-2">{student.due} TK Due</td>
+                </tr>
+              </tbody>
+            </table>
+          }
+        </div>
+        <div>
+          <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
+        </div>
+        <div>
+          <button className="btn button-color mt-2 ml-3">Change Password</button>
+        </div>
+
+        {showEditModal && userType === 'staff' &&
+          <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Edit Profile</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <label>First Name:</label>
+                  <input type="text" id='f_name' className="form-control mb-4" value={staffFirstName} onChange={(e) => setStaffFirstName(e.target.value)} />
+                  <label>Last Name:</label>
+                  <input type="text" id='l_name' className="form-control mb-3" value={staffLastName} onChange={(e) => setStaffLastName(e.target.value)} />
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
+                  <button type="button" className="btn btn-primary" onClick={updateStaffChange}>Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+        {showEditModal && userType === 'student' &&
+          <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Edit Profile</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <label>First Name:</label>
+                  <input type="text" id='f_name' className="form-control mb-3" value={studentFirstName} onChange={(e) => setStudentFirstName(e.target.value)} />
+                  <label>Last Name:</label>
+                  <input type="text" id='l_name' className="form-control mb-3" value={studentLastName} onChange={(e) => setStudentLastName(e.target.value)} />
+                  <label htmlFor="department_code">
+                    Department:
+                  </label>
+                  <select
+                    id="department"
+                    className="form-control"
+                    value={studentDept}
+                    onChange={(e) => setStudentDept(e.target.value)}
+                  >
+                    <option value=""> Select Department </option>
+                    {departments.map((dept) => (
+                      <option key={dept.department_code} value={dept.department_code}>
+                        {dept.department_name}
+                      </option>
                     ))}
-                  </ul>
-                </td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Fine Status</td>
-                <td className="table-row-2">{staff.due} TK Due</td>
-              </tr>
-            </tbody>
-          </table>
+                  </select>
+                  <label>Level:</label>
+                  <select
+                    id="current_level"
+                    className="form-control"
+                    value={studentLevel}
+                    onChange={(e) => setStudentLevel(e.target.value)}
+                  >
+                    <option value=""> Select Level </option>
+                    {levels.map((lvl) => (
+                      <option key={lvl.level_no} value={lvl.level_no}>
+                        {lvl.level_no}
+                      </option>
+                    ))}
+                  </select>
+                  <label htmlFor="current_term" className="mt-3">
+                    Term:
+                  </label>
+                  <select
+                    id="current_term"
+                    className="form-control"
+                    value={studentTerm}
+                    onChange={(e) => setStudentTerm(e.target.value)}
+                  >
+                    <option value=""> Select Term </option>
+                    {terms.map((tr) => (
+                      <option key={tr.term_no} value={tr.term_no}>
+                        {tr.term_no}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
+                  <button type="button" className="btn btn-primary" onClick={updateStudentChange}>Save changes</button>
+                </div>
+              </div>
+            </div>
+          </div>
         }
 
-        {userType === 'student' && student &&
-          <table className="table mx-auto">
-            <tbody>
-              <tr className="text-center">
-                <td className="head-color">ID</td>
-                <td className="table-row-2">{student.student_id}</td>
-              </tr>
-              <tr className="text-center">
-                <td className="head-color">Name</td>
-                <td className="table-row-2">{student.first_name} {student.last_name}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Phone Number</td>
-                <td className="table-row-2">{student.phone_number}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Department</td>
-                <td className="table-row-2">{student.department_name}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Current Level</td>
-                <td className="table-row-2">{student.current_level}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Current Term</td>
-                <td className="table-row-2">{student.current_term}</td>
-              </tr>
-              <tr className="text-center mt-3">
-                <td className="head-color">Fine Status</td>
-                <td className="table-row-2">{student.due} TK Due</td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          <button className="btn button-color mt-2 ml-3" onClick={togglePayDueModal}>Pay Due</button>
+        </div>
+
+        {showPayDueModal &&
+          <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Pay Due - {staff.due}</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={togglePayDueModal}>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <label >Account Holder Name </label>
+                  <input type="text" className="form-control mb-3" onChange={(e) => setAccountHolderName(e.target.value)} />
+                  <label >Account Number </label>
+                  <input type="text" className="form-control mb-3" onChange={(e) => setAccountNumber(e.target.value)} />
+                  <label>Amount:</label>
+                  <input type="number" className="form-control mb-3" onChange={(e) => setPayment(e.target.value)} />
+                  <label>PIN</label>
+                  <input type="password" className="form-control mb-3" onChange={(e) => setPin(e.target.value)} />
+
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn button-color" onClick={togglePayDueModal}>Close</button>
+                  <button type="button" className="btn btn-primary" onClick={payDue}>Pay Due</button>
+                </div>
+              </div>
+            </div>
+          </div>
         }
       </div>
-      <div>
-        <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
-      </div>
-      <div>
-        <button className="btn button-color mt-2 ml-3">Change Password</button>
-      </div>
-
-      {showEditModal && userType === 'staff' &&
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Profile</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <label>First Name:</label>
-                <input type="text" id='f_name' className="form-control mb-4" value={staffFirstName} onChange={(e) => setStaffFirstName(e.target.value)} />
-                <label>Last Name:</label>
-                <input type="text" id='l_name' className="form-control mb-3" value={staffLastName} onChange={(e) => setStaffLastName(e.target.value)} />
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={updateStaffChange}>Save changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-      {showEditModal && userType === 'student' &&
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Edit Profile</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <label>First Name:</label>
-                <input type="text" id='f_name' className="form-control mb-3" value={studentFirstName} onChange={(e) => setStudentFirstName(e.target.value)} />
-                <label>Last Name:</label>
-                <input type="text" id='l_name' className="form-control mb-3" value={studentLastName} onChange={(e) => setStudentLastName(e.target.value)} />
-                <label htmlFor="department_code">
-                  Department:
-                </label>
-                <select
-                  id="department"
-                  className="form-control"
-                  value={studentDept}
-                  onChange={(e) => setStudentDept(e.target.value)}
-                >
-                  <option value=""> Select Department </option>
-                  {departments.map((dept) => (
-                    <option key={dept.department_code} value={dept.department_code}>
-                      {dept.department_name}
-                    </option>
-                  ))}
-                </select>
-                <label>Level:</label>
-                <select
-                  id="current_level"
-                  className="form-control"
-                  value={studentLevel}
-                  onChange={(e) => setStudentLevel(e.target.value)}
-                >
-                  <option value=""> Select Level </option>
-                  {levels.map((lvl) => (
-                    <option key={lvl.level_no} value={lvl.level_no}>
-                      {lvl.level_no}
-                    </option>
-                  ))}
-                </select>
-                <label htmlFor="current_term" className="mt-3">
-                  Term:
-                </label>
-                <select
-                  id="current_term"
-                  className="form-control"
-                  value={studentTerm}
-                  onChange={(e) => setStudentTerm(e.target.value)}
-                >
-                  <option value=""> Select Term </option>
-                  {terms.map((tr) => (
-                    <option key={tr.term_no} value={tr.term_no}>
-                      {tr.term_no}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={updateStudentChange}>Save changes</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
-
-      <div>
-        <button className="btn button-color mt-2 ml-3" onClick={togglePayDueModal}>Pay Due</button>
-      </div>
-
-      {showPayDueModal &&
-        <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
-          <div className="modal-dialog" role="document">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Pay Due - {staff.due}</h5>
-                <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={togglePayDueModal}>
-                  <span aria-hidden="true">&times;</span>
-                </button>
-              </div>
-              <div className="modal-body">
-                <label >Account Holder Name </label>
-                <input type="text" className="form-control mb-3" onChange={(e)=>setAccountHolderName(e.target.value)}/>
-                <label >Account Number </label>
-                <input type="text" className="form-control mb-3" onChange={(e)=>setAccountNumber(e.target.value)}/>
-                <label>Amount:</label>
-                <input type="number" className="form-control mb-3" onChange={(e)=> setPayment(e.target.value)}/>
-                <label>PIN</label>
-                <input type="password" className="form-control mb-3" onChange={(e)=>setPin(e.target.value)} />
-                
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn button-color" onClick={togglePayDueModal}>Close</button>
-                <button type="button" className="btn btn-primary" onClick={payDue}>Pay Due</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      }
     </Fragment>
   );
 }

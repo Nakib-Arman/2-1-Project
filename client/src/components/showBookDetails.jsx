@@ -1,5 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { Navigate } from "react-router-dom";
 import "./showBookDetails.css";
 
 const ShowBookDetails = () => {
@@ -7,6 +13,8 @@ const ShowBookDetails = () => {
   const [authors, setAuthors] = useState([]);
   const { id } = useParams();
   const [relatedBooks, setRelatedBooks] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const getBookDetails = async () => {
@@ -56,10 +64,54 @@ const ShowBookDetails = () => {
     }
   };
 
+  const NextArrow = ({ onClick }) => (
+    <button className="custom-slick-arrow custom-slick-next" onClick={onClick}>
+      {'>'}
+    </button>
+  );
+
+  const PrevArrow = ({ onClick }) => (
+    <button className="custom-slick-arrow custom-slick-prev" onClick={onClick}>
+      {'<'}
+    </button>
+  );
+
+  const settings = {
+    dots: false,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 3000,
+    nextArrow: <NextArrow style={{ fontSize: '24px', color: '#000' }} />,
+    prevArrow: <PrevArrow style={{ fontSize: '24px', color: '#000' }} />,
+  };
+
+  const goToCart = () => {
+    navigate("/showCart");
+  };
+
   return (
     <Fragment>
+      <div className="head-color fixed-header">
+        <h1 className="text-center">Book Details</h1>
+        <button
+          onClick={goToCart}
+          className="cart-btn"
+          style={{
+            background: "transparent",
+            color: "white",
+            border: "white",
+          }}
+        >
+          <FontAwesomeIcon style={{ height: "25px" }} icon={faCartShopping} />
+        </button>
+      </div>
       <div className="book-details-container">
-        <h1 className="text-center head-color mb-5" style={{ fontSize: '50px' }}>Book Details</h1>
+      <h1 className="text-center mb-4" style={{ color: 'white' }}>
+        Book Details
+      </h1>
         <div className="book-details-grid">
           <div className="book-cover">
             {book && <img src={book.image_url} alt={book.title} />}
@@ -103,23 +155,38 @@ const ShowBookDetails = () => {
                 </tr>
               </tbody>
             </table>
-            <button className="btn btn-primary" onClick={(e) => addToCart(book.book_id, e)}>Add to Cart</button>
+            {book?.copy==0 &&
+                  <button className="btn w-100" style={{backgroundColor: "#0358b4",color: "white"}}>
+                    Unavailable  
+                  </button>
+                  }
+                  {book?.copy>0 &&
+                  <button
+                    onClick={(e) => addToCart(book.book_id, e)}
+                    className="btn btn-primary w-100"
+                  >
+                    Add to Cart
+                  </button>
+}
           </div>
         </div>
       </div>
-      {/* Related Books Slider */}
-      <div className="related-books">
-        <h2 className="text-center">Related Books</h2>
-        <div className="slider">
-          {relatedBooks.map((relatedBook, index) => (
-            <div key={index} className="slide">
-              <h3>{relatedBook.title}</h3>
-              <p>{relatedBook.publication_name}</p>
-              <p>{relatedBook.category}</p>
-            </div>
-          ))}
+      <div className="container mt-5">
+          <h3 style={{ background: '#555', color: 'white' }}>Related Books</h3>
+          <Slider {...settings}>
+            {relatedBooks.map((book) => (
+              <div key={book.book_id} className="book-slider-item" style={{backgroundColor: '#333'}}>
+                <div className="card h-100" style={{ cursor: "pointer" }}>
+                  <div className="card-body">
+                    <h5 className="card-title book-title">{book.title}</h5>
+                    <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
+                    <p className="card-text"><strong>Category:</strong> {book.category}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Slider>
         </div>
-      </div>
     </Fragment>
   );
 }

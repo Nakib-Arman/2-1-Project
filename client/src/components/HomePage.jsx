@@ -3,11 +3,13 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useNavigate, useParams } from "react-router-dom";
+import image from './image.jpg';
 
 const HomePage = ({ setAuth }) => {
   const navigate = useNavigate();
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [topPriorityBooks, setTopPriorityBooks] = useState([]);
+  const [recentSearchedBooks, setRecentSearchedBooks] = useState([]);
   const [userType, setUserType] = useState(null);
 
   const getPriorityBooks = async () => {
@@ -19,7 +21,17 @@ const HomePage = ({ setAuth }) => {
       console.error(err.message);
     }
   }
-  
+
+  const getRecentSearchedBooks = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/showBooks");
+      const jsonData = await response.json();
+      setRecentSearchedBooks(jsonData);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
+
   const getUserType = async () => {
     try {
       const response = await fetch("http://localhost:5000/getUserType", {
@@ -34,7 +46,7 @@ const HomePage = ({ setAuth }) => {
     }
   }
 
-  
+
 
   const showBooks = () => {
     navigate('/showBooks');
@@ -91,24 +103,28 @@ const HomePage = ({ setAuth }) => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,   
+    autoplaySpeed: 3000,
     nextArrow: <NextArrow style={{ fontSize: '24px', color: '#000' }} />,
     prevArrow: <PrevArrow style={{ fontSize: '24px', color: '#000' }} />,
   };
 
+
+
+
+
   useEffect(() => {
     getPriorityBooks();
-  }, []);
-  useEffect(() => {
+    getRecentSearchedBooks();
     getUserType();
-    console.log(userType);
+    // Attach the scroll event listener
+    
   }, []);
 
   return (
     <Fragment>
-      <div className="app-container">
+      <div className="page-container">
         <header className="header left-container fixed-header" style={{ height: '70px' }}>
-          
+
           <div className="transparent-buttons">
             <button onClick={addBook}>Add New Book</button>
             <button onClick={showBooks}>Search Books</button>
@@ -126,27 +142,68 @@ const HomePage = ({ setAuth }) => {
             )}
           </div>
         </header>
-        <main className="main-content">
-          <div className="welcome-container mt-5" style={{ marginBottom: '30px' }}>
-            <h3 className="text-center mt-5" style={{ fontSize: '30px', fontFamily: "'Open Sans','Helvetica Neue'", color: '#555' }}>Welcome to</h3>
-            <h1 className="text-center" style={{ fontSize: '100px', fontFamily: "'Open Sans','Helvetica Neue'", color: '#560' }}>BIBLIOPHILE</h1>
+        <main className="image-container mt-5" style={{ height: '70vh',position: 'relative' }}>
+          <img src={image} alt="Full Screen Image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          <div>
+            <h1 className="text-overlay" style={{
+              fontSize: '50px',
+              fontFamily: "'Open Sans','Helvetica Neue'",
+              color: 'white',
+              position: 'relative',
+              bottom: '180px',
+              left: '180px',
+            }}>
+              BIBLIOPHILE
+            </h1>
+            <h1 className="text-overlay" style={{
+              fontSize: '20px',
+              fontFamily: "'Open Sans','Helvetica Neue'",
+              color: 'white',
+              position: 'relative',
+              bottom: '210px',
+              left: '155px',
+            }}>
+              A Library Management Website
+            </h1>
+            <h1 className="text-overlay" style={{
+              fontSize: '20px',
+              fontFamily: "'Open Sans','Helvetica Neue'",
+              color: 'white',
+              position: 'relative',
+              bottom: '230px',
+              left: '180px',
+            }}>
+              _______________________________
+            </h1>
           </div>
+
         </main>
         <div className="container mt-5">
-          <h2 style={{ background: '#f4f4f4', color: '#333' }}>Top Priorities</h2>
+          <h3 style={{ background: '#555', color: 'white' }}>Top Priorities</h3>
           <Slider {...settings}>
             {topPriorityBooks.map((book) => (
+              <div key={book.book_id} className="book-slider-item" style={{backgroundColor: '#333'}}>
+                <div className="card h-100" style={{ cursor: "pointer" }}>
+                  <div className="card-body">
+                    <h5 className="card-title book-title">{book.title}</h5>
+                    <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
+                    <p className="card-text"><strong>Category:</strong> {book.category}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </Slider>
+        </div>
+        <div className="container mt-5">
+          <h3 style={{ background: '#555', color: 'white' }}>Recently Searched</h3>
+          <Slider {...settings}>
+            {recentSearchedBooks.map((book) => (
               <div key={book.book_id} className="book-slider-item">
                 <div className="card h-100" style={{ cursor: "pointer" }}>
                   <div className="card-body">
                     <h5 className="card-title book-title">{book.title}</h5>
-                    <p className="card-text"><strong>Publication:</strong> {book.publication}</p>
+                    <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
                     <p className="card-text"><strong>Category:</strong> {book.category}</p>
-                  </div>
-                  <div className="card-footer">
-                    <button className="btn btn-primary w-100">
-                      Add to Cart
-                    </button>
                   </div>
                 </div>
               </div>

@@ -158,13 +158,13 @@ const BorrowRequests = () => {
                     </select>
                 </div>
             <div className="mt-5">
-                <button style={{ width: '33%', border: '1px solid grey' }} onClick={() => setSelectedOption('students')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'students' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('students')}>
                     Student
                 </button>
-                <button style={{ width: '33%', border: '1px solid grey' }} onClick={() => setSelectedOption('teachers')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#ccc' : 'white'  }} onClick={() => setSelectedOption('teachers')}>
                     Teacher
                 </button>
-                <button style={{ width: '33%', border: '1px solid grey' }} onClick={() => setSelectedOption('staffs')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#ccc' : 'white'  }} onClick={() => setSelectedOption('staffs')}>
                     Staff
                 </button>
             </div>

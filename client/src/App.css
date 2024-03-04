@@ -70,6 +70,7 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #f4f4f4;
+  width: 100%;
 }
 
 .welcome-container {
@@ -82,6 +83,7 @@ body {
   border: 1px solid #ccc;
   border-radius: 5px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
 }
 
 .login-container h1 {
@@ -324,4 +326,34 @@ body {
 
 .text-button:hover {
   color: black; 
+}
+
+/* MyComponent.css */
+
+.image-container {
+  position: relative;
+  width: 100%; /* Adjust as needed */
+}
+
+.text-overlay {
+  position: absolute;
+  top: 50%; /* Adjust the vertical position */
+  left: 50%; /* Adjust the horizontal position */
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: white; /* Text color */
+}
+
+/* Additional styling for text elements if needed */
+.text-overlay h1 {
+  font-size: 2em;
+}
+
+.text-overlay p {
+  font-size: 1.2em;
+}
+
+.page-container {
+  background-color: #fffafa; /* Set your desired background color here */
+  /* You can add more styles as needed */
 }
