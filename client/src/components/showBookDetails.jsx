@@ -9,6 +9,7 @@ import { Navigate } from "react-router-dom";
 import "./showBookDetails.css";
 
 const ShowBookDetails = () => {
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [book, setBook] = useState(null);
   const [authors, setAuthors] = useState([]);
   const { id } = useParams();
@@ -92,9 +93,89 @@ const ShowBookDetails = () => {
     navigate("/showCart");
   };
 
+  const addBook = () => {
+    navigate('/addBooks');
+  }
+
+  const showBooks = () => {
+    navigate('/showBooks');
+  }
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
+  }
+
+  async function MyProfile() {
+    navigate('/myProfile');
+    //e.preventDefault();
+    /*try {
+      const response = await fetch("http://localhost:5000/getID",{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
+      const user = await response.json();
+
+    } catch (err) {
+      console.error(err.message);
+    }*/
+  }
+
+
+  const handleDropdownItemClick = (action) => {
+    if (action === 'viewBorrowRequests') {
+      navigate('/borrowRequests');
+    } else if (action === 'addAuthor') {
+      navigate('/addAuthor');
+    } else if (action === 'addPublisher') {
+      navigate('/addPublisher');
+    }
+  }
+
+  // const addToCart = async (id, e) => {
+  //   e.stopPropagation();
+  //   try {
+  //     const body = { book_id: id };
+  //     const response = await fetch("http://localhost:5000/addToCart", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         token: localStorage.token,
+  //       },
+  //       body: JSON.stringify(body),
+  //     });
+  //     if (response.ok) {
+  //       console.log("Added book with ID", id, "to cart");
+  //     } else {
+  //       console.error("Failed to add book to cart");
+  //     }
+  //   } catch (err) {
+  //     console.error("Failed to add book to cart:", err.message);
+  //   }
+  // };
+
+  // const goToCart = () => {
+  //   navigate("/showCart");
+  // };
+
+  const goToHome = () => {
+    navigate("/");
+  };
+
+
   return (
     <Fragment>
-      <div className="head-color fixed-header">
+      <header className="header left-container fixed-header" style={{ height: '70px' }}>
+        
+        <div className="transparent-buttons">
+          <button onClick={goToHome}>Home</button>
+          <button onClick={addBook}>Add New Book</button>
+          <button onClick={showBooks} style={{ color: '#e06e86' }} >Search Books</button>
+          <button onClick={MyProfile} >My Profile</button>
+          <button onClick={goToCart}  >Cart</button>
+          <div className="hamburger-icon" onClick={toggleDropdown}>
+          
+          </div>
+          
+        </div>
+      </header>
+      {/* <div className="head-color fixed-header">
         <h1 className="text-center">Book Details</h1>
         <button
           onClick={goToCart}
@@ -107,7 +188,7 @@ const ShowBookDetails = () => {
         >
           <FontAwesomeIcon style={{ height: "25px" }} icon={faCartShopping} />
         </button>
-      </div>
+      </div> */}
       <div className="book-details-container">
       <h1 className="text-center mb-4" style={{ color: 'white' }}>
         Book Details

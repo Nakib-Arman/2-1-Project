@@ -1,0 +1,11 @@
+.transparent-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .right-buttons {
+    display: flex;
+    align-items: center;
+  }
+  

@@ -1,14 +1,4 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import loginBackground from './logIn.png';
-
-const LogIn = ({ setAuth }) => {
-  const [PHONE, setPHONE] = useState("");
-  const [PASSWORD, setPASSWORD] = useState("");
-
-  let navigate = useNavigate();
-
-  const LogIn = async e => {
+const LogIn = async e => {
     e.preventDefault();
     try {
       const body = { PHONE, PASSWORD };
@@ -98,45 +88,3 @@ const LogIn = ({ setAuth }) => {
       console.log(err.message);
     }
   }
-
-  const gotoSignUp = () => {
-    navigate("/signUp");
-  }
-
-  return (
-    <div className="login-page" style={{ backgroundImage: `url(${loginBackground})` }}>
-      <div className="app-container">
-        <header className="header">
-          <div className="transparent-buttons">
-            <button onClick={gotoSignUp}>Sign Up</button>
-          </div>
-        </header>
-        <main className="main-content">
-          <div className="login-container mt-5">
-            <h1>Log In</h1>
-            <form onSubmit={LogIn}>
-              <div>
-                <label htmlFor="phone">Phone Number:</label>
-                <input type="tel" className="form-control"
-                  value={PHONE}
-                  onChange={(e) => setPHONE(e.target.value)} required />
-              </div>
-
-              <div>
-                <label htmlFor="password">Password:</label>
-                <input type="password"
-                  className="form-control"
-                  value={PASSWORD}
-                  onChange={(e) => setPASSWORD(e.target.value)} required />
-              </div>
-
-              <button type="submit">Log In</button>
-            </form>
-          </div>
-        </main>
-      </div>
-    </div>
-  )
-};
-
-export default LogIn;

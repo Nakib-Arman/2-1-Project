@@ -1,10 +1,11 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
+import { faCartShopping, faHome } from "@fortawesome/free-solid-svg-icons"; // Added faHome icon
 import { useNavigate } from "react-router-dom";
 import "./showBook.css";
 
 const ShowBook = () => {
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [books, setBooks] = useState([]);
   const [title, setTitle] = useState("");
   const [searchedBooks, setSearchedBooks] = useState([]);
@@ -90,6 +91,33 @@ const ShowBook = () => {
     }
   }
 
+  const addBook = () => {
+    navigate('/addBooks');
+  }
+
+  const showBooks = () => {
+    navigate('/showBooks');
+  }
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
+  }
+
+  async function MyProfile() {
+    navigate('/myProfile');
+  }
+
+
+  const handleDropdownItemClick = (action) => {
+    if (action === 'viewBorrowRequests') {
+      navigate('/borrowRequests');
+    } else if (action === 'addAuthor') {
+      navigate('/addAuthor');
+    } else if (action === 'addPublisher') {
+      navigate('/addPublisher');
+    }
+  }
+
   const addToCart = async (id, e) => {
     e.stopPropagation();
     try {
@@ -116,83 +144,94 @@ const ShowBook = () => {
     navigate("/showCart");
   };
 
+  const goToHome = () => {
+    navigate("/");
+  };
+
   return (
     <Fragment>
       <div className="page-container">
-      <h1 className="text-center mb-4" style={{ color: 'white' }}>
-        Search Books
-      </h1>
-      <div className="container">
-        <form onSubmit={searchBooks} className="row search-form">
-          <div className="col-md-3">
-            <input
-              type="text"
-              className="form-control"
-              placeholder="Enter Title or Author Name or Publisher Name or Category"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
+        <header className="header left-container fixed-header" style={{ height: '70px' }}>
+        
+          <div className="transparent-buttons">
+            <button onClick={goToHome}>Home</button>
+            <button onClick={addBook}>Add New Book</button>
+            <button onClick={showBooks} style={{ color: '#e06e86' }} >Search Books</button>
+            <button onClick={MyProfile} >My Profile</button>
+            <button onClick={goToCart}  >Cart</button>
+            <div className="hamburger-icon" onClick={toggleDropdown}>
+              <button>&#9776;</button>
+            </div>
+            {isDropdownVisible && (
+              <div className="dropdown-menu" style={{ opacity: 1 }}>
+                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}><b>Add Author</b></button>
+                <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}><b>Add Publisher</b></button>
+                <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}><b>Log Out</b></button>
+              </div>
+            )}
           </div>
-        </form>
-      </div>
+        </header>
+        <h1 className="text-center mb-4" style={{ color: 'white' }}>
+          Search Books
+        </h1>
+        <div className="container">
+          <form onSubmit={searchBooks} className="row search-form">
+            <div className="col-md-3">
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter Title or Author Name or Publisher Name or Category"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
+            </div>
+          </form>
+        </div>
 
-      <div className="container mt-5">
-        <div className="row">
-          {(isSearched ? searchedBooks : books || []).map((book) => (
-            <div key={book.book_id} className="col-md-4 mb-4">
-              <div
-                className="card h-100 book-card"
-                onClick={() => showBookByID(book.book_id)}
-                style={{ cursor: "pointer" }}
-              >
-                <div className="card-body">
-                  <img
-                    src={book.image_url}
-                    alt={book.title}
-                    className="book-image"
-                  />
-                  <h5 className="card-title book-title">{book.title}</h5>
-                  <p className="card-text">
-                    <strong>Publication:</strong> {book.publication_name}
-                  </p>
-                  <p className="card-text">
-                    <strong>Category:</strong> {book.category}
-                  </p>
-                </div>
-                <div className="card-footer">
-                  {book.copy == 0 &&
-                    <button className="btn w-100" style={{ backgroundColor: "#0358b4", color: "white" }}>
-                      Unavailable
-                    </button>
-                  }
-                  {book.copy > 0 &&
-                    <button
-                      onClick={(e) => addToCart(book.book_id, e)}
-                      className="btn btn-primary w-100"
-                    >
-                      Add to Cart
-                    </button>
-                  }
+        <div className="container mt-5">
+          <div className="row">
+            {(isSearched ? searchedBooks : books || []).map((book) => (
+              <div key={book.book_id} className="col-md-4 mb-4">
+                <div
+                  className="card h-100 book-card"
+                  onClick={() => showBookByID(book.book_id)}
+                  style={{ cursor: "pointer" }}
+                >
+                  <div className="card-body">
+                    <img
+                      src={book.image_url}
+                      alt={book.title}
+                      className="book-image"
+                    />
+                    <h5 className="card-title book-title">{book.title}</h5>
+                    <p className="card-text">
+                      <strong>Publication:</strong> {book.publication_name}
+                    </p>
+                    <p className="card-text">
+                      <strong>Category:</strong> {book.category}
+                    </p>
+                  </div>
+                  <div className="card-footer">
+                    {book.copy == 0 &&
+                      <button className="btn w-100" style={{ backgroundColor: "#0358b4", color: "white" }}>
+                        Unavailable
+                      </button>
+                    }
+                    {book.copy > 0 &&
+                      <button
+                        onClick={(e) => addToCart(book.book_id, e)}
+                        className="btn btn-primary w-100"
+                      >
+                        Add to Cart
+                      </button>
+                    }
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="head-color fixed-header">
-        <h1 className="text-center">Search Books</h1>
-        <button
-          onClick={goToCart}
-          className="cart-btn"
-          style={{
-            background: "transparent",
-            color: "white",
-            border: "white",
-          }}
-        >
-          <FontAwesomeIcon style={{ height: "25px" }} icon={faCartShopping} />
-        </button>
-      </div>
       </div>
     </Fragment>
   );

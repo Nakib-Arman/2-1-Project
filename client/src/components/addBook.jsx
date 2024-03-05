@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Select from 'react-select';
 import { Modal, Button } from 'react-bootstrap';
 
+
 const AddBook = () => {
+    const [isDropdownVisible, setDropdownVisible] = useState(false);
     const [TITLE, setTITLE] = useState("");
     const [CATEGORY, setCATEGORY] = useState("");
     const [AUTHORS, setAUTHORS] = useState([]);
@@ -136,12 +138,90 @@ const AddBook = () => {
         console.log(newShelf);
     }
 
+    const addBook = () => {
+        navigate('/addBooks');
+      }
+    
+      const showBooks = () => {
+        navigate('/showBooks');
+      }
+    
+      const toggleDropdown = () => {
+        setDropdownVisible(!isDropdownVisible);
+      }
+    
+      async function MyProfile() {
+        navigate('/myProfile');
+      }
+    
+    
+      const handleDropdownItemClick = (action) => {
+        if (action === 'viewBorrowRequests') {
+          navigate('/borrowRequests');
+        } else if (action === 'addAuthor') {
+          navigate('/addAuthor');
+        } else if (action === 'addPublisher') {
+          navigate('/addPublisher');
+        }
+      }
+    
+      const addToCart = async (id, e) => {
+        e.stopPropagation();
+        try {
+          const body = { book_id: id };
+          const response = await fetch("http://localhost:5000/addToCart", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              token: localStorage.token,
+            },
+            body: JSON.stringify(body),
+          });
+          if (response.ok) {
+            console.log("Added book with ID", id, "to cart");
+          } else {
+            console.error("Failed to add book to cart");
+          }
+        } catch (err) {
+          console.error("Failed to add book to cart:", err.message);
+        }
+      };
+    
+      const goToCart = () => {
+        navigate("/showCart");
+      };
+    
+      const goToHome = () => {
+        navigate("/");
+      };
+
 
     return (
         <Fragment>
             <div className="page-container">
+            <header className="header left-container fixed-header" style={{ height: '70px' }}>
+        
+        <div className="transparent-buttons">
+          <button onClick={goToHome}>Home</button>
+          <button onClick={addBook}>Add New Book</button>
+          <button onClick={showBooks} style={{ color: '#e06e86' }} >Search Books</button>
+          <button onClick={MyProfile} >My Profile</button>
+          <button onClick={goToCart}  >Cart</button>
+          <div className="hamburger-icon" onClick={toggleDropdown}>
+            <button>&#9776;</button>
+          </div>
+          {isDropdownVisible && (
+            <div className="dropdown-menu" style={{ opacity: 1 }}>
+              <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+              <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}><b>Add Author</b></button>
+              <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}><b>Add Publisher</b></button>
+              <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}><b>Log Out</b></button>
+            </div>
+          )}
+        </div>
+      </header>
                 <h1 className="text-center mb-4" style={{ color: "white" }}>BIBLIOPHILE</h1>
-                <h1 className="text-center head-color fixed-header">Add Book</h1>
+                {/* <h1 className="text-center head-color fixed-header">Add Book</h1> */}
                 <div
                     className="add-book-container"
                     style={{
@@ -347,6 +427,7 @@ const AddBook = () => {
                     </button>
                 </div>
             </div>
+            
         </Fragment>
     );
 };
