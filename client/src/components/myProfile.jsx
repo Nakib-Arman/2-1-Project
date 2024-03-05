@@ -1,7 +1,10 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import "./myProfile.css";
 
 const MyProfile = () => {
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [student, setStudent] = useState(null);
   const [staff, setStaff] = useState(null);
   const [shelves, setShelves] = useState([]);
@@ -16,6 +19,9 @@ const MyProfile = () => {
   const [departments, setDepartments] = useState([]);
   const [levels, setLevels] = useState([]);
   const [terms, setTerms] = useState([]);
+
+  
+  let navigate = useNavigate();
 
   const getInfo = async () => {
     try {
@@ -183,12 +189,73 @@ const MyProfile = () => {
     }
   };
 
+  const addBook = () => {
+    navigate('/addBooks');
+  }
+
+  const showBooks = () => {
+    navigate('/showBooks');
+  }
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
+  }
+
+  async function MyProfile() {
+    navigate('/myProfile');
+  }
+
+
+  const handleDropdownItemClick = (action) => {
+    if (action === 'viewBorrowRequests') {
+      navigate('/borrowRequests');
+    } else if (action === 'addAuthor') {
+      navigate('/addAuthor');
+    } else if (action === 'addPublisher') {
+      navigate('/addPublisher');
+    }
+  }
+
+
+  const goToCart = () => {
+    navigate("/showCart");
+  };
+
+  const goToHome = () => {
+    navigate("/");
+  };
+
 
   return (
     <Fragment>
       <div className="page-container">
+      
         <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
         <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
+        <header className="header left-container fixed-header" style={{ height: '70px' }}>
+  <div className="transparent-buttons">
+    <button onClick={goToHome} style={{ order: -1 }}>Home</button>
+    <div className="right-buttons">
+      <button onClick={addBook}>Add New Book</button>
+      <button onClick={showBooks}>Search Books</button>
+      <button onClick={MyProfile} style={{ color: '#e06e86' }}><b>My Profile</b></button>
+      <button onClick={goToCart}>Cart</button>
+      <div className="hamburger-icon" onClick={toggleDropdown}>
+        <button>&#9776;</button>
+      </div>
+      {isDropdownVisible && (
+        <div className="dropdown-menu" style={{ opacity: 1 }}>
+          <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+          <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}><b>Add Author</b></button>
+          <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}><b>Add Publisher</b></button>
+          <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}><b>Log Out</b></button>
+        </div>
+      )}
+    </div>
+  </div>
+</header>
+
+
         <div className="book-details-container">
           {userType === 'staff' && staff &&
             <table className="table mx-auto">

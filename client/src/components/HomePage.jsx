@@ -3,6 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useNavigate, useParams } from "react-router-dom";
+import Footer from "./footer";
 import image from './image.jpg';
 
 const HomePage = ({ setAuth }) => {
@@ -132,15 +133,16 @@ const HomePage = ({ setAuth }) => {
             <button onClick={addBook}>Add New Book</button>
             <button onClick={showBooks}>Search Books</button>
             <button onClick={MyProfile} >My Profile</button>
+            <button>Cart</button>
             <div className="hamburger-icon" onClick={toggleDropdown}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu">
-              <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}>View Borrow Requests</button>
-              <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}>Add Author</button>
-              <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}>Add Publisher</button>
-              <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}>Log Out</button>
+              <div className="dropdown-menu" style={{ opacity: 0.4 }}>
+              <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+              <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}><b>Add Author</b></button>
+              <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}><b>Add Publisher</b></button>
+              <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}><b>Log Out</b></button>
             </div>
             
             )}
@@ -215,6 +217,7 @@ const HomePage = ({ setAuth }) => {
           </Slider>
         </div>
       </div>
+      <Footer/>
     </Fragment>
   );
 };

@@ -5,6 +5,7 @@ import "./ShowCart.css";
 const ShowCart = () => {
   const [cart, setCart] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
+  const [isDropdownVisible, setDropdownVisible] = useState(false);
 
   let navigate = useNavigate();
 
@@ -120,10 +121,71 @@ const ShowCart = () => {
     }
   };
 
+  const addBook = () => {
+    navigate('/addBooks');
+  }
+
+  const showBooks = () => {
+    navigate('/showBooks');
+  }
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
+  }
+
+  async function MyProfile() {
+    navigate('/myProfile');
+  }
+
+
+  const handleDropdownItemClick = (action) => {
+    if (action === 'viewBorrowRequests') {
+      navigate('/borrowRequests');
+    } else if (action === 'addAuthor') {
+      navigate('/addAuthor');
+    } else if (action === 'addPublisher') {
+      navigate('/addPublisher');
+    }
+  }
+
+
+  const goToCart = () => {
+    navigate("/showCart");
+  };
+
+  const goToHome = () => {
+    navigate("/");
+  };
+
   return (
     <Fragment>
       <div className="container">
-        <h2 className="text-center mb-4">Your Cart</h2>
+        {/* <h2 className="text-center mb-4">Your Cart</h2> */}
+        <header className="header left-container fixed-header mb-5" style={{ height: '70px' }}>
+          
+        
+          <div className="transparent-buttons">
+            <button onClick={goToHome}>Home</button>
+            <button onClick={addBook}>Add New Book</button>
+            <button onClick={showBooks} style={{ color: '#e06e86' }} >Search Books</button>
+            <button onClick={MyProfile} >My Profile</button>
+            <button onClick={goToCart}  >Cart</button>
+            <div className="hamburger-icon" onClick={toggleDropdown}>
+              <button>&#9776;</button>
+            </div>
+            {isDropdownVisible && (
+              <div className="dropdown-menu" style={{ opacity: 1 }}>
+                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}><b>Add Author</b></button>
+                <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}><b>Add Publisher</b></button>
+                <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}><b>Log Out</b></button>
+              </div>
+            )}
+          </div>
+        </header>
+        <p style={{
+            height: '30px',
+          }}></p>
         <table className="table mt-5">
           <thead>
             <tr>
