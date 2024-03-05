@@ -34,13 +34,13 @@ const BorrowRequests = () => {
             const AcceptedData = await Acceptedresponse.json();
             const Deniedresponse = await fetch(`http://localhost:5000/studentrejectedRequests/${user_id}`);
             const DeniedData = await Deniedresponse.json();
-            if(requestType==='Pending'){
+            if (requestType === 'Pending') {
                 setStudents(PendingData);
             }
-            else if (requestType==='Accepted'){
+            else if (requestType === 'Accepted') {
                 setStudents(AcceptedData);
             }
-            else if (requestType==='Rejected'){
+            else if (requestType === 'Rejected') {
                 setStudents(DeniedData);
             }
 
@@ -59,13 +59,13 @@ const BorrowRequests = () => {
             const AcceptedData = await Acceptedresponse.json();
             const Deniedresponse = await fetch(`http://localhost:5000/teacherrejectedRequests/${user_id}`);
             const DeniedData = await Deniedresponse.json();
-            if(requestType==='Pending'){
+            if (requestType === 'Pending') {
                 setTeachers(PendingData);
             }
-            else if (requestType==='Accepted'){
+            else if (requestType === 'Accepted') {
                 setTeachers(AcceptedData);
             }
-            else if (requestType==='Rejected'){
+            else if (requestType === 'Rejected') {
                 setTeachers(DeniedData);
             }
         } catch (err) {
@@ -83,13 +83,13 @@ const BorrowRequests = () => {
             const AcceptedData = await Acceptedresponse.json();
             const Deniedresponse = await fetch(`http://localhost:5000/staffrejectedRequests/${user_id}`);
             const DeniedData = await Deniedresponse.json();
-            if(requestType==='Pending'){
+            if (requestType === 'Pending') {
                 setStaffs(PendingData);
             }
-            else if (requestType==='Accepted'){
+            else if (requestType === 'Accepted') {
                 setStaffs(AcceptedData);
             }
-            else if (requestType==='Rejected'){
+            else if (requestType === 'Rejected') {
                 setStaffs(DeniedData);
             }
         } catch (err) {
@@ -103,42 +103,37 @@ const BorrowRequests = () => {
         return formattedDate;
     };
 
-    const handleAcceptClick = async (request_id,user_id,book_id) => {
+    const handleAcceptClick = async (request_id, user_id, book_id) => {
         const response1 = await fetch(`http://localhost:5000/updateStatus/${request_id}`, {
             method: 'PUT',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             }
-          });
-          const body= {user_id,book_id};
-          const response2 = await fetch("http://localhost:5000/updateUserBook", {
+        });
+        const body = { user_id, book_id };
+        const response2 = await fetch("http://localhost:5000/updateUserBook", {
             method: 'PUT',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify(body)
-          });
-          fetchData();
+        });
+        fetchData();
     };
 
     const handleDenyClick = async (request_id) => {
         const response1 = await fetch(`http://localhost:5000/denyStatus/${request_id}`, {
             method: 'PUT',
             headers: {
-              'Content-Type': 'application/json',
+                'Content-Type': 'application/json',
             }
         });
         fetchData();
     };
 
-    const handleDropdownChange = (selectedType) => {
-        setRequestType(selectedType);
-        fetchData();
-    }
-
     useEffect(() => {
         fetchData();
-    }, [selectedOption,requestType]);
+    }, [selectedOption, requestType]);
 
 
     return (
@@ -146,25 +141,25 @@ const BorrowRequests = () => {
             <h1 className="text-center head-color mb-5 fixed-header">Borrow Requests</h1>
             <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
             <div>
-                    <select
-                        className="form-control custom-select"
-                        style={{width: '200px'}}
-                        value={requestType}
-                        onChange={(e) => setRequestType(e.target.value)}
-                    >
-                        <option value="Pending">Pending</option>
-                        <option value="Accepted">Accepted</option>
-                        <option value="Rejected">Rejected</option>
-                    </select>
-                </div>
+                <select
+                    className="form-control custom-select"
+                    style={{ width: '200px' }}
+                    value={requestType}
+                    onChange={(e) => setRequestType(e.target.value)}
+                >
+                    <option value="Pending">Pending</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Rejected">Rejected</option>
+                </select>
+            </div>
             <div className="mt-5">
                 <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'students' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('students')}>
                     Student
                 </button>
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#ccc' : 'white'  }} onClick={() => setSelectedOption('teachers')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('teachers')}>
                     Teacher
                 </button>
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#ccc' : 'white'  }} onClick={() => setSelectedOption('staffs')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('staffs')}>
                     Staff
                 </button>
             </div>
@@ -186,20 +181,40 @@ const BorrowRequests = () => {
                         <span className="option-text">
                             Date: {formatDate(student.date_borrowed)}
                         </span>
-                        <div className="buttons-container mt-2">
-                            <button
-                                className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(student.request_id,student.student_id,student.book_id)}
-                            >
-                                Accept
-                            </button>
-                            <button
-                                className="btn deny-button"
-                                onClick={() => handleDenyClick(student.request_id)}
-                            >
-                                Deny
-                            </button>
-                        </div>
+                        {requestType == 'Pending' &&
+                            <div className="buttons-container mt-2">
+                                <button
+                                    className="btn accept-button mr-3"
+                                    onClick={() => handleAcceptClick(student.request_id, student.student_id, student.book_id)}
+                                >
+                                    Accept
+                                </button>
+                                <button
+                                    className="btn deny-button"
+                                    onClick={() => handleDenyClick(student.request_id)}
+                                >
+                                    Deny
+                                </button>
+                            </div>
+                        }
+                        {requestType == 'Accepted' &&
+                            <div className="buttons-container mt-2">
+                                <button
+                                    className="btn accept-button mr-3"
+                                >
+                                    Restore Book
+                                </button>
+                            </div>
+                        }
+                        {requestType == 'Rejected' &&
+                            <div className="buttons-container mt-2">
+                                <label
+                                    className="btn" style={{backgroundColor: '#c90000', color: 'white'}}
+                                >
+                                    Rejected
+                                </label>
+                            </div>
+                        }
                         <p> </p>
                         <p>
                             {student.request_status}
@@ -227,7 +242,7 @@ const BorrowRequests = () => {
                         <div className="buttons-container mt-2">
                             <button
                                 className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(teacher.request_id,teacher.teacher_id,teacher.book_id)}
+                                onClick={() => handleAcceptClick(teacher.request_id, teacher.teacher_id, teacher.book_id)}
                             >
                                 Accept
                             </button>
@@ -265,7 +280,7 @@ const BorrowRequests = () => {
                         <div className="buttons-container mt-2">
                             <button
                                 className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(staff.request_id,staff.staff_id,staff.book_id)}
+                                onClick={() => handleAcceptClick(staff.request_id, staff.staff_id, staff.book_id)}
                             >
                                 Accept
                             </button>
