@@ -108,9 +108,6 @@ const HomePage = ({ setAuth }) => {
     prevArrow: <PrevArrow style={{ fontSize: '24px', color: '#000' }} />,
   };
 
-  const handleBookClick = (bookId) => {
-    navigate(`/showBookDetails/${bookId}`);
-  };
 
 
 
@@ -120,14 +117,14 @@ const HomePage = ({ setAuth }) => {
     getRecentSearchedBooks();
     getUserType();
     // Attach the scroll event listener
-
+    
   }, []);
 
   return (
     <Fragment>
       <div className="page-container">
         <header className="header left-container fixed-header" style={{ height: '70px' }}>
-
+          
           <div className="transparent-buttons">
             <button onClick={addBook}>Add New Book</button>
             <button onClick={showBooks}>Search Books</button>
@@ -137,16 +134,15 @@ const HomePage = ({ setAuth }) => {
             </div>
             {isDropdownVisible && (
               <div className="dropdown-menu">
-              <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}>View Borrow Requests</button>
-              <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '100%', textAlign: 'right' }}>Add Author</button>
-              <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '100%', textAlign: 'right' }}>Add Publisher</button>
-              <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '100%', textAlign: 'right' }}>Log Out</button>
-            </div>
-            
+                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')}>View Borrow Requests</button>
+                <button onClick={() => handleDropdownItemClick('addAuthor')}>Add Author</button>
+                <button onClick={() => handleDropdownItemClick('addPublisher')}>Add Publisher</button>
+                <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button">Log Out</button>
+              </div>
             )}
           </div>
         </header>
-        <main className="image-container mt-5" style={{ height: '70vh', position: 'relative' }}>
+        <main className="image-container mt-5" style={{ height: '70vh',position: 'relative' }}>
           <img src={image} alt="Full Screen Image" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
           <div>
             <h1 className="text-overlay" style={{
@@ -180,13 +176,12 @@ const HomePage = ({ setAuth }) => {
               _______________________________
             </h1>
           </div>
-
         </main>
         <div className="container mt-5">
           <h3 style={{ background: '#555', color: 'white' }}>Top Priorities</h3>
           <Slider {...settings}>
             {topPriorityBooks.map((book) => (
-              <div key={book.book_id} className="book-slider-item" style={{ backgroundColor: '#333' }} onClick={() => handleBookClick(book.book_id)}>
+              <div key={book.book_id} className="book-slider-item" style={{backgroundColor: '#333'}}>
                 <div className="card h-100" style={{ cursor: "pointer" }}>
                   <div className="card-body">
                     <h5 className="card-title book-title">{book.title}</h5>
@@ -202,7 +197,7 @@ const HomePage = ({ setAuth }) => {
           <h3 style={{ background: '#555', color: 'white' }}>Recently Searched</h3>
           <Slider {...settings}>
             {recentSearchedBooks.map((book) => (
-              <div key={book.book_id} className="book-slider-item" style={{ backgroundColor: '#333' }} onClick={() => handleBookClick(book.book_id)}>
+              <div key={book.book_id} className="book-slider-item">
                 <div className="card h-100" style={{ cursor: "pointer" }}>
                   <div className="card-body">
                     <h5 className="card-title book-title">{book.title}</h5>
