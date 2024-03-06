@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const StaffProfile = () => {
+const StaffProfile = ({ setAuth }) => {
   const [staff, setStaff] = useState({});
   const { id } = useParams();
 

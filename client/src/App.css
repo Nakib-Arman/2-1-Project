@@ -49,7 +49,7 @@ body {
   position: absolute;
   top: 100%;
   right: 0;
-  background-color: #e1e1e1;
+  background-color: #f7e8e8;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -213,7 +213,7 @@ body {
 }
 
 .button-color{
-  background-color:#333;
+  background-color:#5A1917;
   color: rgb(233, 229, 229);
 }
 
@@ -356,4 +356,8 @@ body {
 .page-container {
   background-color: #fffafa; /* Set your desired background color here */
   /* You can add more styles as needed */
+}
+
+.color{
+  color: #f7e8e8
 }

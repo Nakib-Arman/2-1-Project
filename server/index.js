@@ -4,6 +4,8 @@ const cors = require("cors");
 const pool = require("./db");
 const authorization = require("./middleware/authorization");
 const jwtGenerator = require("./jwtGenerator");
+const bodyParser = require('body-parser');
+const bcrypt = require('bcrypt');
 
 app.use(cors());
 app.use(express.json());
@@ -137,25 +139,43 @@ app.post("/requestBorrowRelation", (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
-
-app.post("/LogIn", async (req,res) => {
-    try{
-        const { PHONE, PASSWORD } = req.body;
-        const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER=$1 AND LIBRARY_PASSWORD=$2",[PHONE,PASSWORD]);
-        if(user.rows.length >0 ){
-            
-            const token = jwtGenerator(user.rows[0].user_id);
-            
-            res.json({token});
-            //res.json(user.rows[0]);
+  
+  app.post("/LogIn", async (req, res) => {
+    try {
+      const { PHONE, PASSWORD } = req.body;
+      const user = await pool.query("SELECT * FROM USERS WHERE PHONE_NUMBER=$1", [PHONE]);
+  
+      if (user.rows.length > 0) {
+        const isPasswordValid = await bcrypt.compare(PASSWORD, user.rows[0].library_password);
+  
+        if (isPasswordValid) {
+          const token = jwtGenerator(user.rows[0].user_id);
+          res.json({ token });
+        } else {
+          res.status(401).json({ message: "Invalid credentials" });
         }
-        else{
-            res.status(401).json({ message: "Invalid credentials" }); 
-        }
-    }catch(err){
-        console.log(err.message);
+      } else {
+        res.status(401).json({ message: "Invalid credentials" });
+      }
+    } catch (err) {
+      console.log(err.message);
+      res.status(500).json({ message: "Internal server error" });
     }
-});
+  });
+  
+  // Function to compare passwords
+  async function comparePasswords(plainPassword, encryptedPassword) {
+    return new Promise((resolve, reject) => {
+      pool.query('SELECT $1 = crypt($2, $1) AS match', [encryptedPassword, plainPassword], (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.rows[0].match);
+        }
+      });
+    });
+  }
+  
 
 app.get("/userLogIn/:PHONE", async (req, res) => {
     try {

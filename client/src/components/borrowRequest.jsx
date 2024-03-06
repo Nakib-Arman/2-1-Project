@@ -1,7 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
-const BorrowRequests = () => {
+const BorrowRequests = ({ setAuth }) => {
     const [students, setStudents] = useState([]);
     const [teachers, setTeachers] = useState([]);
     const [staffs, setStaffs] = useState([]);
@@ -138,12 +138,13 @@ const BorrowRequests = () => {
 
     return (
         <Fragment>
-            <h1 className="text-center head-color mb-5 fixed-header">Borrow Requests</h1>
+            <div className="page-container">
+            <h1 className="fixed-header" style={{backgroundColor: '#5A1917'}}>Borrow Requests</h1>
             <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
             <div>
                 <select
                     className="form-control custom-select"
-                    style={{ width: '200px' }}
+                    style={{ width: '200px',position:'relative',left: '10px'}}
                     value={requestType}
                     onChange={(e) => setRequestType(e.target.value)}
                 >
@@ -153,13 +154,13 @@ const BorrowRequests = () => {
                 </select>
             </div>
             <div className="mt-5">
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'students' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('students')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'students' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('students')}>
                     Student
                 </button>
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('teachers')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('teachers')}>
                     Teacher
                 </button>
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#ccc' : 'white' }} onClick={() => setSelectedOption('staffs')}>
+                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('staffs')}>
                     Staff
                 </button>
             </div>
@@ -297,6 +298,7 @@ const BorrowRequests = () => {
                         </p>
                     </div>
                 ))}
+            </div>
             </div>
         </Fragment>
     );

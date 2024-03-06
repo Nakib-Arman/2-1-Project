@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState,useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate} from "react-router-dom";
 import './App.css';
 
@@ -26,21 +26,38 @@ const App = () => {
     setIsAuthenticated(boolean);
   };
 
+  async function isAuth() {
+    try{
+      const response = await fetch ("http://localhost:5000/verify",{
+        method: "GET",
+        headers: {token : localStorage.token}
+      });
+      const parseRes = await response.json();
+      parseRes===true? setIsAuthenticated(true): setIsAuthenticated(false);
+    }catch(err){
+      console.error(err.message);
+    }
+  }
+
+  useEffect(()=> {
+    isAuth()
+  })
+
   return (
     <div>
       <Router>
         <Routes>
           <Route exact path="/" element={isAuthenticated ? <HomePage setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
           <Route exact path="/LogIn" element={!isAuthenticated ? <LogIn setAuth={setAuth}/> : <Navigate to = "/" />} />
-          <Route exact path="/addBooks" element={<AddBook />} />
-          <Route exact path="/showBooks" element={<ShowBook />} />
-          <Route exact path="/myProfile" element={<MyProfile />} />
-          <Route exact path="/showBookDetails/:id" element={<ShowBookDetails />} />
-          <Route exact path="/borrowRequests" element={<BorrowRequests />} />
-          <Route exact path="/showCart" element={<ShowCart />} />
-          <Route exact path="/HomePageForStudentTeacher" element={<HomePageForStudentTeacher />} />
-          <Route exact path="/studentProfile/:id" element={<StudentProfile/>}/>
-          <Route exact path="/staffProfile/:id" element={<StaffProfile/>}/>
+          <Route exact path="/addBooks" element={isAuthenticated ? <AddBook setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/showBooks" element={isAuthenticated ? <ShowBook setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/myProfile" element={isAuthenticated ? <MyProfile setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/showBookDetails/:id" element={isAuthenticated ? <ShowBookDetails setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/borrowRequests" element={isAuthenticated ? <BorrowRequests setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/showCart" element={isAuthenticated ? <ShowCart setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/HomePageForStudentTeacher" element={isAuthenticated ? <HomePageForStudentTeacher setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
+          <Route exact path="/studentProfile/:id" element={isAuthenticated ? <StudentProfile setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
+          <Route exact path="/staffProfile/:id" element={isAuthenticated ? <StaffProfile setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
           <Route exact path="/signUp" element={<SignUp/>}/>   
           {/* <Route exact path="/editProfile" element={<editProfile/>}/> */}
         </Routes>

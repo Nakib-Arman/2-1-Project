@@ -8,7 +8,7 @@ import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { Navigate } from "react-router-dom";
 import "./showBookDetails.css";
 
-const ShowBookDetails = () => {
+const ShowBookDetails = ({ setAuth }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [book, setBook] = useState(null);
   const [authors, setAuthors] = useState([]);
