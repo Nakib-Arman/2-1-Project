@@ -67,6 +67,19 @@ const ShowBook = ({ setAuth }) => {
   }, [title]);
 
   const showBookByID = (id) => {
+    try{
+        const body = { book_id: id };
+        const response = fetch(`http://localhost:5000/addToSearched`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            token: localStorage.token,
+          },
+          body: JSON.stringify(body),
+        });
+    }catch(err){
+      console.error(err.message);
+    }
     navigate(`/showBookDetails/${id}`);
   };
 

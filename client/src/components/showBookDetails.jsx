@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
 import { Navigate } from "react-router-dom";
 import "./showBookDetails.css";
+import Footer from "./footer";
 
 const ShowBookDetails = ({ setAuth }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -161,20 +162,27 @@ const ShowBookDetails = ({ setAuth }) => {
 
   return (
     <Fragment>
-      <header className="header left-container fixed-header" style={{ height: '70px' }}>
-        
-        <div className="transparent-buttons">
-          <button onClick={goToHome}>Home</button>
-          <button onClick={addBook}>Add New Book</button>
-          <button onClick={showBooks} style={{ color: '#e06e86' }} >Search Books</button>
-          <button onClick={MyProfile} >My Profile</button>
-          <button onClick={goToCart}  >Cart</button>
-          <div className="hamburger-icon" onClick={toggleDropdown}>
-          
-          </div>
-          
-        </div>
-      </header>
+      <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
+
+<div className="transparent-buttons">
+  <button className="btn" onClick={()=>{navigate("/")}}  >Home</button>
+  <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
+  <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
+  <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>
+  <button className="btn" onClick={goToCart} style={{ position: 'absolute', left: '770px' }}>Cart</button>
+  <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
+    <button>&#9776;</button>
+  </div>
+  {isDropdownVisible && (
+    <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
+      <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+      <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '90%', textAlign: 'right' }}><b>Add Author</b></button>
+      <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '90%', textAlign: 'right' }}><b>Add Publisher</b></button>
+      <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
+    </div>
+  )}
+</div>
+</header>
       {/* <div className="head-color fixed-header">
         <h1 className="text-center">Book Details</h1>
         <button
@@ -259,7 +267,7 @@ const ShowBookDetails = ({ setAuth }) => {
               <div key={book.book_id} className="book-slider-item" style={{backgroundColor: '#333'}}>
                 <div className="card h-100" style={{ cursor: "pointer" }}>
                   <div className="card-body">
-                    <h5 className="card-title book-title">{book.title}</h5>
+                    <h5 className="card-title book-title"><i>{book.title}</i></h5>
                     <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
                     <p className="card-text"><strong>Category:</strong> {book.category}</p>
                   </div>
@@ -268,6 +276,7 @@ const ShowBookDetails = ({ setAuth }) => {
             ))}
           </Slider>
         </div>
+        <Footer />
     </Fragment>
   );
 }

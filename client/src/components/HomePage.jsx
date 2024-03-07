@@ -15,7 +15,7 @@ const HomePage = ({ setAuth }) => {
 
   const getPriorityBooks = async () => {
     try {
-      const response = await fetch("http://localhost:5000/showBooks");
+      const response = await fetch("http://localhost:5000/showTopPriority");
       const jsonData = await response.json();
       setTopPriorityBooks(jsonData);
     } catch (err) {
@@ -105,7 +105,7 @@ const HomePage = ({ setAuth }) => {
     slidesToShow: 3,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 3000,
+    autoplaySpeed: 10000,
     nextArrow: <NextArrow style={{ fontSize: '24px', color: '#000' }} />,
     prevArrow: <PrevArrow style={{ fontSize: '24px', color: '#000' }} />,
   };
@@ -133,7 +133,7 @@ const HomePage = ({ setAuth }) => {
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
           <div className="transparent-buttons">
-            <button className="btn" style={{ position: 'relative', left: '10px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Home</button>
+            <button className="btn" onClick={()=>{navigate("/")}}  style={{ position: 'relative', left: '10px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Home</button>
             <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
             <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
             <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>

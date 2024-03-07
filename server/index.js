@@ -309,6 +309,15 @@ app.get("/showBooks", async (req, res) => {
     }
 })
 
+app.get("/showTopPriority", async (req, res) => {
+    try {
+        const books = await pool.query("SELECT DISTINCT B.TITLE, B.CATEGORY, P.PUBLICATION_NAME FROM BOOKS B JOIN BOOK_SEARCHED BS ON (B.BOOK_ID=BS.BOOK_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) ORDER BY B.TITLE ASC");
+        res.json(books.rows);
+    } catch (err) {
+        console.error(err.message);
+    }
+})
+
 app.get("/showBooksByCategory", async (req, res) => {
     try {
         const { title, category } = req.query; 
@@ -528,6 +537,28 @@ app.get("/staffrejectedRequests/:id",async (req,res) =>{
     }
 })
 
+app.get("/staffrejectedRequests/:id",async (req,res) =>{
+    try{
+        const staffs = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Rejected'",[req.params.id]);
+        res.json(staffs.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/studentAllAccepted",async (req,res) =>{
+    try{
+        const students = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE RBR.REQUEST_STATUS='Accepted'"
+        );
+        res.json(students.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+
 app.post("/addToUserRequest", authorization, async (req, res) => {
     try {
         const { book_id } = req.body;
@@ -722,6 +753,18 @@ app.post("/payDue/:id", async (req, res) => {
         const { id } = req.params;
         const { payment } = req.body;
         const response = await pool.query("INSERT INTO USER_TRANSACTON (USER_ID,PAID) VALUES ($1,$2)", [id,payment]);
+        res.json(response);
+    } catch (err) {
+        console.error(err.message);
+    }
+});
+
+app.post("/addToSearched", authorization,async (req, res) => {
+    try {
+        const id = req.user;
+        const { book_id } = req.body;
+        console.log(id, book_id);
+        const response = await pool.query("INSERT INTO BOOK_SEARCHED (USER_ID,BOOK_ID) VALUES ($1,$2)", [id,book_id]);
         res.json(response);
     } catch (err) {
         console.error(err.message);
