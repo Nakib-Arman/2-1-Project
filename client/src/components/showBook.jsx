@@ -67,17 +67,17 @@ const ShowBook = ({ setAuth }) => {
   }, [title]);
 
   const showBookByID = (id) => {
-    try{
-        const body = { book_id: id };
-        const response = fetch(`http://localhost:5000/addToSearched`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            token: localStorage.token,
-          },
-          body: JSON.stringify(body),
-        });
-    }catch(err){
+    try {
+      const body = { book_id: id };
+      const response = fetch(`http://localhost:5000/addToSearched`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token: localStorage.token,
+        },
+        body: JSON.stringify(body),
+      });
+    } catch (err) {
       console.error(err.message);
     }
     navigate(`/showBookDetails/${id}`);
@@ -104,7 +104,7 @@ const ShowBook = ({ setAuth }) => {
       console.error("Failed to add book to cart:", err.message);
     }
   }
-  
+
   const goToHome = () => {
     navigate("/");
   };
@@ -181,7 +181,7 @@ const ShowBook = ({ setAuth }) => {
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
+              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
                 <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
                 <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>

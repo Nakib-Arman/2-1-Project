@@ -21,7 +21,7 @@ const MyProfile = ({ setAuth }) => {
   const [levels, setLevels] = useState([]);
   const [terms, setTerms] = useState([]);
 
-  
+
   let navigate = useNavigate();
 
   const getInfo = async () => {
@@ -60,6 +60,13 @@ const MyProfile = ({ setAuth }) => {
         setUserType('staff');
         setStaff(staffData[0]);
         setShelves(staffData);
+      }
+
+      const staffResponse2 = await fetch(`http://localhost:5000/staffProfile2/${user_id}`);
+      const staffData2 = await staffResponse2.json();
+      if (staffData2.length > 0) {
+        setUserType('staff');
+        setStaff(staffData2[0]);
       }
     } catch (err) {
       console.error("Failed to fetch user details", err.message);
@@ -206,7 +213,7 @@ const MyProfile = ({ setAuth }) => {
     navigate('/myProfile');
   }
 
-  
+
   const goToCart = () => {
     navigate("/showCart");
   };
@@ -232,22 +239,22 @@ const MyProfile = ({ setAuth }) => {
   return (
     <Fragment>
       <div className="page-container mb-5">
-      
+
         <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
         <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
           <div className="transparent-buttons">
-            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px'}}>Home</button>
+            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px' }}>Home</button>
             <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
             <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
-            <button className="btn" style={{ position: 'absolute', left: '670px', backgroundColor: '#f7e8e8', color: '#5A1917'  }}>My Profile</button>
+            <button className="btn" style={{ position: 'absolute', left: '670px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>My Profile</button>
             <button className="btn" onClick={goToCart} style={{ position: 'absolute', left: '770px' }}>Cart</button>
             <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
+              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
                 <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
                 <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
@@ -463,7 +470,7 @@ const MyProfile = ({ setAuth }) => {
           </div>
         }
       </div>
-      <Footer/>
+      <Footer />
     </Fragment>
   );
 }

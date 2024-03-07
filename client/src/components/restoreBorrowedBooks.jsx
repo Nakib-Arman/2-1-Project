@@ -231,7 +231,7 @@ const RestoreBorrowedBooks = ({ setAuth }) => {
                 </div>
             </div>
             <p className="mt-5"></p>
-            <Footer/>
+            <Footer />
         </Fragment>
     );
 };

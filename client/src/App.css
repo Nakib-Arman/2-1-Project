@@ -354,7 +354,8 @@ body {
 }
 
 .page-container {
-  background-color: #fffafa; /* Set your desired background color here */
+  background-color: #fffafa; 
+  min-height: 800px;/* Set your desired background color here */
   /* You can add more styles as needed */
 }
 

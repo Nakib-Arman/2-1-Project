@@ -12,6 +12,18 @@ const Footer = () => {
     setShowDeveloperModal(!showDeveloperModal);
   }
 
+  const LibraryMembers = () => {
+    navigate("/libraryMembers");
+  }
+
+  const Contacts = () => {
+    navigate("/contactus");
+  }
+
+  const Feedback = () => {
+    navigate('/feedback');
+  }
+
   const AboutUs = () => {
     navigate('/aboutUs');
   }
@@ -19,9 +31,9 @@ const Footer = () => {
   return (
     <footer className="footer-container">
       <div className="footer-links">
-        <button className="footer-link">Library Members</button>
-        <button className="footer-link">Contacts</button>
-        <button className="footer-link">Privacy Policy</button>
+        <button className="footer-link" onClick={LibraryMembers}>Library Members</button>
+        <button className="footer-link" onClick={Contacts}>Contact Us</button>
+        <button className="footer-link" onClick={Feedback}>Feedback</button>
         <button className="footer-link" onClick={AboutUs}>About Us</button>
       </div>
       <label onClick={openDeveloperModal}>&copy; 2105128_2105132</label>

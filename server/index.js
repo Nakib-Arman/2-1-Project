@@ -302,7 +302,7 @@ app.get("/publishers",async(req,res)=>{
 
 app.get("/showBooks", async (req, res) => {
     try {
-        const books = await pool.query("SELECT BOOK_ID,IMAGE(B.BOOK_ID) IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION_NAME FROM BOOKS B ORDER BY TITLE");
+        const books = await pool.query("SELECT BOOK_ID,IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION_NAME FROM BOOKS B ORDER BY TITLE");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -311,7 +311,7 @@ app.get("/showBooks", async (req, res) => {
 
 app.get("/showTopPriority", async (req, res) => {
     try {
-        const books = await pool.query("SELECT DISTINCT B.TITLE, B.CATEGORY, P.PUBLICATION_NAME FROM BOOKS B JOIN BOOK_SEARCHED BS ON (B.BOOK_ID=BS.BOOK_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) ORDER BY B.TITLE ASC");
+        const books = await pool.query("SELECT DISTINCT BS.BOOK_ID,B.TITLE, B.CATEGORY,COUNT(*) AS COUNT,PU.PUBLICATION_NAME FROM BOOKS B JOIN BOOK_SEARCHED BS ON (B.BOOK_ID=BS.BOOK_ID) JOIN PUBLISHERS PU ON(B.PUBLISHER_ID=PU.PUBLISHER_ID) GROUP BY BS.BOOK_ID,B.TITLE,B.CATEGORY,PU.PUBLICATION_NAME ORDER BY COUNT DESC;");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -321,7 +321,7 @@ app.get("/showTopPriority", async (req, res) => {
 app.get("/showBooksByCategory", async (req, res) => {
     try {
         const { title, category } = req.query; 
-        const books = await pool.query("SELECT BOOK_ID,IMAGE(B.BOOK_ID) IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
+        const books = await pool.query("SELECT BOOK_ID,B.IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY, TITLE, CATEGORY, (SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID = B.PUBLISHER_ID) AS PUBLICATION FROM BOOKS B WHERE B.CATEGORY = $1 AND LOWER(B.TITLE) LIKE $2 ORDER BY BOOK_ID", [category, `%${title.toLowerCase()}%`]); // Adjusted query to use LIKE for case-insensitive title search
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -357,12 +357,21 @@ app.get("/staffProfile/:id",async (req,res) => {
     }
 })
 
+app.get("/staffProfile2/:id",async (req,res) => {
+    try{
+        const staff = await pool.query("SELECT ST.STAFF_ID,U.FIRST_NAME, U.LAST_NAME, U.PHONE_NUMBER, TOTAL_DUE(U.USER_ID) DUE FROM USERS U JOIN STAFFS ST ON (U.USER_ID=ST.STAFF_ID) WHERE U.USER_ID=$1",[req.params.id]);
+        res.json(staff.rows);
+    }catch(err) {
+        console.error(err.message);
+    }
+})
+
 app.get("/searchBooks/:title", async (req, res) => {
     try {
         const { title } = req.params;
         const searchResults = await pool.query(
             `SELECT 
-                IMAGE(B.BOOK_ID) AS IMAGE_URL, 
+                B.IMAGE_URL, 
                 COPIES_AVAILABLE(B.BOOK_ID) AS COPY, 
                 B.TITLE, 
                 B.CATEGORY, 
@@ -376,7 +385,7 @@ app.get("/searchBooks/:title", async (req, res) => {
                 LOWER(A.AUTHOR_NAME) LIKE $1 
             UNION 
             SELECT 
-                IMAGE(B2.BOOK_ID) AS IMAGE_URL, 
+                B2.IMAGE_URL, 
                 COPIES_AVAILABLE(B2.BOOK_ID) AS COPY, 
                 B2.TITLE, 
                 B2.CATEGORY, 
@@ -388,7 +397,7 @@ app.get("/searchBooks/:title", async (req, res) => {
                 LOWER(BOOK_PUBLICATION(B2.BOOK_ID)) LIKE $1 
             UNION 
             SELECT 
-                IMAGE(B3.BOOK_ID) AS IMAGE_URL, 
+                B3.IMAGE_URL, 
                 COPIES_AVAILABLE(B3.BOOK_ID) AS COPY, 
                 B3.TITLE, 
                 B3.CATEGORY, 
@@ -400,7 +409,7 @@ app.get("/searchBooks/:title", async (req, res) => {
                 LOWER(B3.TITLE) LIKE $1 
             UNION 
             SELECT 
-                IMAGE(B4.BOOK_ID) AS IMAGE_URL, 
+                B4.IMAGE_URL, 
                 COPIES_AVAILABLE(B4.BOOK_ID) AS COPY, 
                 B4.TITLE, 
                 B4.CATEGORY, 
@@ -425,7 +434,7 @@ app.get("/searchBooks/:title", async (req, res) => {
 app.get("/showBookDetails/:id", async (req, res) => {
     try {
         const books = await pool.query
-            ("SELECT IMAGE(B.BOOK_ID) IMAGE_URL, B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
+            ("SELECT B.IMAGE_URL, B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -797,6 +806,49 @@ app.get("/getAcquisitionRecord", async (req,res) => {
     try{
         const response = await pool.query("SELECT * FROM BOOKS B JOIN ACQUISITION A ON (B.BOOK_ID=A.BOOK_ID) JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) ORDER BY A.DATE_BOUGHT");
         console.log(response);
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.post("/signup/student", async (req, res) => {
+    try {
+        const { userID, firstName, lastName, phone, password, level, term, department } = req.body;
+        const response = await pool.query("CALL STUDENT_SIGN_UP($1, $2, $3, $4, $5, $6, $7, $8)", [userID, firstName, lastName, phone, password, level, term, department]);
+        res.json(response.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({ error: err.message });
+    }
+});
+
+app.post("/signup/staff",async(req, res)=>{
+    try{
+        const {userID,firstName,lastName,phone,password}=req.body;
+        const response=await pool.query("CALL STAFF_SIGN_UP($1,$2,$3,$4,$5)",[userID,firstName,lastName,phone,password]);
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+        res.status(500).json({error:err.message});
+    }
+});
+
+app.post("/signup/teacher",async(req, res)=>{
+    try{
+        const {userID,firstName,lastName,phone,password,department,designation}=req.body;
+        console.log(userID,firstName,lastName,phone,password,department,designation)
+        const response=await pool.query("CALL TEACHER_SIGN_UP($1,$2,$3,$4,$5,$6,$7);",[userID,firstName,lastName,phone,password,department,designation]);
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+        res.status(500).json({error:err.message});
+    }
+});
+
+app.get("/getStaffContacts", async(req, res) => {
+    try{
+        const response = await pool.query("SELECT ST.STAFF_ID, U.FIRST_NAME, U.LAST_NAME, U.PHONE_NUMBER, SH.SHELF_ID,TOTAL_DUE(U.USER_ID) DUE FROM USERS U JOIN STAFFS ST ON(U.USER_ID=ST.STAFF_ID) JOIN SHELVES SH ON(ST.STAFF_ID=SH.STAFF_ID) ORDER BY SH.SHELF_ID");
         res.json(response.rows);
     }catch(err){
         console.error(err.message);

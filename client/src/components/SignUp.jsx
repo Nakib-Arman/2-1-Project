@@ -40,19 +40,10 @@ const SignUp = () => {
 
   const submit = async (e) => {
     e.preventDefault();
-    if(!validateInputs()){
+    if (!validateInputs()) {
       alert("Invalid phone number");
       return;
     }
-    console.log(userType);
-    console.log(userID);
-    console.log(firstName);
-    console.log(lastName);
-    console.log(phone);
-    console.log(password);
-    console.log(level);
-    console.log(term);
-    console.log(department);
   };
 
   const getInfo = async () => {
@@ -86,6 +77,47 @@ const SignUp = () => {
     }
   };
 
+  const submitSignUp = async () => {
+    try {
+      console.log(userType);
+      if (!validateInputs()) {
+        alert("Invalid phone number");
+        return;
+      }
+      else if (userType === 'Student') {
+        const body = { userID, firstName, lastName, phone, password, level, term, department };
+        const response = await fetch("http://localhost:5000/signup/student", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        if (response.ok) {
+          alert("Sign Up Successful");
+          navigate('/LogIn');
+        } else {
+          alert("Sign Up Failed");
+        }
+      } else if (userType === 'Teacher') {
+        const body = { userID, firstName, lastName, phone, password, department, designation };
+        const response = await fetch("http://localhost:5000/signup/teacher", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        if (response.ok) {
+          alert("Sign Up Successful");
+          navigate('/LogIn');
+        } else {
+          alert("Sign Up Failed");
+        }
+      }
+      else if (userType === 'Staff') {
+        const body = { userID, firstName, lastName, phone, password };
+        const response = await fetch("http://localhost:5000/signup/staff", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+        if (response.ok) {
+          alert("Sign Up Successful");
+          navigate('/LogIn');
+        } else {
+          alert("Sign Up Failed");
+        }
+      }
+    } catch (err) {
+      console.error(err.message);
+    }
+  };
+
   useEffect(() => {
     getInfo();
   }, []);
@@ -94,8 +126,8 @@ const SignUp = () => {
     <Fragment>
       <header className="header">
         <div className="transparent-buttons">
-          <button 
-          onClick={() => navigate("/LogIn")}
+          <button
+            onClick={() => navigate("/LogIn")}
           >Log In</button>
         </div>
       </header>
@@ -306,7 +338,7 @@ const SignUp = () => {
               </div>
             </div>
           }
-          <button className="btn btn-success mt-3">Sign Up</button>
+          <button className="btn btn-success mt-3" onClick={submitSignUp}>Sign Up</button>
         </form>
       </div>
     </Fragment>

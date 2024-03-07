@@ -226,7 +226,6 @@ const AddBook = ({ setAuth }) => {
                 </header>
 
                 <h1 className="text-center mb-4" style={{ color: "white" }}>BIBLIOPHILE</h1>
-                {/* <h1 className="text-center head-color fixed-header">Add Book</h1> */}
                 <div
                     className="add-book-container"
                     style={{

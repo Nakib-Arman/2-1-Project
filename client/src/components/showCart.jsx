@@ -72,10 +72,10 @@ const ShowCart = ({ setAuth }) => {
     try {
       const selectedBook = cart.find(book => book.book_id === book_id);
 
-      const existRequest = await fetch(`http://localhost:5000/checkRequest/${book_id}`,{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
+      const existRequest = await fetch(`http://localhost:5000/checkRequest/${book_id}`, { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
       console.log(existRequest);
       const existRequestData = await existRequest.json();
-      if (existRequestData.length>0) {
+      if (existRequestData.length > 0) {
         alert("Book already requested");
       }
       else {
@@ -97,7 +97,7 @@ const ShowCart = ({ setAuth }) => {
           },
           body: JSON.stringify(selectedBook)
         });
-        if (response2.length>0) {
+        if (response2.length > 0) {
           //console.alert("Book Already Requested");
           console.log("Book already requested");
         }
@@ -133,7 +133,7 @@ const ShowCart = ({ setAuth }) => {
   const showBooks = () => {
     navigate('/showBooks');
   }
-  
+
   async function MyProfile() {
     navigate('/myProfile');
   }
@@ -158,7 +158,7 @@ const ShowCart = ({ setAuth }) => {
       localStorage.removeItem("token");
       setAuth(false);
     }
-  } 
+  }
 
   return (
     <Fragment>
@@ -167,16 +167,16 @@ const ShowCart = ({ setAuth }) => {
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
           <div className="transparent-buttons">
-            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px'}}>Home</button>
+            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px' }}>Home</button>
             <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
             <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
             <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>
-            <button className="btn" style={{ position: 'absolute', left: '770px' , backgroundColor: '#f7e8e8', color: '#5A1917' }}>Cart</button>
+            <button className="btn" style={{ position: 'absolute', left: '770px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Cart</button>
             <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
+              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
                 <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
                 <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
@@ -186,8 +186,8 @@ const ShowCart = ({ setAuth }) => {
           </div>
         </header>
         <p style={{
-            height: '30px',
-          }}></p>
+          height: '30px',
+        }}></p>
         <table className="table mt-5">
           <thead>
             <tr>
@@ -199,7 +199,14 @@ const ShowCart = ({ setAuth }) => {
             </tr>
           </thead>
           <tbody>
-            {cart.map((book) => (
+          {cart.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    Your cart is empty.
+                  </td>
+                </tr>
+              ) : (
+            cart.map((book) => (
               <tr key={book.book_id} className={`table-row ${book.selected ? 'selected' : ''}`}>
                 <td onClick={() => showBookByID(book.book_id)}>{book.title}</td>
                 <td onClick={() => showBookByID(book.book_id)}>{book.publication}</td>
@@ -212,13 +219,12 @@ const ShowCart = ({ setAuth }) => {
                 </td>
 
               </tr>
-            ))}
+            ))
+            )}
           </tbody>
         </table>
       </div>
-      <div style={{position: 'absolute',bottom: '0px',width: '100%'}}>
-      <Footer/>
-      </div>
+      <Footer />
     </Fragment>
   );
 };

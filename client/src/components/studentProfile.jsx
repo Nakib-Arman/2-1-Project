@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Footer from "./footer";
 
 const StudentProfile = ({ setAuth }) => {
   const [student, setStudent] = useState({});
@@ -61,6 +62,7 @@ const StudentProfile = ({ setAuth }) => {
           </tbody>
         </table>
       </div>
+      <Footer />
     </Fragment>
   );
 };

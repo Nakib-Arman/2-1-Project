@@ -19,6 +19,9 @@ import SignUp from "./components/SignUp";
 import RestoreBorrowedBooks from "./components/restoreBorrowedBooks";
 import AboutUs from "./components/aboutUs";
 import AcquisitionRecords from "./components/acquisitionRecords";
+import Feedback from "./components/feedback";
+import ContactUs from "./components/contacts";
+import LibraryMembers from "./components/libraryMembers";
 // import editProfile from "./components/editProfile";
 
 const App = () => {
@@ -65,6 +68,9 @@ const App = () => {
           <Route exact path="/restoreBorrowedBooks" element={<RestoreBorrowedBooks/>}/> 
           <Route exact path="/aboutUs" element={<AboutUs/>}/>
           <Route exact path="/acquisitionRecords" element={<AcquisitionRecords/>}/>
+          <Route exact path="/feedback" element={<Feedback/>}/>
+          <Route exact path="/contactus" element={<ContactUs/>}/>
+          <Route exact path="/libraryMembers" element={<LibraryMembers/>}/>
           {/* <Route exact path="/editProfile" element={<editProfile/>}/> */}
         </Routes>
       </Router>
