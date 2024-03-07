@@ -47,27 +47,21 @@ const HomePage = ({ setAuth }) => {
     }
   }
 
-
+  const addBook = () => {
+    navigate('/addBooks');
+  }
 
   const showBooks = () => {
     navigate('/showBooks');
   }
 
-  const addBook = () => {
-    navigate('/addBooks');
-  }
-
   async function MyProfile() {
     navigate('/myProfile');
-    //e.preventDefault();
-    /*try {
-      const response = await fetch("http://localhost:5000/getID",{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
-      const user = await response.json();
-
-    } catch (err) {
-      console.error(err.message);
-    }*/
   }
+
+  const goToCart = () => {
+    navigate("/showCart");
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
@@ -76,10 +70,10 @@ const HomePage = ({ setAuth }) => {
   const handleDropdownItemClick = (action) => {
     if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
-    } else if (action === 'addAuthor') {
-      navigate('/addAuthor');
-    } else if (action === 'addPublisher') {
-      navigate('/addPublisher');
+    } else if (action === 'restoreBorrowedBooks') {
+      navigate('/restoreBorrowedBooks');
+    } else if (action === 'acquisitionRecords') {
+      navigate('/acquisitionRecords');
     } else if (action === 'logOut') {
       localStorage.removeItem("token");
       setAuth(false);
@@ -114,10 +108,6 @@ const HomePage = ({ setAuth }) => {
     navigate(`/showBookDetails/${bookId}`);
   };
 
-  const goToCart = () => {
-    navigate("/showCart");
-  };
-
 
   useEffect(() => {
     getPriorityBooks();
@@ -144,8 +134,8 @@ const HomePage = ({ setAuth }) => {
             {isDropdownVisible && (
               <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '90%', textAlign: 'right' }}><b>Add Author</b></button>
-                <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '90%', textAlign: 'right' }}><b>Add Publisher</b></button>
+                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}

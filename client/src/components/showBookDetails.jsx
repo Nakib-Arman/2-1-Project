@@ -162,27 +162,8 @@ const ShowBookDetails = ({ setAuth }) => {
 
   return (
     <Fragment>
-      <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
-
-<div className="transparent-buttons">
-  <button className="btn" onClick={()=>{navigate("/")}}  >Home</button>
-  <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
-  <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
-  <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>
-  <button className="btn" onClick={goToCart} style={{ position: 'absolute', left: '770px' }}>Cart</button>
-  <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
-    <button>&#9776;</button>
-  </div>
-  {isDropdownVisible && (
-    <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
-      <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-      <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '90%', textAlign: 'right' }}><b>Add Author</b></button>
-      <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '90%', textAlign: 'right' }}><b>Add Publisher</b></button>
-      <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
-    </div>
-  )}
-</div>
-</header>
+      <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Book Details</h1>
+      <h1 className="text-center" style={{ color: "white" }}>BIBLIOPHILE</h1>
       {/* <div className="head-color fixed-header">
         <h1 className="text-center">Book Details</h1>
         <button
@@ -198,9 +179,9 @@ const ShowBookDetails = ({ setAuth }) => {
         </button>
       </div> */}
       <div className="book-details-container">
-      <h1 className="text-center mb-4" style={{ color: 'white' }}>
-        Book Details
-      </h1>
+        <h1 className="text-center mb-4" style={{ color: 'white' }}>
+          Book Details
+        </h1>
         <div className="book-details-grid">
           <div className="book-cover">
             {book && <img src={book.image_url} alt={book.title} />}
@@ -244,39 +225,39 @@ const ShowBookDetails = ({ setAuth }) => {
                 </tr>
               </tbody>
             </table>
-            {book?.copy==0 &&
-                  <button className="btn w-100" style={{backgroundColor: "#0358b4",color: "white"}}>
-                    Unavailable  
-                  </button>
-                  }
-                  {book?.copy>0 &&
-                  <button
-                    onClick={(e) => addToCart(book.book_id, e)}
-                    className="btn btn-primary w-100"
-                  >
-                    Add to Cart
-                  </button>
-}
+            {book?.copy == 0 &&
+              <button className="btn w-100" style={{ backgroundColor: "#0358b4", color: "white" }}>
+                Unavailable
+              </button>
+            }
+            {book?.copy > 0 &&
+              <button
+                onClick={(e) => addToCart(book.book_id, e)}
+                className="btn btn-primary w-100"
+              >
+                Add to Cart
+              </button>
+            }
           </div>
         </div>
       </div>
       <div className="container mt-5">
-          <h3 style={{ background: '#555', color: 'white' }}>Related Books</h3>
-          <Slider {...settings}>
-            {relatedBooks.map((book) => (
-              <div key={book.book_id} className="book-slider-item" style={{backgroundColor: '#333'}}>
-                <div className="card h-100" style={{ cursor: "pointer" }}>
-                  <div className="card-body">
-                    <h5 className="card-title book-title"><i>{book.title}</i></h5>
-                    <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
-                    <p className="card-text"><strong>Category:</strong> {book.category}</p>
-                  </div>
+        <h3 style={{ background: '#555', color: 'white' }}>Related Books</h3>
+        <Slider {...settings}>
+          {relatedBooks.map((book) => (
+            <div key={book.book_id} className="book-slider-item" style={{ backgroundColor: '#333' }}>
+              <div className="card h-100" style={{ cursor: "pointer" }}>
+                <div className="card-body">
+                  <h5 className="card-title book-title"><i>{book.title}</i></h5>
+                  <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
+                  <p className="card-text"><strong>Category:</strong> {book.category}</p>
                 </div>
               </div>
-            ))}
-          </Slider>
-        </div>
-        <Footer />
+            </div>
+          ))}
+        </Slider>
+      </div>
+      <Footer />
     </Fragment>
   );
 }

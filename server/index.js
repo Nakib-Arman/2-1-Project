@@ -537,22 +537,44 @@ app.get("/staffrejectedRequests/:id",async (req,res) =>{
     }
 })
 
-app.get("/staffrejectedRequests/:id",async (req,res) =>{
-    try{
-        const staffs = await pool.query(
-            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE US.USER_ID=$1 AND RBR.REQUEST_STATUS='Rejected'",[req.params.id]);
-        res.json(staffs.rows);
-    }catch (err) {
-        console.error(err.message);
-    }
-})
-
 app.get("/studentAllAccepted",async (req,res) =>{
     try{
         const students = await pool.query(
             "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE RBR.REQUEST_STATUS='Accepted'"
         );
         res.json(students.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/teacherAllAccepted",async (req,res) =>{
+    try{
+        const teachers = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS TEACHER_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN TEACHERS T ON (T.TEACHER_ID = U.USER_ID) WHERE RBR.REQUEST_STATUS='Accepted'");
+        res.json(teachers.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/staffAllAccepted",async (req,res) =>{
+    try{
+        const staffs = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE RBR.REQUEST_STATUS='Accepted'");
+        res.json(staffs.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/getSearchedStudentRequest/:searchtext",async (req,res) =>{
+    try{
+        const {searchtext} = req.params;
+        const student = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STUDENT_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STUDENTS ST ON (ST.STUDENT_ID = U.USER_ID) WHERE RBR.REQUEST_STATUS='Accepted' AND (LOWER(U.FIRST_NAME) LIKE $1 OR LOWER(U.LAST_NAME) LIKE $1 OR LOWER(B.TITLE) LIKE $1)",[`%${searchtext.toLowerCase()}%`]
+        )
+        res.json(student.rows);
     }catch(err){
         console.error(err.message);
     }
@@ -770,6 +792,16 @@ app.post("/addToSearched", authorization,async (req, res) => {
         console.error(err.message);
     }
 });
+
+app.get("/getAcquisitionRecord", async (req,res) => {
+    try{
+        const response = await pool.query("SELECT * FROM BOOKS B JOIN ACQUISITION A ON (B.BOOK_ID=A.BOOK_ID) JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) ORDER BY A.DATE_BOUGHT");
+        console.log(response);
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
 
 app.listen(5000, () => {
     console.log("server has started on port 5000");

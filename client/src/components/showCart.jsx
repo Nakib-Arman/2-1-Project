@@ -122,6 +122,10 @@ const ShowCart = ({ setAuth }) => {
     }
   };
 
+  const goToHome = () => {
+    navigate("/");
+  };
+
   const addBook = () => {
     navigate('/addBooks');
   }
@@ -129,38 +133,36 @@ const ShowCart = ({ setAuth }) => {
   const showBooks = () => {
     navigate('/showBooks');
   }
+  
+  async function MyProfile() {
+    navigate('/myProfile');
+  }
+
+  const goToCart = () => {
+    navigate("/showCart");
+  };
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
-  }
-
-  async function MyProfile() {
-    navigate('/myProfile');
   }
 
 
   const handleDropdownItemClick = (action) => {
     if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
-    } else if (action === 'addAuthor') {
-      navigate('/addAuthor');
-    } else if (action === 'addPublisher') {
-      navigate('/addPublisher');
+    } else if (action === 'restoreBorrowedBooks') {
+      navigate('/restoreBorrowedBooks');
+    } else if (action === 'acquisitionRecords') {
+      navigate('/acquisitionRecords');
+    } else if (action === 'logOut') {
+      localStorage.removeItem("token");
+      setAuth(false);
     }
-  }
-
-
-  const goToCart = () => {
-    navigate("/showCart");
-  };
-
-  const goToHome = () => {
-    navigate("/");
-  };
+  } 
 
   return (
     <Fragment>
-      <div className="container">
+      <div className="page-container">
         {/* <h2 className="text-center mb-4">Your Cart</h2> */}
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
@@ -176,8 +178,8 @@ const ShowCart = ({ setAuth }) => {
             {isDropdownVisible && (
               <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '90%', textAlign: 'right' }}><b>Add Author</b></button>
-                <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '90%', textAlign: 'right' }}><b>Add Publisher</b></button>
+                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}
