@@ -162,6 +162,31 @@ app.post("/requestBorrowRelation", (req, res) => {
       res.status(500).json({ message: "Internal server error" });
     }
   });
+
+  app.put("/changePassword",authorization,async (req,res) => {
+    try {
+        console.log("Hello");
+        const {oldPassword, newPassword} = req.body;
+        console.log(oldPassword, newPassword);
+        const user_id = req.user;
+        const user = await pool.query("SELECT * FROM USERS WHERE USER_ID=$1",[user_id]);
+        const isPasswordValid = await bcrypt.compare(oldPassword,user.rows[0].library_password);
+        if(isPasswordValid){
+            const salt = await bcrypt.genSalt(10);
+            const encryptedPassword = await bcrypt.hash(newPassword,salt);
+            const response = await pool.query("UPDATE USERS SET LIBRARY_PASSWORD=$1 WHERE USER_ID=$2",[newPassword,user_id]);
+            console.log(response);
+            res.json(response);
+        }else{
+            res.status(401).json({message:"Invalid credentials"});
+        }
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({message:"Internal server error"});
+    }
+});
+
+
   
   // Function to compare passwords
   async function comparePasswords(plainPassword, encryptedPassword) {
@@ -235,11 +260,11 @@ app.get("/verify", authorization,async (req,res) =>{
 
 app.post("/addBooks", async (req, res) => {
     try {
-        const { TITLE, CATEGORY, AUTHORS, PUBLISHER, SHELF_ID } = req.body;
+        const { TITLE, CATEGORY, AUTHORS, PUBLISHER, SHELF_ID,edition, copiesBought,coverImage} = req.body;
 
         const book = await pool.query(
-            "INSERT INTO BOOKS (TITLE, CATEGORY, PUBLISHER_ID, SHELF_ID) VALUES ($1, $2, $3, $4) RETURNING *",
-            [TITLE, CATEGORY, PUBLISHER, SHELF_ID]
+            "INSERT INTO BOOKS (TITLE, CATEGORY, PUBLISHER_ID, SHELF_ID,EDITION,IMAGE_URL) VALUES ($1, $2, $3, $4,$5,$6) RETURNING *",
+            [TITLE, CATEGORY, PUBLISHER, SHELF_ID,edition,coverImage]
         );
 
         const bookId = book.rows[0].book_id;
@@ -252,9 +277,12 @@ app.post("/addBooks", async (req, res) => {
             return bookAuthorRelation.rows[0];
         });
 
+        const bookAcquisition = await pool.query("INSERT INTO ACQUISITION (BOOK_ID, DATE_BOUGHT, COPIES_BOUGHT) VALUES ($1, CURRENT_DATE, $2) RETURNING *", [bookId, copiesBought]);
+
+
         const bookAuthorRelations = await Promise.all(authorPromises);
 
-        res.json({ book: book.rows[0], authors: bookAuthorRelations });
+        res.json({ book: book.rows[0], authors: bookAuthorRelations, acquisition: bookAcquisition.rows[0] });
 
     } catch (err) {
         console.error(err.message);
@@ -303,8 +331,18 @@ app.get("/categories",async(req,res)=>{
 
 app.get("/publishers",async(req,res)=>{
     try{
-        const publishers= await pool.query("SELECT * FROM PUBLISHERS ORDER BY PUBLICATION_NAME");
+        const publishers= await pool.query("SELECT P.*, COUNT(B.BOOK_ID) AS BOOK_COUNT FROM PUBLISHERS P LEFT JOIN BOOKS B ON (P.PUBLISHER_ID=B.PUBLISHER_ID) GROUP BY P.PUBLISHER_ID");
         res.json(publishers.rows);
+    }catch(err){
+        console.log(err.message);
+    }
+})
+
+app.get("/publishers/:name",async (req,res) => {
+    try{
+        const {name} = req.params;
+        const publisher = await pool.query("SELECT P.*, COUNT(B.BOOK_ID) AS BOOK_COUNT FROM PUBLISHERS P LEFT JOIN BOOKS B ON (P.PUBLISHER_ID=B.PUBLISHER_ID) GROUP BY P.PUBLISHER_ID HAVING LOWER(P.PUBLICATION_NAME) LIKE $1",[`%${name.toLowerCase()}%`]);
+        res.json(publisher.rows);
     }catch(err){
         console.log(err.message);
     }
@@ -864,6 +902,44 @@ app.get("/getStaffContacts", async(req, res) => {
         console.error(err.message);
     }
 })
+
+app.get("/mypendingRequests/:user_id",async (req,res) => {
+    try{
+        const{user_id} = req.params;
+        console.log(user_id);
+        const request = await pool.query(
+            "SELECT * FROM USER_REQUEST UR JOIN REQUEST_BOOK_RELATION RBR ON (UR.USER_REQUEST_ID=RBR.USER_REQUEST_ID) JOIN BOOKS B ON (B.BOOK_ID=RBR.BOOK_ID) WHERE UR.USER_ID=$1 AND RBR.REQUEST_STATUS='Pending'",[user_id]
+        )
+        res.json(request.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/myacceptRequests/:user_id",async (req,res) => {
+    try{
+        const{user_id} = req.params;
+        const request = await pool.query(
+            "SELECT * FROM USER_REQUEST UR JOIN REQUEST_BOOK_RELATION RBR ON (UR.USER_REQUEST_ID=RBR.USER_REQUEST_ID) JOIN BOOKS B ON (B.BOOK_ID=RBR.BOOK_ID) JOIN USER_BORROW_RELATION UBR ON (UR.USER_ID=UBR.USER_ID AND UBR.BOOK_ID=RBR.BOOK_ID) WHERE UR.USER_ID=$1 AND RBR.REQUEST_STATUS='Accepted'",[user_id]
+        )
+        res.json(request.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/myrejectedRequests/:user_id",async (req,res) => {
+    try{
+        const{user_id} = req.params;
+        const request = await pool.query(
+            "SELECT * FROM USER_REQUEST UR JOIN REQUEST_BOOK_RELATION RBR ON (UR.USER_REQUEST_ID=RBR.USER_REQUEST_ID) JOIN BOOKS B ON (B.BOOK_ID=RBR.BOOK_ID) WHERE USER_ID=$1 AND RBR.REQUEST_STATUS='Rejected'",[user_id]
+        )
+        res.json(request.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 
 app.listen(5000, () => {
     console.log("server has started on port 5000");

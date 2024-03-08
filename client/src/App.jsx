@@ -24,6 +24,8 @@ import ContactUs from "./components/contacts";
 import LibraryMembers from "./components/libraryMembers";
 import SearchAuthors from "./components/searchAuthors";
 // import editProfile from "./components/editProfile";
+import SearchPublishers from "./components/searchPublishers";
+import MyRequests from "./components/myRequest";  
 
 const App = () => {
 
@@ -73,6 +75,8 @@ const App = () => {
           <Route exact path="/contactus" element={<ContactUs/>}/>
           <Route exact path="/libraryMembers" element={<LibraryMembers/>}/>
           <Route exact path="/searchAuthors" element={<SearchAuthors/>}/>
+          <Route exact path="/searchPublishers" element={<SearchPublishers/>}/>
+          <Route exact path="/myRequests" element={isAuthenticated ? <MyRequests setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
           {/* <Route exact path="/editProfile" element={<editProfile/>}/> */}
         </Routes>
       </Router>

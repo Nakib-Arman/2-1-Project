@@ -12,6 +12,7 @@ const MyProfile = ({ setAuth }) => {
   const [userType, setUserType] = useState("");
   const [showEditModal, setShowEditModal] = useState(false);
   const [showPayDueModal, setShowPayDueModal] = useState(false);
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [payment, setPayment] = useState(0);
   const [accountHolderName, setAccountHolderName] = useState("");
   const [accountNumber, setAccountNumber] = useState("");
@@ -20,6 +21,10 @@ const MyProfile = ({ setAuth }) => {
   const [departments, setDepartments] = useState([]);
   const [levels, setLevels] = useState([]);
   const [terms, setTerms] = useState([]);
+
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
 
 
   let navigate = useNavigate();
@@ -148,6 +153,38 @@ const MyProfile = ({ setAuth }) => {
     }
   };
 
+  const submitChangePassword = async () => {
+    try{
+      if(!oldPassword || !newPassword || !confirmNewPassword){
+        alert("Please enter all the fields");
+        return;
+      }
+      if(newPassword !== confirmNewPassword){
+        alert("New password and confirm new password do not match");
+        return;
+      }
+      const body = {oldPassword, newPassword};
+      console.log(body);
+      const url = "http://localhost:5000/changePassword";
+      console.log(body);
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: {token: localStorage.token, "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+      const parseRes = await response.json();
+      if(response.ok){
+        console.log("Password Changed Successfully")
+        alert("Password Changed Successfully");
+        setShowChangePasswordModal(false);
+      }else{
+        alert("Failed to change password");
+      }
+    }catch(err){
+      console.error("Error changing password", err.message);
+    }
+  };
+
   const toggleEditModal = () => {
     if (userType === 'staff') {
       setStaffFirstName(staff.first_name);
@@ -164,6 +201,9 @@ const MyProfile = ({ setAuth }) => {
 
   const togglePayDueModal = () => {
     setShowPayDueModal(!showPayDueModal);
+  };
+  const toggleChangePasswordModal=()=>{
+    setShowChangePasswordModal(!showChangePasswordModal);
   };
 
   const payDue = async () => {
@@ -336,10 +376,7 @@ const MyProfile = ({ setAuth }) => {
         </div>
         <div>
           <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
-        </div>
-        <div>
-          <button className="btn button-color mt-2 ml-3">Change Password</button>
-        </div>
+          <button className="btn button-color mt-2 ml-3" onClick={toggleChangePasswordModal}>Change Password</button>
 
         {showEditModal && userType === 'staff' &&
           <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
@@ -436,7 +473,6 @@ const MyProfile = ({ setAuth }) => {
           </div>
         }
 
-        <div>
           <button className="btn button-color mt-2 ml-3" onClick={togglePayDueModal}>Pay Due</button>
         </div>
 
@@ -469,6 +505,34 @@ const MyProfile = ({ setAuth }) => {
             </div>
           </div>
         }
+        {
+          showChangePasswordModal &&
+          <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+            <div className="modal-dialog" role="document">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Change Password</h5>
+                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleChangePasswordModal}>
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div className="modal-body">
+                  <label>Old Password:</label>
+                  <input type="password" className="form-control mb-3" onChange={(e)=>setOldPassword(e.target.value)} />
+                  <label>New Password:</label>
+                  <input type="password" className="form-control mb-3" onChange={(e)=>setNewPassword(e.target.value)} />
+                  <label>Confirm New Password:</label>
+                  <input type="password" className="form-control mb-3" onChange={(e)=>setConfirmNewPassword(e.target.value)} />
+                </div>
+                <div className="modal-footer">
+                  <button type="button" className="btn button-color" onClick={toggleChangePasswordModal}>Close</button>
+                  <button type="button" className="btn btn-primary" onClick={submitChangePassword}>Change Password</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        }
+
       </div>
       <Footer />
     </Fragment>
