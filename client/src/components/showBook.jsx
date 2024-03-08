@@ -141,7 +141,7 @@ const ShowBook = ({ setAuth }) => {
     } else if (action === 'acquisitionRecords') {
       navigate('/acquisitionRecords');
     } else if (action === 'viewSuggestedBooks') {
-      navigate('viewSuggestedBooks')
+      navigate('/viewSuggestedBooks')
     } else if (action === 'logOut') {
       localStorage.removeItem("token");
       setAuth(false);

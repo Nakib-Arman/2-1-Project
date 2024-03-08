@@ -942,6 +942,7 @@ app.get("/myrejectedRequests/:user_id",async (req,res) => {
 
 app.post("/feedback",authorization,async (req,res) => {
     try{
+        console.log("feedback");
         const user_id=req.user;
         const {title, author, publisher, description}=req.body;
         const response= await pool.query("INSERT INTO SUGGESTED_BOOKS (USER_ID,TITLE,AUTHORS,PUBLISHER,DESCRIPTION) VALUES ($1,$2,$3,$4,$5)",[user_id,title,author,publisher,description]);
