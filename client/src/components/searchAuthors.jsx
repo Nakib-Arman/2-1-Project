@@ -64,8 +64,6 @@ const SearchAuthors = ({ setAuth }) => {
                             );
                         })}
                     </tbody>
-
-
                 </table>
             </div>
             <Footer />
