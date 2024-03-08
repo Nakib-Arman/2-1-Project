@@ -15,7 +15,30 @@ const Feedback = ({ setAuth }) => {
     const navigate = useNavigate();
 
     const submit = () => {
-        console.log("Hello");
+        if (title === "") {
+            alert("Title is required");
+            return;
+        }
+        try{
+            fetch("http://localhost:5000/feedback", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    token: localStorage.token
+                },
+                body: JSON.stringify({ title, author, publisher, description })
+            }).then(response => response.json())
+                .then(data => {
+                    if (data === "Feedback Submitted") {
+                        alert("Feedback Submitted");
+                        navigate('/');
+                    } else {
+                        alert("Feedback not Submitted");
+                    }
+                });
+        }catch(err){
+            console.error(err.message);
+        }
     }
 
     const goToHome = () => {
