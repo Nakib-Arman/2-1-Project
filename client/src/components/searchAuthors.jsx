@@ -10,15 +10,6 @@ const SearchAuthors = ({ setAuth }) => {
 
     let navigate = useNavigate();
 
-    const getInfo = async () => {
-        try {
-            const author = await fetch("http://localhost:5000/authors2");
-            const authorData = await author.json();
-            setAuthors(authorData);
-        } catch (err) {
-            console.error(err.message);
-        }
-    }
 
     const getInfo2 = async () => {
         try {
@@ -30,10 +21,6 @@ const SearchAuthors = ({ setAuth }) => {
             console.error(err.message);
         }
     }
-
-    useEffect(() => {
-        getInfo();
-    }, []);
 
     useEffect(() => {
         getInfo2();
@@ -67,19 +54,16 @@ const SearchAuthors = ({ setAuth }) => {
                         </tr>
                     </thead>
                     <tbody>
-                        {console.log(authors)}
-                        {searchedAuthors.map((author2) => {
-                            console.log("Author:", author2); // Log the author object
+                        {searchedAuthors.map((author) => {
+                            console.log("Author:", author); // Log the author object
                             return (
-                                <tr key={author2.author_id} className="table-row">
-                                    <td>{author2.author_name}</td>
-                                    <td>{author2.book_count}</td>
+                                <tr key={author.author_id} className="table-row">
+                                    <td>{author.author_name}</td>
+                                    <td>{author.book_count}</td>
                                 </tr>
                             );
                         })}
                     </tbody>
-
-
                 </table>
             </div>
             <Footer />
