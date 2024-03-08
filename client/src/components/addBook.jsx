@@ -149,8 +149,16 @@ const AddBook = ({ setAuth }) => {
     setShowPublisherForm(false);
   };
 
-  const addShelf = () => {
+  const addShelf = async() => {
     console.log(newShelf);
+    const body = {newShelf};
+    const response = await fetch("http://localhost:5000/addShelf", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+    fetchAuthorsAndPublishers();
+    setShowShelfForm(false);
   };
 
   const getUserType = async () => {
@@ -525,7 +533,7 @@ const AddBook = ({ setAuth }) => {
                 <Modal.Body>
                   <form onSubmit={addShelf}>
                     <div>
-                      <label htmlFor="shelf">Shelf No:</label>
+                      <label htmlFor="shelf">Shelf Manager No:</label>
                       <input
                         type="number"
                         className="form-control"

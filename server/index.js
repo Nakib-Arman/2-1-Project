@@ -796,12 +796,13 @@ app.post("/addShelf",async (req,res) =>{
         const { newShelf } = req.body;
         console.log(req.body);
         console.log(newShelf);
-        const response = await pool.query("INSERT INTO SHELVES (CATEGORY,STAFF_ID) VALUES ($1,$2) RETURNING *",['Knowledge',newShelf]);
+        const response = await pool.query("INSERT INTO SHELVES (STAFF_ID) VALUES ($1) RETURNING *",[newShelf]);
         res.json(response);
     }catch(err){
         console.error(err.message);
     }
 })
+
 
 app.get("/showRelatedBooks/:id", async (req, res) => {
     try {
