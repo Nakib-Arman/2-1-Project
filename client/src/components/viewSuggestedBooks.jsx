@@ -5,7 +5,6 @@ import Footer from "./footer";
 const ViewSuggestedBooks = ({ setAuth }) => {
     const [books, setBooks] = useState([]);
 
-
     const getBooks = async () => {
         try {
             const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
@@ -29,6 +28,17 @@ const ViewSuggestedBooks = ({ setAuth }) => {
         getBooks();
     }, []);
 
+    const handleDelete = async (id) => {
+        try {
+            const deleteBook = await fetch(`http://localhost:5000/suggestedBooks/${id}`, {
+                method: "DELETE"
+            });
+            setBooks(books.filter(book => book.suggestion_id !== id));
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+    
 
     return (
         <Fragment>
@@ -37,9 +47,9 @@ const ViewSuggestedBooks = ({ setAuth }) => {
                 <h1 className="text-center mb-5" style={{ color: "transparent" }}>BIBLIOPHILE</h1>
                 <div className="boxes-container mt-5">
                     {books.map((book) => (
-                        <div className="box" style={{width:'80%'}}>
+                        <div className="box" style={{ width: '80%' }} key={book.id}>
                             <span className="option-text">
-                                Suggested By: 
+                                Suggested By:
                                 <Link to={`/staffProfile/${book.user_id}`} className="option-link">
                                     {book.first_name} {book.last_name}
                                 </Link>
@@ -52,11 +62,12 @@ const ViewSuggestedBooks = ({ setAuth }) => {
                                 Authors: {book.authors}
                             </span>
                             <span className="option-text">
-                                Publisher: {book.pusblisher}
+                                Publisher: {book.publisher}
                             </span>
                             <span className="option-text">
                                 Description: {book.description}
                             </span>
+                            <button className="btn btn-danger" onClick={() => handleDelete(book.suggestion_id)}>Delete</button>
                             <p> </p>
                         </div>
                     ))}

@@ -961,6 +961,18 @@ app.get("/suggestedBooks",async (req,res) => {
     }
 })
 
+app.delete("/deleteSuggestedBook/:id",async (req,res) => {
+    try{
+        const {id}=req.params;
+        const response=await pool.query("DELETE FROM SUGGESTED_BOOKS WHERE SUGGESTION_ID=$1",[id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+
+
 app.post("/deleteRequest/:book_id",authorization,async (req,res) =>{
     try{        
         const user_id=req.user;
