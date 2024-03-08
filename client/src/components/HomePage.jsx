@@ -79,6 +79,8 @@ const HomePage = ({ setAuth }) => {
       navigate('/restoreBorrowedBooks');
     } else if (action === 'acquisitionRecords') {
       navigate('/acquisitionRecords');
+    } else if (action === 'viewSuggestedBooks') {
+      navigate('viewSuggestedBooks')
     } else if (action === 'logOut') {
       localStorage.removeItem("token");
       setAuth(false);
@@ -148,6 +150,7 @@ const HomePage = ({ setAuth }) => {
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
                 <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
                 <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{width: '90%', textAlign: 'right'}}><b>View Suggested Books</b></button>
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}

@@ -951,6 +951,15 @@ app.post("/feedback",authorization,async (req,res) => {
     }
 })
 
+app.get("/suggestedBooks",async (req,res) => {
+    try{
+        const response = await pool.query("SELECT * FROM SUGGESTED_BOOKS SB JOIN USERS U ON (U.USER_ID=SB.USER_ID)");
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 
 app.listen(5000, () => {
     console.log("server has started on port 5000");

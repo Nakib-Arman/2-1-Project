@@ -26,6 +26,7 @@ const StudentProfile = ({ setAuth }) => {
 
   return (
     <Fragment>
+      <div className="page-container">
       <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
       <h1 className="text-center mb-5 fixed-header head-color">Student Profile</h1>
       <div className="book-details-container">
@@ -37,7 +38,7 @@ const StudentProfile = ({ setAuth }) => {
             </tr>
             <tr className="text-center">
               <td className="head-color">Full Name</td>
-              <td className="table-row-2">{student.name}</td>
+              <td className="table-row-2">{student.first_name} {student.last_name}</td>
             </tr>
             <tr className="text-center mt-3">
               <td className="head-color">Phone Number</td>
@@ -61,6 +62,7 @@ const StudentProfile = ({ setAuth }) => {
             </tr>
           </tbody>
         </table>
+        </div>
       </div>
       <Footer />
     </Fragment>

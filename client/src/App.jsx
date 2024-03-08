@@ -10,7 +10,6 @@ import ShowBook from "./components/showBook";
 import ShowBookDetails from "./components/showBookDetails";
 import MyProfile from "./components/myProfile";
 import BorrowRequests from "./components/borrowRequest";
-// import CommonLogIn from "./components/CommonLogIn";
 import ShowCart from "./components/showCart";
 import HomePageForStudentTeacher from "./components/HomePageForStudentTeacher";
 import StudentProfile from "./components/studentProfile";
@@ -23,9 +22,9 @@ import Feedback from "./components/feedback";
 import ContactUs from "./components/contacts";
 import LibraryMembers from "./components/libraryMembers";
 import SearchAuthors from "./components/searchAuthors";
-// import editProfile from "./components/editProfile";
 import SearchPublishers from "./components/searchPublishers";
 import MyRequests from "./components/myRequest";  
+import ViewSuggestedBooks from "./components/viewSuggestedBooks";
 
 const App = () => {
 
@@ -77,7 +76,7 @@ const App = () => {
           <Route exact path="/searchAuthors" element={<SearchAuthors/>}/>
           <Route exact path="/searchPublishers" element={<SearchPublishers/>}/>
           <Route exact path="/myRequests" element={isAuthenticated ? <MyRequests setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
-          {/* <Route exact path="/editProfile" element={<editProfile/>}/> */}
+          <Route exact path="/viewSuggestedBooks" element={isAuthenticated ? <ViewSuggestedBooks setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
         </Routes>
       </Router>
     </div>
