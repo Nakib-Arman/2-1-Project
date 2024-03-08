@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import Footer from "./footer";
 
 const BorrowRequests = ({ setAuth }) => {
     const [students, setStudents] = useState([]);
@@ -139,167 +140,168 @@ const BorrowRequests = ({ setAuth }) => {
     return (
         <Fragment>
             <div className="page-container">
-            <h1 className="fixed-header" style={{backgroundColor: '#5A1917'}}>Borrow Requests</h1>
-            <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
-            <div>
-                <select
-                    className="form-control custom-select"
-                    style={{ width: '200px',position:'relative',left: '10px'}}
-                    value={requestType}
-                    onChange={(e) => setRequestType(e.target.value)}
-                >
-                    <option value="Pending">Pending</option>
-                    <option value="Accepted">Accepted</option>
-                    <option value="Rejected">Rejected</option>
-                </select>
-            </div>
-            <div className="mt-5">
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'students' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('students')}>
-                    Student
-                </button>
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('teachers')}>
-                    Teacher
-                </button>
-                <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('staffs')}>
-                    Staff
-                </button>
-            </div>
-            <div className="boxes-container mt-5">
-                {selectedOption === 'students' && students.map((student, index) => (
-                    <div key={index} className="box">
-                        <span className="option-text">
-                            Name :
-                            <Link to={`/studentProfile/${student.student_id}`} className="option-link">
-                                {student.name}
-                            </Link>
-                        </span>
-                        <span className="option-text">
-                            Book:
-                            <Link to={`/showBookDetails/${student.book_id}`} className="option-button">
-                                {student.title}
-                            </Link>
-                        </span>
-                        <span className="option-text">
-                            Date: {formatDate(student.date_borrowed)}
-                        </span>
-                        {requestType == 'Pending' &&
+                <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Borrow Requests</h1>
+                <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
+                <div>
+                    <select
+                        className="form-control custom-select"
+                        style={{ width: '200px', position: 'relative', left: '10px' }}
+                        value={requestType}
+                        onChange={(e) => setRequestType(e.target.value)}
+                    >
+                        <option value="Pending">Pending</option>
+                        <option value="Accepted">Accepted</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+                <div className="mt-5">
+                    <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'students' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('students')}>
+                        Student
+                    </button>
+                    <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'teachers' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('teachers')}>
+                        Teacher
+                    </button>
+                    <button style={{ width: '33%', border: '1px solid grey', background: selectedOption === 'staffs' ? '#f7e8e8' : 'white' }} onClick={() => setSelectedOption('staffs')}>
+                        Staff
+                    </button>
+                </div>
+                <div className="boxes-container mt-5">
+                    {selectedOption === 'students' && students.map((student, index) => (
+                        <div key={index} className="box">
+                            <span className="option-text">
+                                Name :
+                                <Link to={`/studentProfile/${student.student_id}`} className="option-link">
+                                    {student.name}
+                                </Link>
+                            </span>
+                            <span className="option-text">
+                                Book:
+                                <Link to={`/showBookDetails/${student.book_id}`} className="option-button">
+                                    {student.title}
+                                </Link>
+                            </span>
+                            <span className="option-text">
+                                Date: {formatDate(student.date_borrowed)}
+                            </span>
+                            {requestType == 'Pending' &&
+                                <div className="buttons-container mt-2">
+                                    <button
+                                        className="btn accept-button mr-3"
+                                        onClick={() => handleAcceptClick(student.request_id, student.student_id, student.book_id)}
+                                    >
+                                        Accept
+                                    </button>
+                                    <button
+                                        className="btn deny-button"
+                                        onClick={() => handleDenyClick(student.request_id)}
+                                    >
+                                        Deny
+                                    </button>
+                                </div>
+                            }
+                            {requestType == 'Accepted' &&
+                                <div className="buttons-container mt-2">
+                                    <button
+                                        className="btn accept-button mr-3"
+                                    >
+                                        Restore Book
+                                    </button>
+                                </div>
+                            }
+                            {requestType == 'Rejected' &&
+                                <div className="buttons-container mt-2">
+                                    <label
+                                        className="btn" style={{ backgroundColor: '#c90000', color: 'white' }}
+                                    >
+                                        Rejected
+                                    </label>
+                                </div>
+                            }
+                            <p> </p>
+                            <p>
+                                {student.request_status}
+                            </p>
+                        </div>
+                    ))}
+
+                    {selectedOption === 'teachers' && teachers.map((teacher, index) => (
+                        <div key={index} className="box">
+                            <span className="option-text">
+                                Name :
+                                <Link to={`/showStudentDetails/${teacher.teacher_id}`} className="option-link">
+                                    {teacher.name}
+                                </Link>
+                            </span>
+                            <span className="option-text">
+                                Book:
+                                <Link to={`/showBookDetails/${teacher.book_id}`} className="option-button">
+                                    {teacher.title}
+                                </Link>
+                            </span>
+                            <span className="option-text">
+                                Date: {formatDate(teacher.date_borrowed)}
+                            </span>
                             <div className="buttons-container mt-2">
                                 <button
                                     className="btn accept-button mr-3"
-                                    onClick={() => handleAcceptClick(student.request_id, student.student_id, student.book_id)}
+                                    onClick={() => handleAcceptClick(teacher.request_id, teacher.teacher_id, teacher.book_id)}
                                 >
                                     Accept
                                 </button>
                                 <button
                                     className="btn deny-button"
-                                    onClick={() => handleDenyClick(student.request_id)}
+                                    onClick={() => handleDenyClick(teacher.request_id)}
                                 >
                                     Deny
                                 </button>
                             </div>
-                        }
-                        {requestType == 'Accepted' &&
+                            <p> </p>
+                            <p>
+                                {teacher.request_status}...
+                            </p>
+                        </div>
+                    ))}
+
+                    {selectedOption === 'staffs' && staffs.map((staff, index) => (
+                        <div key={index} className="box">
+                            <span className="option-text">
+                                Name :
+                                <Link to={`/staffProfile/${staff.staff_id}`} className="option-link">
+                                    {staff.name}
+                                </Link>
+                            </span>
+                            <span className="option-text">
+                                Book:
+                                <Link to={`/showBookDetails/${staff.book_id}`} className="option-button">
+                                    {staff.title}
+                                </Link>
+                            </span>
+                            <span className="option-text">
+                                Date: {formatDate(staff.date_borrowed)}
+                            </span>
                             <div className="buttons-container mt-2">
                                 <button
                                     className="btn accept-button mr-3"
+                                    onClick={() => handleAcceptClick(staff.request_id, staff.staff_id, staff.book_id)}
                                 >
-                                    Restore Book
+                                    Accept
+                                </button>
+                                <button
+                                    className="btn deny-button"
+                                    onClick={() => handleDenyClick(staff.request_id)}
+                                >
+                                    Deny
                                 </button>
                             </div>
-                        }
-                        {requestType == 'Rejected' &&
-                            <div className="buttons-container mt-2">
-                                <label
-                                    className="btn" style={{backgroundColor: '#c90000', color: 'white'}}
-                                >
-                                    Rejected
-                                </label>
-                            </div>
-                        }
-                        <p> </p>
-                        <p>
-                            {student.request_status}
-                        </p>
-                    </div>
-                ))}
-
-                {selectedOption === 'teachers' && teachers.map((teacher, index) => (
-                    <div key={index} className="box">
-                        <span className="option-text">
-                            Name :
-                            <Link to={`/showStudentDetails/${teacher.teacher_id}`} className="option-link">
-                                {teacher.name}
-                            </Link>
-                        </span>
-                        <span className="option-text">
-                            Book:
-                            <Link to={`/showBookDetails/${teacher.book_id}`} className="option-button">
-                                {teacher.title}
-                            </Link>
-                        </span>
-                        <span className="option-text">
-                            Date: {formatDate(teacher.date_borrowed)}
-                        </span>
-                        <div className="buttons-container mt-2">
-                            <button
-                                className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(teacher.request_id, teacher.teacher_id, teacher.book_id)}
-                            >
-                                Accept
-                            </button>
-                            <button
-                                className="btn deny-button"
-                                onClick={() => handleDenyClick(teacher.request_id)}
-                            >
-                                Deny
-                            </button>
+                            <p> </p>
+                            <p>
+                                {staff.request_status}...
+                            </p>
                         </div>
-                        <p> </p>
-                        <p>
-                            {teacher.request_status}...
-                        </p>
-                    </div>
-                ))}
-
-                {selectedOption === 'staffs' && staffs.map((staff, index) => (
-                    <div key={index} className="box">
-                        <span className="option-text">
-                            Name :
-                            <Link to={`/staffProfile/${staff.staff_id}`} className="option-link">
-                                {staff.name}
-                            </Link>
-                        </span>
-                        <span className="option-text">
-                            Book:
-                            <Link to={`/showBookDetails/${staff.book_id}`} className="option-button">
-                                {staff.title}
-                            </Link>
-                        </span>
-                        <span className="option-text">
-                            Date: {formatDate(staff.date_borrowed)}
-                        </span>
-                        <div className="buttons-container mt-2">
-                            <button
-                                className="btn accept-button mr-3"
-                                onClick={() => handleAcceptClick(staff.request_id, staff.staff_id, staff.book_id)}
-                            >
-                                Accept
-                            </button>
-                            <button
-                                className="btn deny-button"
-                                onClick={() => handleDenyClick(staff.request_id)}
-                            >
-                                Deny
-                            </button>
-                        </div>
-                        <p> </p>
-                        <p>
-                            {staff.request_status}...
-                        </p>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </div>
-            </div>
+            <Footer />
         </Fragment>
     );
 };

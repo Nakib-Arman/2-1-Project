@@ -72,10 +72,10 @@ const ShowCart = ({ setAuth }) => {
     try {
       const selectedBook = cart.find(book => book.book_id === book_id);
 
-      const existRequest = await fetch(`http://localhost:5000/checkRequest/${book_id}`,{ method: "GET", headers: {token: localStorage.token, "Content-Type": "application/json"}});
+      const existRequest = await fetch(`http://localhost:5000/checkRequest/${book_id}`, { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
       console.log(existRequest);
       const existRequestData = await existRequest.json();
-      if (existRequestData.length>0) {
+      if (existRequestData.length > 0) {
         alert("Book already requested");
       }
       else {
@@ -97,7 +97,7 @@ const ShowCart = ({ setAuth }) => {
           },
           body: JSON.stringify(selectedBook)
         });
-        if (response2.length>0) {
+        if (response2.length > 0) {
           //console.alert("Book Already Requested");
           console.log("Book already requested");
         }
@@ -122,6 +122,10 @@ const ShowCart = ({ setAuth }) => {
     }
   };
 
+  const goToHome = () => {
+    navigate("/");
+  };
+
   const addBook = () => {
     navigate('/addBooks');
   }
@@ -130,62 +134,60 @@ const ShowCart = ({ setAuth }) => {
     navigate('/showBooks');
   }
 
-  const toggleDropdown = () => {
-    setDropdownVisible(!isDropdownVisible);
-  }
-
   async function MyProfile() {
     navigate('/myProfile');
+  }
+
+  const goToCart = () => {
+    navigate("/showCart");
+  };
+
+  const toggleDropdown = () => {
+    setDropdownVisible(!isDropdownVisible);
   }
 
 
   const handleDropdownItemClick = (action) => {
     if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
-    } else if (action === 'addAuthor') {
-      navigate('/addAuthor');
-    } else if (action === 'addPublisher') {
-      navigate('/addPublisher');
+    } else if (action === 'restoreBorrowedBooks') {
+      navigate('/restoreBorrowedBooks');
+    } else if (action === 'acquisitionRecords') {
+      navigate('/acquisitionRecords');
+    } else if (action === 'logOut') {
+      localStorage.removeItem("token");
+      setAuth(false);
     }
   }
 
-
-  const goToCart = () => {
-    navigate("/showCart");
-  };
-
-  const goToHome = () => {
-    navigate("/");
-  };
-
   return (
     <Fragment>
-      <div className="container">
+      <div className="page-container">
         {/* <h2 className="text-center mb-4">Your Cart</h2> */}
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
           <div className="transparent-buttons">
-            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px'}}>Home</button>
+            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px' }}>Home</button>
             <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
             <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
             <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>
-            <button className="btn" style={{ position: 'absolute', left: '770px' , backgroundColor: '#f7e8e8', color: '#5A1917' }}>Cart</button>
+            <button className="btn" style={{ position: 'absolute', left: '770px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Cart</button>
             <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black',position: 'absolute', left:'910px' ,width: '300px'}}>
+              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '90%', textAlign: 'right' }}><b>Add Author</b></button>
-                <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '90%', textAlign: 'right' }}><b>Add Publisher</b></button>
+                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}
           </div>
         </header>
         <p style={{
-            height: '30px',
-          }}></p>
+          height: '30px',
+        }}></p>
         <table className="table mt-5">
           <thead>
             <tr>
@@ -197,7 +199,14 @@ const ShowCart = ({ setAuth }) => {
             </tr>
           </thead>
           <tbody>
-            {cart.map((book) => (
+          {cart.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="text-center">
+                    Your cart is empty.
+                  </td>
+                </tr>
+              ) : (
+            cart.map((book) => (
               <tr key={book.book_id} className={`table-row ${book.selected ? 'selected' : ''}`}>
                 <td onClick={() => showBookByID(book.book_id)}>{book.title}</td>
                 <td onClick={() => showBookByID(book.book_id)}>{book.publication}</td>
@@ -210,13 +219,12 @@ const ShowCart = ({ setAuth }) => {
                 </td>
 
               </tr>
-            ))}
+            ))
+            )}
           </tbody>
         </table>
       </div>
-      <div style={{position: 'absolute',bottom: '0px',width: '100%'}}>
-      <Footer/>
-      </div>
+      <Footer />
     </Fragment>
   );
 };

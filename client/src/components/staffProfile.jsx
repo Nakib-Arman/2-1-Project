@@ -1,5 +1,6 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import Footer from "./footer";
 
 const StaffProfile = ({ setAuth }) => {
   const [staff, setStaff] = useState({});
@@ -49,6 +50,7 @@ const StaffProfile = ({ setAuth }) => {
           </tbody>
         </table>
       </div>
+      <Footer />
     </Fragment>
   );
 };

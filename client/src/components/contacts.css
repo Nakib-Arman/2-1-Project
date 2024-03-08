@@ -1,0 +1,31 @@
+/* ContactUs.css */
+
+.contact-container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .contact-info {
+    font-size: 16px;
+    line-height: 1.5;
+  }
+  
+  .contact-info p {
+    margin: 5px 0;
+  }
+  
+  .contact-info strong {
+    font-weight: bold;
+  }
+  
+  .contact-info a {
+    color: #007bff; /* Blue color for email link */
+    text-decoration: none;
+    font-weight: bold;
+  }
+  
+  .contact-info a:hover {
+    text-decoration: underline;
+  }
+  

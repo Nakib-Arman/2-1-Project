@@ -139,6 +139,10 @@ const AddBook = ({ setAuth }) => {
         console.log(newShelf);
     }
 
+    const goToHome = () => {
+        navigate("/");
+    };
+
     const addBook = () => {
         navigate('/addBooks');
     }
@@ -147,22 +151,29 @@ const AddBook = ({ setAuth }) => {
         navigate('/showBooks');
     }
 
-    const toggleDropdown = () => {
-        setDropdownVisible(!isDropdownVisible);
-    }
-
     async function MyProfile() {
         navigate('/myProfile');
+    }
+
+    const goToCart = () => {
+        navigate("/showCart");
+    };
+
+    const toggleDropdown = () => {
+        setDropdownVisible(!isDropdownVisible);
     }
 
 
     const handleDropdownItemClick = (action) => {
         if (action === 'viewBorrowRequests') {
             navigate('/borrowRequests');
-        } else if (action === 'addAuthor') {
-            navigate('/addAuthor');
-        } else if (action === 'addPublisher') {
-            navigate('/addPublisher');
+        } else if (action === 'restoreBorrowedBooks') {
+            navigate('/restoreBorrowedBooks');
+        } else if (action === 'acquisitionRecords') {
+            navigate('/acquisitionRecords');
+        } else if (action === 'logOut') {
+            localStorage.removeItem("token");
+            setAuth(false);
         }
     }
 
@@ -188,14 +199,6 @@ const AddBook = ({ setAuth }) => {
         }
     };
 
-    const goToCart = () => {
-        navigate("/showCart");
-    };
-
-    const goToHome = () => {
-        navigate("/");
-    };
-
 
     return (
         <Fragment>
@@ -214,8 +217,8 @@ const AddBook = ({ setAuth }) => {
                         {isDropdownVisible && (
                             <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
                                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                                <button onClick={() => handleDropdownItemClick('addAuthor')} style={{ width: '90%', textAlign: 'right' }}><b>Add Author</b></button>
-                                <button onClick={() => handleDropdownItemClick('addPublisher')} style={{ width: '90%', textAlign: 'right' }}><b>Add Publisher</b></button>
+                                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
                                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
                             </div>
                         )}
@@ -223,7 +226,6 @@ const AddBook = ({ setAuth }) => {
                 </header>
 
                 <h1 className="text-center mb-4" style={{ color: "white" }}>BIBLIOPHILE</h1>
-                {/* <h1 className="text-center head-color fixed-header">Add Book</h1> */}
                 <div
                     className="add-book-container"
                     style={{
@@ -421,7 +423,7 @@ const AddBook = ({ setAuth }) => {
                     </form>
                 </div>
             </div>
-        <Footer/>
+            <Footer />
         </Fragment>
     );
 };
