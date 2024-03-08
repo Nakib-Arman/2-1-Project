@@ -59,6 +59,7 @@ const AddBook = ({ setAuth }) => {
 
   useEffect(() => {
     fetchAuthorsAndPublishers();
+    getUserType();
   }, []);
 
   const submit = async (e) => {
@@ -101,10 +102,6 @@ const AddBook = ({ setAuth }) => {
     }
   };
 
-  const showAllBooks = () => {
-    navigate("/showBooks");
-  };
-
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [showAuthorForm, setShowAuthorForm] = useState(false);
   const [showPublisherForm, setShowPublisherForm] = useState(false);
@@ -114,6 +111,7 @@ const AddBook = ({ setAuth }) => {
   const [newAuthor, setNewAuthor] = useState("");
   const [newPublisher, setNewPublisher] = useState("");
   const [newShelf, setNewShelf] = useState(0);
+  const [userType, setUserType] = useState(null);
 
   const addCategory = async () => {
     console.log(newCategory);
@@ -155,20 +153,25 @@ const AddBook = ({ setAuth }) => {
     console.log(newShelf);
   };
 
-  const goToHome = () => {
-    navigate("/");
-  };
-
-  const addBook = () => {
-    navigate("/addBooks");
-  };
+  const getUserType = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/getUserType", {
+        method: "GET",
+        headers: { token: localStorage.token, "Content-Type": "application/json" }
+      });
+      const jsonData = await response.json();
+      setUserType(jsonData[0].type_of_user);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
 
   const showBooks = () => {
-    navigate("/showBooks");
-  };
+    navigate('/showBooks');
+  }
 
-  async function MyProfile() {
-    navigate("/myProfile");
+  const MyProfile = () => {
+    navigate('/myProfile');
   }
 
   const goToCart = () => {
@@ -177,20 +180,28 @@ const AddBook = ({ setAuth }) => {
 
   const toggleDropdown = () => {
     setDropdownVisible(!isDropdownVisible);
-  };
+  }
 
   const handleDropdownItemClick = (action) => {
-    if (action === "viewBorrowRequests") {
-      navigate("/borrowRequests");
-    } else if (action === "restoreBorrowedBooks") {
-      navigate("/restoreBorrowedBooks");
-    } else if (action === "acquisitionRecords") {
-      navigate("/acquisitionRecords");
-    } else if (action === "logOut") {
+    if (action === 'authorSearch') {
+      navigate('/searchAuthors');
+    } else if (action === 'publisherSearch') {
+      navigate('/searchPublishers');
+    } else if (action === 'myRequests') {
+      navigate('/myRequests');
+    } else if (action === 'viewBorrowRequests') {
+      navigate('/borrowRequests');
+    } else if (action === 'restoreBorrowedBooks') {
+      navigate('/restoreBorrowedBooks');
+    } else if (action === 'acquisitionRecords') {
+      navigate('/acquisitionRecords');
+    } else if (action === 'viewSuggestedBooks') {
+      navigate('viewSuggestedBooks')
+    } else if (action === 'logOut') {
       localStorage.removeItem("token");
       setAuth(false);
     }
-  };
+  }
 
   const addToCart = async (id, e) => {
     e.stopPropagation();
@@ -217,102 +228,35 @@ const AddBook = ({ setAuth }) => {
   return (
     <Fragment>
       <div className="page-container">
-        <header
-          className="fixed-header"
-          style={{
-            height: "70px",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            backgroundColor: "#5A1917",
-          }}
-        >
-          <div className="transparent-buttons">
-            <button
-              className="btn"
-              onClick={goToHome}
-              style={{ position: "relative", left: "10px" }}
-            >
-              Home
-            </button>
-            <button
-              className="btn"
-              onClick={addBook}
-              style={{
-                position: "absolute",
-                left: "400px",
-                backgroundColor: "#f7e8e8",
-                color: "#5A1917",
-              }}
-            >
-              Add New Book
-            </button>
-            <button
-              className="btn"
-              onClick={showBooks}
-              style={{ position: "absolute", left: "540px" }}
-            >
-              Search Books
-            </button>
-            <button
-              className="btn"
-              onClick={MyProfile}
-              style={{ position: "absolute", left: "670px" }}
-            >
-              My Profile
-            </button>
-            <button
-              className="btn"
-              onClick={goToCart}
-              style={{ position: "absolute", left: "770px" }}
-            >
-              Cart
-            </button>
-            <div
-              className="hamburger-icon"
-              onClick={toggleDropdown}
-              style={{ position: "absolute", right: "10px" }}
-            >
+        <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
+
+          <div className="transparent-buttons" style={{ width: '100%' }}>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px' }}>Home</button>
+            <div style={{ alignContent: 'center', width: '100%' }}>
+              {userType === 'staff' &&
+                <button className="btn" style={{ backgroundColor: '#f7e8e8', color: '#5A1917' }}>Add New Book</button>
+              }
+              <button className="btn" onClick={showBooks}>Search Books</button>
+              <button className="btn" onClick={MyProfile}>My Profile</button>
+              <button className="btn" onClick={goToCart}>Cart</button>
+            </div>
+            <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div
-                className="dropdown-menu"
-                style={{
-                  opacity: 0.9,
-                  border: "1px solid black",
-                  position: "absolute",
-                  left: "910px",
-                  width: "300px",
-                }}
-              >
-                <button
-                  onClick={() => handleDropdownItemClick("viewBorrowRequests")}
-                  style={{ width: "90%", textAlign: "right" }}
-                >
-                  <b>View Borrow Requests</b>
-                </button>
-                <button
-                  onClick={() =>
-                    handleDropdownItemClick("restoreBorrowedBooks")
-                  }
-                  style={{ width: "90%", textAlign: "right" }}
-                >
-                  <b>Restore Borrowed Books</b>
-                </button>
-                <button
-                  onClick={() => handleDropdownItemClick("acquisitionRecords")}
-                  style={{ width: "90%", textAlign: "right" }}
-                >
-                  <b>Acquisition Records</b>
-                </button>
-                <button
-                  onClick={() => handleDropdownItemClick("logOut")}
-                  className="logout-button"
-                  style={{ width: "90%", textAlign: "right" }}
-                >
-                  <b>Log Out</b>
-                </button>
+              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
+                <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
+                <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
+                <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
+                {userType === 'staff' &&
+                  <div style={{ alignContent: 'right' }}>
+                    <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                    <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                    <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                    <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>View Suggested Books</b></button>
+                  </div>
+                }
+                <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}
           </div>

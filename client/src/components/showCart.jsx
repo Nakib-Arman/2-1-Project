@@ -7,11 +7,13 @@ const ShowCart = ({ setAuth }) => {
   const [cart, setCart] = useState([]);
   const [selectedBooks, setSelectedBooks] = useState([]);
   const [isDropdownVisible, setDropdownVisible] = useState(false);
+  const [userType, setUserType] = useState(null);
 
   let navigate = useNavigate();
 
   useEffect(() => {
     getBooksFromCart();
+    getUserType();
   }, []);
 
   const getBooksFromCart = async () => {
@@ -122,9 +124,18 @@ const ShowCart = ({ setAuth }) => {
     }
   };
 
-  const goToHome = () => {
-    navigate("/");
-  };
+  const getUserType = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/getUserType", {
+        method: "GET",
+        headers: { token: localStorage.token, "Content-Type": "application/json" }
+      });
+      const jsonData = await response.json();
+      setUserType(jsonData[0].type_of_user);
+    } catch (err) {
+      console.error(err.message);
+    }
+  }
 
   const addBook = () => {
     navigate('/addBooks');
@@ -134,7 +145,7 @@ const ShowCart = ({ setAuth }) => {
     navigate('/showBooks');
   }
 
-  async function MyProfile() {
+  const MyProfile = () => {
     navigate('/myProfile');
   }
 
@@ -146,14 +157,21 @@ const ShowCart = ({ setAuth }) => {
     setDropdownVisible(!isDropdownVisible);
   }
 
-
   const handleDropdownItemClick = (action) => {
-    if (action === 'viewBorrowRequests') {
+    if (action === 'authorSearch') {
+      navigate('/searchAuthors');
+    } else if (action === 'publisherSearch') {
+      navigate('/searchPublishers');
+    } else if (action === 'myRequests') {
+      navigate('/myRequests');
+    } else if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
     } else if (action === 'restoreBorrowedBooks') {
       navigate('/restoreBorrowedBooks');
     } else if (action === 'acquisitionRecords') {
       navigate('/acquisitionRecords');
+    } else if (action === 'viewSuggestedBooks') {
+      navigate('viewSuggestedBooks')
     } else if (action === 'logOut') {
       localStorage.removeItem("token");
       setAuth(false);
@@ -166,20 +184,32 @@ const ShowCart = ({ setAuth }) => {
         {/* <h2 className="text-center mb-4">Your Cart</h2> */}
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
-          <div className="transparent-buttons">
-            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px' }}>Home</button>
-            <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
-            <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
-            <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>
-            <button className="btn" style={{ position: 'absolute', left: '770px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Cart</button>
+          <div className="transparent-buttons" style={{ width: '100%' }}>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px'}}>Home</button>
+            <div style={{ alignContent: 'center', width: '100%' }}>
+              {userType === 'staff' &&
+                <button className="btn" onClick={addBook}>Add New Book</button>
+              }
+              <button className="btn" onClick={showBooks}>Search Books</button>
+              <button className="btn" onClick={MyProfile}>My Profile</button>
+              <button className="btn" style={{ backgroundColor: '#f7e8e8', color: '#5A1917' }}>Cart</button>
+            </div>
             <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
               <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
-                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
-                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
+                <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
+                <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
+                {userType === 'staff' &&
+                  <div style={{alignContent: 'right'}}>
+                    <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                    <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                    <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                    <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>View Suggested Books</b></button>
+                  </div>
+                }
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}

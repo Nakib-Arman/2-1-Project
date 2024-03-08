@@ -67,11 +67,11 @@ const HomePage = ({ setAuth }) => {
   }
 
   const handleDropdownItemClick = (action) => {
-    if (action==='authorSearch') {
+    if (action === 'authorSearch') {
       navigate('/searchAuthors');
     } else if (action === 'publisherSearch') {
       navigate('/searchPublishers');
-    } else if (action === 'myRequests'){
+    } else if (action === 'myRequests') {
       navigate('/myRequests');
     } else if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
@@ -129,8 +129,8 @@ const HomePage = ({ setAuth }) => {
       <div className="page-container">
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
-          <div className="transparent-buttons" style={{ width: '90%' }}>
-            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'relative', left: '10px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Home</button>
+          <div className="transparent-buttons" style={{ width: '100%' }}>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Home</button>
             <div style={{ alignContent: 'center', width: '100%' }}>
               {userType === 'staff' &&
                 <button className="btn" onClick={addBook}>Add New Book</button>
@@ -147,10 +147,14 @@ const HomePage = ({ setAuth }) => {
                 <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
                 <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
                 <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
-                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
-                <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{width: '90%', textAlign: 'right'}}><b>View Suggested Books</b></button>
+                {userType === 'staff' &&
+                  <div style={{ alignContent: 'right' }}>
+                    <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                    <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                    <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                    <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>View Suggested Books</b></button>
+                  </div>
+                }
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}

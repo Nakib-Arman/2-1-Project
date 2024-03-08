@@ -1,10 +1,13 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, Navigate, useParams } from "react-router-dom";
 import Footer from "./footer";
+import { useNavigate } from "react-router-dom";
 
 const MyRequests = ({ setAuth }) => {
     const [resquests, setRequests] = useState([]);
     const [requestType, setRequestType] = useState('Pending');
+
+    const navigate = useNavigate();
 
 
     const getRequests = async () => {
@@ -31,6 +34,26 @@ const MyRequests = ({ setAuth }) => {
             console.error(err.message);
         }
     }
+
+    const deleteRequest = async (book_id) => {
+        try {
+            console.log("hello");
+            const body= {book_id};
+            console.log(body);
+            const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
+            const user_id = await user.json();
+            const response = await fetch(`http://localhost:5000/deleteRequest/${book_id}`, {
+                method: "POST",
+                headers: { token: localStorage.token },
+                body: JSON.stringify(body)
+            });
+            const parseRes = await response.json();
+            setRequests(resquests.filter(request => request.request_id !== parseRes.request_id));
+        } catch (err) {
+            console.error(err.message);
+        }
+        navigate('/myRequests')
+    };
 
     const formatDate = (dateString) => {
         const options = { year: 'numeric', month: 'long', day: 'numeric' };
@@ -76,6 +99,7 @@ const MyRequests = ({ setAuth }) => {
                                 <div className="buttons-container mt-2">
                                     <button
                                         className="btn deny-button mr-3"
+                                        onClick={()=>deleteRequest(request.book_id)}
                                     >
                                         Cancel Request
                                     </button>

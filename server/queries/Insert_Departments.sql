@@ -1,4 +1,4 @@
-vINSERT INTO DEPARTMENTS VALUES(05,'Computer Science and Engineering');
+INSERT INTO DEPARTMENTS VALUES(05,'Computer Science and Engineering');
 INSERT INTO DEPARTMENTS VALUES(06,'Electrical and Electronics Engineering');
 INSERT INTO DEPARTMENTS VALUES(14,'Architecture');
 INSERT INTO DEPARTMENTS VALUES(04,'Civil Engineering');

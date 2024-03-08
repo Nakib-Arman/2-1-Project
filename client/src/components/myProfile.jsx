@@ -154,33 +154,33 @@ const MyProfile = ({ setAuth }) => {
   };
 
   const submitChangePassword = async () => {
-    try{
-      if(!oldPassword || !newPassword || !confirmNewPassword){
+    try {
+      if (!oldPassword || !newPassword || !confirmNewPassword) {
         alert("Please enter all the fields");
         return;
       }
-      if(newPassword !== confirmNewPassword){
+      if (newPassword !== confirmNewPassword) {
         alert("New password and confirm new password do not match");
         return;
       }
-      const body = {oldPassword, newPassword};
+      const body = { oldPassword, newPassword };
       console.log(body);
       const url = "http://localhost:5000/changePassword";
       console.log(body);
       const response = await fetch(url, {
         method: "PUT",
-        headers: {token: localStorage.token, "Content-Type": "application/json" },
+        headers: { token: localStorage.token, "Content-Type": "application/json" },
         body: JSON.stringify(body)
       });
       const parseRes = await response.json();
-      if(response.ok){
+      if (response.ok) {
         console.log("Password Changed Successfully")
         alert("Password Changed Successfully");
         setShowChangePasswordModal(false);
-      }else{
+      } else {
         alert("Failed to change password");
       }
-    }catch(err){
+    } catch (err) {
       console.error("Error changing password", err.message);
     }
   };
@@ -202,7 +202,7 @@ const MyProfile = ({ setAuth }) => {
   const togglePayDueModal = () => {
     setShowPayDueModal(!showPayDueModal);
   };
-  const toggleChangePasswordModal=()=>{
+  const toggleChangePasswordModal = () => {
     setShowChangePasswordModal(!showChangePasswordModal);
   };
 
@@ -237,10 +237,6 @@ const MyProfile = ({ setAuth }) => {
     }
   };
 
-  const goToHome = () => {
-    navigate("/");
-  };
-
   const addBook = () => {
     navigate('/addBooks');
   }
@@ -249,10 +245,9 @@ const MyProfile = ({ setAuth }) => {
     navigate('/showBooks');
   }
 
-  async function MyProfile() {
+  const MyProfile = () => {
     navigate('/myProfile');
   }
-
 
   const goToCart = () => {
     navigate("/showCart");
@@ -263,12 +258,20 @@ const MyProfile = ({ setAuth }) => {
   }
 
   const handleDropdownItemClick = (action) => {
-    if (action === 'viewBorrowRequests') {
+    if (action === 'authorSearch') {
+      navigate('/searchAuthors');
+    } else if (action === 'publisherSearch') {
+      navigate('/searchPublishers');
+    } else if (action === 'myRequests') {
+      navigate('/myRequests');
+    } else if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
     } else if (action === 'restoreBorrowedBooks') {
       navigate('/restoreBorrowedBooks');
     } else if (action === 'acquisitionRecords') {
       navigate('/acquisitionRecords');
+    } else if (action === 'viewSuggestedBooks') {
+      navigate('viewSuggestedBooks')
     } else if (action === 'logOut') {
       localStorage.removeItem("token");
       setAuth(false);
@@ -284,20 +287,32 @@ const MyProfile = ({ setAuth }) => {
         <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
-          <div className="transparent-buttons">
-            <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px' }}>Home</button>
-            <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
-            <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
-            <button className="btn" style={{ position: 'absolute', left: '670px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>My Profile</button>
-            <button className="btn" onClick={goToCart} style={{ position: 'absolute', left: '770px' }}>Cart</button>
+          <div className="transparent-buttons" style={{ width: '100%' }}>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px'}}>Home</button>
+            <div style={{ alignContent: 'center', width: '100%' }}>
+              {userType === 'staff' &&
+                <button className="btn" onClick={addBook}>Add New Book</button>
+              }
+              <button className="btn" onClick={showBooks}>Search Books</button>
+              <button className="btn" style={{ backgroundColor: '#f7e8e8', color: '#5A1917' }}>My Profile</button>
+              <button className="btn" onClick={goToCart}>Cart</button>
+            </div>
             <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
               <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
-                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
-                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
+                <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
+                <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
+                {userType === 'staff' &&
+                  <div style={{ alignContent: 'right' }}>
+                    <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                    <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                    <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                    <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>View Suggested Books</b></button>
+                  </div>
+                }
                 <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
               </div>
             )}
@@ -378,100 +393,100 @@ const MyProfile = ({ setAuth }) => {
           <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
           <button className="btn button-color mt-2 ml-3" onClick={toggleChangePasswordModal}>Change Password</button>
 
-        {showEditModal && userType === 'staff' &&
-          <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Edit Profile</h5>
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <label>First Name:</label>
-                  <input type="text" id='f_name' className="form-control mb-4" value={staffFirstName} onChange={(e) => setStaffFirstName(e.target.value)} />
-                  <label>Last Name:</label>
-                  <input type="text" id='l_name' className="form-control mb-3" value={staffLastName} onChange={(e) => setStaffLastName(e.target.value)} />
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
-                  <button type="button" className="btn btn-primary" onClick={updateStaffChange}>Save changes</button>
-                </div>
-              </div>
-            </div>
-          </div>
-        }
-        {showEditModal && userType === 'student' &&
-          <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
-            <div className="modal-dialog" role="document">
-              <div className="modal-content">
-                <div className="modal-header">
-                  <h5 className="modal-title">Edit Profile</h5>
-                  <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-                <div className="modal-body">
-                  <label>First Name:</label>
-                  <input type="text" id='f_name' className="form-control mb-3" value={studentFirstName} onChange={(e) => setStudentFirstName(e.target.value)} />
-                  <label>Last Name:</label>
-                  <input type="text" id='l_name' className="form-control mb-3" value={studentLastName} onChange={(e) => setStudentLastName(e.target.value)} />
-                  <label htmlFor="department_code">
-                    Department:
-                  </label>
-                  <select
-                    id="department"
-                    className="form-control"
-                    value={studentDept}
-                    onChange={(e) => setStudentDept(e.target.value)}
-                  >
-                    <option value=""> Select Department </option>
-                    {departments.map((dept) => (
-                      <option key={dept.department_code} value={dept.department_code}>
-                        {dept.department_name}
-                      </option>
-                    ))}
-                  </select>
-                  <label>Level:</label>
-                  <select
-                    id="current_level"
-                    className="form-control"
-                    value={studentLevel}
-                    onChange={(e) => setStudentLevel(e.target.value)}
-                  >
-                    <option value=""> Select Level </option>
-                    {levels.map((lvl) => (
-                      <option key={lvl.level_no} value={lvl.level_no}>
-                        {lvl.level_no}
-                      </option>
-                    ))}
-                  </select>
-                  <label htmlFor="current_term" className="mt-3">
-                    Term:
-                  </label>
-                  <select
-                    id="current_term"
-                    className="form-control"
-                    value={studentTerm}
-                    onChange={(e) => setStudentTerm(e.target.value)}
-                  >
-                    <option value=""> Select Term </option>
-                    {terms.map((tr) => (
-                      <option key={tr.term_no} value={tr.term_no}>
-                        {tr.term_no}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div className="modal-footer">
-                  <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
-                  <button type="button" className="btn btn-primary" onClick={updateStudentChange}>Save changes</button>
+          {showEditModal && userType === 'staff' &&
+            <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Edit Profile</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <label>First Name:</label>
+                    <input type="text" id='f_name' className="form-control mb-4" value={staffFirstName} onChange={(e) => setStaffFirstName(e.target.value)} />
+                    <label>Last Name:</label>
+                    <input type="text" id='l_name' className="form-control mb-3" value={staffLastName} onChange={(e) => setStaffLastName(e.target.value)} />
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
+                    <button type="button" className="btn btn-primary" onClick={updateStaffChange}>Save changes</button>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        }
+          }
+          {showEditModal && userType === 'student' &&
+            <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Edit Profile</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <label>First Name:</label>
+                    <input type="text" id='f_name' className="form-control mb-3" value={studentFirstName} onChange={(e) => setStudentFirstName(e.target.value)} />
+                    <label>Last Name:</label>
+                    <input type="text" id='l_name' className="form-control mb-3" value={studentLastName} onChange={(e) => setStudentLastName(e.target.value)} />
+                    <label htmlFor="department_code">
+                      Department:
+                    </label>
+                    <select
+                      id="department"
+                      className="form-control"
+                      value={studentDept}
+                      onChange={(e) => setStudentDept(e.target.value)}
+                    >
+                      <option value=""> Select Department </option>
+                      {departments.map((dept) => (
+                        <option key={dept.department_code} value={dept.department_code}>
+                          {dept.department_name}
+                        </option>
+                      ))}
+                    </select>
+                    <label>Level:</label>
+                    <select
+                      id="current_level"
+                      className="form-control"
+                      value={studentLevel}
+                      onChange={(e) => setStudentLevel(e.target.value)}
+                    >
+                      <option value=""> Select Level </option>
+                      {levels.map((lvl) => (
+                        <option key={lvl.level_no} value={lvl.level_no}>
+                          {lvl.level_no}
+                        </option>
+                      ))}
+                    </select>
+                    <label htmlFor="current_term" className="mt-3">
+                      Term:
+                    </label>
+                    <select
+                      id="current_term"
+                      className="form-control"
+                      value={studentTerm}
+                      onChange={(e) => setStudentTerm(e.target.value)}
+                    >
+                      <option value=""> Select Term </option>
+                      {terms.map((tr) => (
+                        <option key={tr.term_no} value={tr.term_no}>
+                          {tr.term_no}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
+                    <button type="button" className="btn btn-primary" onClick={updateStudentChange}>Save changes</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
 
           <button className="btn button-color mt-2 ml-3" onClick={togglePayDueModal}>Pay Due</button>
         </div>
@@ -518,11 +533,11 @@ const MyProfile = ({ setAuth }) => {
                 </div>
                 <div className="modal-body">
                   <label>Old Password:</label>
-                  <input type="password" className="form-control mb-3" onChange={(e)=>setOldPassword(e.target.value)} />
+                  <input type="password" className="form-control mb-3" onChange={(e) => setOldPassword(e.target.value)} />
                   <label>New Password:</label>
-                  <input type="password" className="form-control mb-3" onChange={(e)=>setNewPassword(e.target.value)} />
+                  <input type="password" className="form-control mb-3" onChange={(e) => setNewPassword(e.target.value)} />
                   <label>Confirm New Password:</label>
-                  <input type="password" className="form-control mb-3" onChange={(e)=>setConfirmNewPassword(e.target.value)} />
+                  <input type="password" className="form-control mb-3" onChange={(e) => setConfirmNewPassword(e.target.value)} />
                 </div>
                 <div className="modal-footer">
                   <button type="button" className="btn button-color" onClick={toggleChangePasswordModal}>Close</button>

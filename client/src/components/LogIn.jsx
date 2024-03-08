@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import loginBackground from './logIn.png';
-import videoBackground from './video.mp4';
+import videoBackground from './video.mp4'; // Make sure to provide the correct path
 
 const LogIn = ({ setAuth }) => {
   const [PHONE, setPHONE] = useState("");
@@ -42,7 +41,7 @@ const LogIn = ({ setAuth }) => {
   }
 
   return (
-    <div className="login-page" style={{ backgroundImage: `url(${loginBackground})` }}>
+    <div className="login-page">
       <div className="app-container">
         <header className="header">
           <div className="transparent-buttons">
@@ -50,33 +49,32 @@ const LogIn = ({ setAuth }) => {
           </div>
         </header>
         <div className="video-background">
-            <video autoPlay muted loop id="video-background">
-              <source src={videoBackground} type="video/mp4" />
-              Your browser does not support the video tag.
-            </video>
-          {/* <h1>Log In</h1> */}
-            <div className="overlay">
-              <main className="main-content">
-                <div className="login-container mt-5">
-                  <h1>Log In</h1>
-                  <form onSubmit={LogIn}>
-                    <div>
-                      <label htmlFor="phone">Phone Number:</label>
-                      <input type="tel" className="form-control" value={PHONE} onChange={(e) => setPHONE(e.target.value)} required />
-                    </div>
-                    <div>
-                      <label htmlFor="password">Password:</label>
-                      <input type="password" className="form-control" value={PASSWORD} onChange={(e) => setPASSWORD(e.target.value)} required />
-                    </div>
-                    <button type="submit">Log In</button>
-                  </form>
-                </div>
-              </main>
-            </div>
+          <video autoPlay muted loop id="video-background">
+            <source src={videoBackground} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="overlay">
+            <main className="main-content">
+              <div className="login-container mt-5">
+                <h1>Log In</h1>
+                <form onSubmit={LogIn}>
+                  <div>
+                    <label htmlFor="phone">Phone Number:</label>
+                    <input type="tel" className="form-control" value={PHONE} onChange={(e) => setPHONE(e.target.value)} required />
+                  </div>
+                  <div>
+                    <label htmlFor="password">Password:</label>
+                    <input type="password" className="form-control" value={PASSWORD} onChange={(e) => setPASSWORD(e.target.value)} required />
+                  </div>
+                  <button type="submit">Log In</button>
+                </form>
+              </div>
+            </main>
           </div>
         </div>
+      </div>
     </div>
-  )
+  );
 };
 
 export default LogIn;

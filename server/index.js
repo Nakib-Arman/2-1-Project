@@ -960,6 +960,19 @@ app.get("/suggestedBooks",async (req,res) => {
     }
 })
 
+app.post("/deleteRequest/:book_id",authorization,async (req,res) =>{
+    try{        
+        const user_id=req.user;
+        const {book_id} = req.params;
+        console.log(book_id);
+        // console.log(user_id,book_id);
+        const response = await pool.query("CALL DELETE_REQUEST($1,$2)",[user_id,book_id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+});
+
 
 app.listen(5000, () => {
     console.log("server has started on port 5000");
