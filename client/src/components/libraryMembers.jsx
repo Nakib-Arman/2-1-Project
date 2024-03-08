@@ -24,7 +24,7 @@ const LibraryMembers = ({ setAuth }) => {
     return (
         <Fragment>
             <div className="page-container">
-                <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Acquisition Records</h1>
+                <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Library Members</h1>
                 <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
 
                 <table className="table mt-5">

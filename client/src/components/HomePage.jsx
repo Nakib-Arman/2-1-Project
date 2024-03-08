@@ -40,8 +40,7 @@ const HomePage = ({ setAuth }) => {
         headers: { token: localStorage.token, "Content-Type": "application/json" }
       });
       const jsonData = await response.json();
-      setUserType(jsonData[0].user_type);
-      console.log(jsonData[0].user_type);
+      setUserType(jsonData[0].type_of_user);
     } catch (err) {
       console.error(err.message);
     }
@@ -55,7 +54,7 @@ const HomePage = ({ setAuth }) => {
     navigate('/showBooks');
   }
 
-  async function MyProfile() {
+  const MyProfile = () => {
     navigate('/myProfile');
   }
 
@@ -68,7 +67,13 @@ const HomePage = ({ setAuth }) => {
   }
 
   const handleDropdownItemClick = (action) => {
-    if (action === 'viewBorrowRequests') {
+    if (action==='authorSearch') {
+      navigate('/searchAuthors');
+    } else if (action === 'publisherSearch') {
+      navigate('/searchPublishers');
+    } else if (action === 'myRequests'){
+      navigate('/myRequests');
+    } else if (action === 'viewBorrowRequests') {
       navigate('/borrowRequests');
     } else if (action === 'restoreBorrowedBooks') {
       navigate('/restoreBorrowedBooks');
@@ -122,17 +127,24 @@ const HomePage = ({ setAuth }) => {
       <div className="page-container">
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
-          <div className="transparent-buttons">
+          <div className="transparent-buttons" style={{ width: '90%' }}>
             <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'relative', left: '10px', backgroundColor: '#f7e8e8', color: '#5A1917' }}>Home</button>
-            <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
-            <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
-            <button className="btn" onClick={MyProfile} style={{ position: 'absolute', left: '670px' }}>My Profile</button>
-            <button className="btn" onClick={goToCart} style={{ position: 'absolute', left: '770px' }}>Cart</button>
+            <div style={{ alignContent: 'center', width: '100%' }}>
+              {userType === 'staff' &&
+                <button className="btn" onClick={addBook}>Add New Book</button>
+              }
+              <button className="btn" onClick={showBooks}>Search Books</button>
+              <button className="btn" onClick={MyProfile}>My Profile</button>
+              <button className="btn" onClick={goToCart}>Cart</button>
+            </div>
             <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
               <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
+                <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
+                <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
+                <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
                 <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
                 <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
                 <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>

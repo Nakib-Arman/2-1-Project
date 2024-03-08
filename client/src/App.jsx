@@ -22,6 +22,7 @@ import AcquisitionRecords from "./components/acquisitionRecords";
 import Feedback from "./components/feedback";
 import ContactUs from "./components/contacts";
 import LibraryMembers from "./components/libraryMembers";
+import SearchAuthors from "./components/searchAuthors";
 // import editProfile from "./components/editProfile";
 
 const App = () => {
@@ -71,6 +72,7 @@ const App = () => {
           <Route exact path="/feedback" element={<Feedback/>}/>
           <Route exact path="/contactus" element={<ContactUs/>}/>
           <Route exact path="/libraryMembers" element={<LibraryMembers/>}/>
+          <Route exact path="/searchAuthors" element={<SearchAuthors/>}/>
           {/* <Route exact path="/editProfile" element={<editProfile/>}/> */}
         </Routes>
       </Router>

@@ -272,6 +272,27 @@ app.get("/authors",async(req,res)=>{
     }
 });
 
+app.get("/authors2",async (req,res) => {
+    try{
+        console.log("here2");
+        const authors = await pool.query("SELECT A.*,COUNT(BA.BOOK_ID) AS BOOK_COUNT FROM AUTHORS A LEFT JOIN BOOK_AUTHOR_RELATION BA ON (A.AUTHOR_ID=BA.AUTHOR_ID) GROUP BY A.AUTHOR_ID");
+        res.json(authors.rows);
+    }catch(err){
+        console.log(err.message);
+    }
+})
+
+app.get("/authors/:name",async (req,res) => {
+    try{
+        console.log("here");
+        const {name} = req.params;
+        const authors = await pool.query("SELECT A.*,COUNT(BA.BOOK_ID) BOOK_COUNT FROM AUTHORS A LEFT JOIN BOOK_AUTHOR_RELATION BA ON (A.AUTHOR_ID=BA.AUTHOR_ID) GROUP BY A.AUTHOR_ID HAVING LOWER(A.AUTHOR_NAME) LIKE $1",[`%${name.toLowerCase()}%`]);
+        res.json(authors.rows);
+    }catch(err){
+        console.log(err.message);
+    }
+})
+
 app.get("/shelves",async(req,res)=>{
     try{
         const shelves= await pool.query("SELECT * FROM SHELVES ORDER BY SHELF_ID");

@@ -190,7 +190,7 @@ const ShowBook = ({ setAuth }) => {
             )}
           </div>
         </header>
-        <h1 className="text-center mb-4" style={{ color: 'white' }}>
+        <h1 className="text-center mb-4" style={{ color: 'transparent' }}>
           Search Books
         </h1>
         <div className="container">

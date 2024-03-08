@@ -24,22 +24,8 @@ const LogIn = ({ setAuth }) => {
         const userTypes = await typeResponse.json();
         const userType = userTypes[0].user_type;
 
-        switch (userType) {
-          case "student":
-            setAuth(true);
-            navigate('/HomePageForStudentTeacher');
-            break;
-          case "teacher":
-            setAuth(true);
-            navigate('/showBooks');
-            break;
-          case "staff":
-            setAuth(true);
-            navigate('/');
-            break;
-          default:
-            alert("Unknown user type");
-        }
+        setAuth(true);
+        navigate('/');
 
       }
       else {
