@@ -389,7 +389,8 @@ app.get("/studentProfile/:id",async (req,res) => {
 
 app.get("/teacherProfile/:id",async (req,res) =>{
     try{
-        //const teacher = await pool.query("SELECT S.STUDENT_ID ID, U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME, U.PHONE_NUMBER PN, S.CURRENT_LEVEL Cl, S.CURRENT_TERM CT,TOTAL_DUE(2105128) AS DUE FROM STUDENTS S JOIN USERS U ON (U.USER_ID=S.STUDENT_ID) WHERE U.USER_ID=$1",[req.params.id]);
+        const teacher = await pool.query("SELECT T.TEACHER_ID,U.FIRST_NAME,U.LAST_NAME,U.PHONE_NUMBER,T.DESIGNATION,T.DEPARTMENT_CODE,D.DEPARTMENT_NAME, TOTAL_DUE(U.USER_ID) AS DUE FROM TEACHERS T JOIN USERS U ON (U.USER_ID=T.TEACHER_ID) JOIN DEPARTMENTS D ON (T.DEPARTMENT_CODE = D.DEPARTMENT_CODE) WHERE U.USER_ID=$1",[req.params.id]);
+        
         res.json(teacher.rows);
     }catch (err) {
         console.error(err.message);
@@ -827,6 +828,34 @@ app.put("/updateStaffProfile/:id", async (req, res) => {
     res.status(500).json("Failed to update profile");
   }
 });
+
+app.put("/updateStudentProfile/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { studentFirstName, studentLastName, studentDept, studentLevel, studentTerm } = req.body;
+      // console.log(firstName, lastName, phoneNumber, id)
+      const response1 = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2 WHERE USER_ID=$3", [studentFirstName, studentLastName, id]);
+      const response2 = await pool.query("UPDATE STUDENTS SET DEPARTMENT_CODE=$1, CURRENT_LEVEL=$2, CURRENT_TERM=$3 WHERE STUDENT_ID=$4",[studentDept,studentLevel, studentTerm,id]);
+      res.json("Updated Successfully");
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json("Failed to update profile");
+    }
+  });
+
+  app.put("/updateTeacherProfile/:id", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { teacherFirstName, teacherLastName, teacherDept, teacherDesignation} = req.body;
+      // console.log(firstName, lastName, phoneNumber, id)
+      const response = await pool.query("UPDATE USERS SET FIRST_NAME=$1, LAST_NAME=$2 WHERE USER_ID=$3", [teacherFirstName, teacherLastName, id]);
+      const response2 = await pool.query("UPDATE TEACHERS SET DEPARTMENT_CODE=$1,DESIGNATION=$2 WHERE TEACHER_ID=$3", [teacherDept,teacherDesignation,id]);
+      res.json("Updated Successfully");
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).json("Failed to update profile");
+    }
+  });
 
 app.post("/payDue/:id", async (req, res) => {
     try {

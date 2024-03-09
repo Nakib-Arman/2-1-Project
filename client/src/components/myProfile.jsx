@@ -7,6 +7,7 @@ import "./myProfile.css";
 const MyProfile = ({ setAuth }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
   const [student, setStudent] = useState(null);
+  const [teacher, setTeacher] = useState(null);
   const [staff, setStaff] = useState(null);
   const [shelves, setShelves] = useState([]);
   const [userType, setUserType] = useState("");
@@ -21,6 +22,7 @@ const MyProfile = ({ setAuth }) => {
   const [departments, setDepartments] = useState([]);
   const [levels, setLevels] = useState([]);
   const [terms, setTerms] = useState([]);
+  const [designations, setDesignations] = useState([]);
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -44,10 +46,12 @@ const MyProfile = ({ setAuth }) => {
         const levelsData = await levelsResponse.json();
         const termsData = await termsResponse.json();
         const departmentsData = await departmentsResponse.json();
+        const designationsData = await designationsResponse.json();
 
         setLevels(levelsData);
         setTerms(termsData);
         setDepartments(departmentsData);
+        setDesignations(designationsData);
       } else {
         console.error("Failed to fetch levels, terms, departments, or designations");
       }
@@ -57,6 +61,14 @@ const MyProfile = ({ setAuth }) => {
       if (studentData.length > 0) {
         setUserType('student');
         setStudent(studentData[0]);
+      }
+
+      const teacherResponse = await fetch(`http://localhost:5000/teacherProfile/${user_id}`);
+      const teacherData = await teacherResponse.json();
+      if (teacherData.length > 0) {
+        setUserType('teacher');
+        setTeacher(teacherData[0]);
+        console.log(teacherData[0]);
       }
 
       const staffResponse = await fetch(`http://localhost:5000/staffProfile/${user_id}`);
@@ -87,9 +99,14 @@ const MyProfile = ({ setAuth }) => {
 
   const [studentFirstName, setStudentFirstName] = useState("");
   const [studentLastName, setStudentLastName] = useState("");
-  const [studentDept, setStudentDept] = useState("");
+  const [studentDept, setStudentDept] = useState(0);
   const [studentLevel, setStudentLevel] = useState("");
   const [studentTerm, setStudentTerm] = useState("");
+
+  const [teacherFirstName, setTeacherFirstName] = useState("");
+  const [teacherLastName, setTeacherLastName] = useState("");
+  const [teacherDept, setTeacherDept] = useState(0);
+  const [teacherDesignation, setTeacherDesignation] = useState("");
 
   const updateStaffChange = async () => {
     try {
@@ -153,6 +170,37 @@ const MyProfile = ({ setAuth }) => {
     }
   };
 
+  const updateTeacherChange = async () => {
+    try {
+      if (!teacherFirstName || !teacherLastName || !teacherDept || !teacherDesignation) {
+        alert("Please enter the new information to update");
+        return;
+      }
+
+      const body = { teacherFirstName, teacherLastName, teacherDept, teacherDesignation };
+      console.log(body);
+      const url = `http://localhost:5000/updateTeacherProfile/${teacher.teacher_id}`;
+
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", token: localStorage.token },
+        body: JSON.stringify(body)
+      });
+
+      const parseRes = await response.json();
+
+      if (parseRes === "Updated Successfully") {
+        alert("Profile Updated Successfully");
+        window.location.reload();
+      } else {
+        alert("Failed to update profile");
+      }
+      setShowEditModal(false);
+    } catch (err) {
+      console.error("Error updating teacher profile", err.message);
+    }
+  };
+
   const submitChangePassword = async () => {
     try {
       if (!oldPassword || !newPassword || !confirmNewPassword) {
@@ -195,6 +243,11 @@ const MyProfile = ({ setAuth }) => {
       setStudentDept(student.department_code);
       setStudentLevel(student.current_level);
       setStudentTerm(student.current_term);
+    } else if (userType === 'teacher') {
+      setTeacherFirstName(teacher.first_name);
+      setTeacherLastName(teacher.last_name);
+      setTeacherDept(teacher.department_code);
+      setTeacherDesignation(teacher.designation);
     }
     setShowEditModal(!showEditModal);
   };
@@ -223,6 +276,9 @@ const MyProfile = ({ setAuth }) => {
         body = { payment };
       } else if (userType === 'student') {
         url = `http://localhost:5000/payDue/${student.student_id}`;
+        body = { payment };
+      } else if (userType === 'teacher') {
+        url = `http://localhost:5000/payDue/${teacher.teacher_id}`;
         body = { payment };
       }
       const response = await fetch(url, {
@@ -288,7 +344,7 @@ const MyProfile = ({ setAuth }) => {
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
           <div className="transparent-buttons" style={{ width: '100%' }}>
-            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px'}}>Home</button>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px' }}>Home</button>
             <div style={{ alignContent: 'center', width: '100%' }}>
               {userType === 'staff' &&
                 <button className="btn" onClick={addBook}>Add New Book</button>
@@ -388,6 +444,38 @@ const MyProfile = ({ setAuth }) => {
               </tbody>
             </table>
           }
+
+          {userType === 'teacher' && teacher &&
+            <table className="table mx-auto">
+              <tbody>
+                <tr className="text-center">
+                  <td className="head-color">ID</td>
+                  <td className="table-row-2">{teacher.teacher_id}</td>
+                </tr>
+                <tr className="text-center">
+                  <td className="head-color">Name</td>
+                  <td className="table-row-2">{teacher.first_name} {teacher.last_name}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Phone Number</td>
+                  <td className="table-row-2">{teacher.phone_number}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Department</td>
+                  <td className="table-row-2">{teacher.department_name}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Designation</td>
+                  <td className="table-row-2">{teacher.designation}</td>
+                </tr>
+                <tr className="text-center mt-3">
+                  <td className="head-color">Fine Status</td>
+                  <td className="table-row-2">{teacher.due} TK Due</td>
+                </tr>
+              </tbody>
+            </table>
+          }
+
         </div>
         <div>
           <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
@@ -482,6 +570,61 @@ const MyProfile = ({ setAuth }) => {
                   <div className="modal-footer">
                     <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
                     <button type="button" className="btn btn-primary" onClick={updateStudentChange}>Save changes</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+
+          {showEditModal && userType === 'teacher' &&
+            <div className="modal" tabIndex="-1" role="dialog" style={{ display: "block", backgroundColor: "rgba(0,0,0,0.5)" }}>
+              <div className="modal-dialog" role="document">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Edit Profile</h5>
+                    <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={toggleEditModal}>
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <div className="modal-body">
+                    <label>First Name:</label>
+                    <input type="text" id='f_name' className="form-control mb-3" value={teacherFirstName} onChange={(e) => setTeacherFirstName(e.target.value)} />
+                    <label>Last Name:</label>
+                    <input type="text" id='l_name' className="form-control mb-3" value={teacherLastName} onChange={(e) => setTeacherLastName(e.target.value)} />
+                    <label htmlFor="department_code">
+                      Department:
+                    </label>
+                    <select
+                      id="department"
+                      className="form-control"
+                      value={teacherDept}
+                      onChange={(e) => setTeacherDept(e.target.value)}
+                    >
+                      <option value=""> Select Department </option>
+                      {departments.map((dept) => (
+                        <option key={dept.department_code} value={dept.department_code}>
+                          {dept.department_name}
+                        </option>
+                      ))}
+                    </select>
+                    <label>Designation:</label>
+                    <select
+                      id="current_level"
+                      className="form-control"
+                      value={teacherDesignation}
+                      onChange={(e) => setTeacherDesignation(e.target.value)}
+                    >
+                      <option value=""> Select Designation </option>
+                      {designations.map((lvl) => (
+                        <option key={lvl.designation} value={lvl.designation}>
+                          {lvl.designation}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn button-color" onClick={toggleEditModal}>Close</button>
+                    <button type="button" className="btn btn-primary" onClick={updateTeacherChange}>Save changes</button>
                   </div>
                 </div>
               </div>
