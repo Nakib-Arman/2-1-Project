@@ -1029,6 +1029,16 @@ app.put("/removeBook",async (req,res) =>{
     }
 })
 
+app.put("/restoreBook",async (req,res) =>{
+    try{
+        const {id} = req.body;
+        const response = await pool.query("CALL RESTORE_BOOK($1)",[id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 
 app.listen(5000, () => {
     console.log("server has started on port 5000");

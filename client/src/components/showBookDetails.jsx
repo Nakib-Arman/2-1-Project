@@ -199,6 +199,28 @@ const ShowBookDetails = ({ setAuth }) => {
     navigate("/");
   };
 
+  const restoreBook = async (id) => {
+    try {
+      const body = { id };
+      const response = await fetch("http://localhost:5000/restoreBook", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: localStorage.token,
+        },
+        body: JSON.stringify(body),
+      });
+      if (response.ok) {
+        console.log("Restored book with ID", id);
+        navigate('/showBooks');
+      } else {
+        console.error("Failed to restore book");
+      }
+    } catch (err) {
+      console.error("Failed to restore book:", err.message);
+    }
+  }
+
 
   return (
     <Fragment>
@@ -294,7 +316,7 @@ const ShowBookDetails = ({ setAuth }) => {
                 }
                 {visible === false &&
                   <button
-                    onClick={(e) => removeBook(book.book_id, e)}
+                    onClick={() => restoreBook(book.book_id)}
                     className="btn deny-button w-100 mt-3"
                   >
                     Restore Book
