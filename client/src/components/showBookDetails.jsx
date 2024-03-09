@@ -15,6 +15,8 @@ const ShowBookDetails = ({ setAuth }) => {
   const [authors, setAuthors] = useState([]);
   const { id } = useParams();
   const [relatedBooks, setRelatedBooks] = useState([]);
+  const [userType, setUserType] = useState([]);
+  const [visible, setVisible] = useState([]);
 
   const navigate = useNavigate();
 
@@ -24,11 +26,25 @@ const ShowBookDetails = ({ setAuth }) => {
         const response = await fetch(`http://localhost:5000/showBookDetails/${id}`);
         const jsonData = await response.json();
         setBook(jsonData[0]);
+        setVisible(jsonData[0].is_visible);
         setAuthors(jsonData);
       } catch (err) {
         console.error("Failed to fetch book details:", err);
       }
     };
+
+    const getUserType = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/getUserType", {
+          method: "GET",
+          headers: { token: localStorage.token, "Content-Type": "application/json" }
+        });
+        const jsonData = await response.json();
+        setUserType(jsonData[0].type_of_user);
+      } catch (err) {
+        console.error(err.message);
+      }
+    }
 
     const getRelatedBooks = async () => {
       try {
@@ -41,6 +57,7 @@ const ShowBookDetails = ({ setAuth }) => {
     };
 
     getBookDetails();
+    getUserType();
     getRelatedBooks();
   }, [id]);
 
@@ -248,25 +265,41 @@ const ShowBookDetails = ({ setAuth }) => {
                 </tr>
               </tbody>
             </table>
-            {book?.copy == 0 &&
-              <button className="btn w-100" style={{ backgroundColor: "#0358b4", color: "white" }}>
-                Unavailable
-              </button>
+            {visible &&
+              <div>
+                {book?.copy == 0 &&
+                  <button className="btn w-100" style={{ backgroundColor: "#0358b4", color: "white" }}>
+                    Unavailable
+                  </button>
+                }
+                {book?.copy > 0 &&
+                  <button
+                    onClick={(e) => addToCart(book.book_id, e)}
+                    className="btn btn-primary w-100"
+                  >
+                    Add to Cart
+                  </button>
+                }
+              </div>
             }
-            {book?.copy > 0 &&
-            <div>
-              <button
-                onClick={(e) => addToCart(book.book_id, e)}
-                className="btn btn-primary w-100"
-              >
-                Add to Cart
-              </button>
-              <button
-                onClick={(e) => removeBook(book.book_id, e)}
-                className="btn deny-button w-100 mt-3"
-              >
-                Remove Book
-              </button>
+            {userType === 'staff' &&
+              <div>
+                {visible &&
+                  <button
+                    onClick={(e) => removeBook(book.book_id, e)}
+                    className="btn deny-button w-100 mt-3"
+                  >
+                    Remove Book
+                  </button>
+                }
+                {visible === false &&
+                  <button
+                    onClick={(e) => removeBook(book.book_id, e)}
+                    className="btn deny-button w-100 mt-3"
+                  >
+                    Restore Book
+                  </button>
+                }
               </div>
             }
           </div>
