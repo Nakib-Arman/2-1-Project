@@ -172,8 +172,6 @@ app.post("/requestBorrowRelation", (req, res) => {
         const user = await pool.query("SELECT * FROM USERS WHERE USER_ID=$1",[user_id]);
         const isPasswordValid = await bcrypt.compare(oldPassword,user.rows[0].library_password);
         if(isPasswordValid){
-            const salt = await bcrypt.genSalt(10);
-            const encryptedPassword = await bcrypt.hash(newPassword,salt);
             const response = await pool.query("UPDATE USERS SET LIBRARY_PASSWORD=$1 WHERE USER_ID=$2",[newPassword,user_id]);
             console.log(response);
             res.json(response);
@@ -865,6 +863,7 @@ app.post("/payDue/:id", async (req, res) => {
         res.json(response);
     } catch (err) {
         console.error(err.message);
+        res.json(err.message);
     }
 });
 

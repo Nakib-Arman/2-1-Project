@@ -22,7 +22,6 @@ const MyRequests = ({ setAuth }) => {
             const DeniedData = await Deniedresponse.json();
             if (requestType === 'Pending') {
                 setRequests(PendingData);
-                console.log(PendingData);
             }
             else if (requestType === 'Accepted') {
                 setRequests(AcceptedData);

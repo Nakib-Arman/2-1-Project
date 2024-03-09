@@ -286,6 +286,8 @@ const MyProfile = ({ setAuth }) => {
         headers: { "Content-Type": "application/json", token: localStorage.token },
         body: JSON.stringify(body)
       });
+      const responseData = await response.json();
+      alert(responseData);
       setShowPayDueModal(false);
       window.location.reload();
     } catch (err) {
@@ -639,7 +641,15 @@ const MyProfile = ({ setAuth }) => {
             <div className="modal-dialog" role="document">
               <div className="modal-content">
                 <div className="modal-header">
+                  {userType === 'staff' &&
                   <h5 className="modal-title">Pay Due - {staff.due}</h5>
+        }
+                  {userType === 'student' &&
+                    <h5 className="modal-title">Pay Due - {student.due}</h5>
+                  }
+                  {userType === 'teacher' &&
+                    <h5 className="modal-title">Pay Due - {teacher.due}</h5>
+                  }
                   <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={togglePayDueModal}>
                     <span aria-hidden="true">&times;</span>
                   </button>
