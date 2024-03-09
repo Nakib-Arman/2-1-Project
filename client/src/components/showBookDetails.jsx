@@ -67,7 +67,26 @@ const ShowBookDetails = ({ setAuth }) => {
   };
 
   const removeBook = async (id, e) => {
-    console.log("Hello");
+    e.stopPropagation();
+    try {
+      const body = { id };
+      const response = await fetch("http://localhost:5000/removeBook", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          token: localStorage.token,
+        },
+        body: JSON.stringify(body),
+      });
+      if (response.ok) {
+        console.log("Removed book with ID", id);
+        navigate('/showBooks');
+      } else {
+        console.error("Failed to remove book");
+      }
+    } catch (err) {
+      console.error("Failed to remove book:", err.message);
+    }
   }
 
   const NextArrow = ({ onClick }) => (
