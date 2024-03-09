@@ -14,6 +14,7 @@ import ShowCart from "./components/showCart";
 import HomePageForStudentTeacher from "./components/HomePageForStudentTeacher";
 import StudentProfile from "./components/studentProfile";
 import StaffProfile from "./components/staffProfile";
+import TeacherProfile from "./components/teacherProfile";
 import SignUp from "./components/SignUp";
 import RestoreBorrowedBooks from "./components/restoreBorrowedBooks";
 import AboutUs from "./components/aboutUs";
@@ -67,6 +68,7 @@ const App = () => {
           <Route exact path="/HomePageForStudentTeacher" element={isAuthenticated ? <HomePageForStudentTeacher setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
           <Route exact path="/studentProfile/:id" element={isAuthenticated ? <StudentProfile setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
           <Route exact path="/staffProfile/:id" element={isAuthenticated ? <StaffProfile setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/> 
+          <Route exact path="/teacherProfile/:id" element={isAuthenticated ? <TeacherProfile setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
           <Route exact path="/restoreBorrowedBooks" element={<RestoreBorrowedBooks/>}/> 
           <Route exact path="/aboutUs" element={<AboutUs/>}/>
           <Route exact path="/acquisitionRecords" element={<AcquisitionRecords/>}/>

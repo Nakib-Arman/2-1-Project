@@ -49,12 +49,8 @@ const TeacherProfile = ({ setAuth }) => {
               <td className="table-row-2">{teacher.department_name}</td>
             </tr>
             <tr className="text-center mt-3">
-              <td className="head-color">Current Level</td>
-              <td className="table-row-2">{teacher.current_level}</td>
-            </tr>
-            <tr className="text-center mt-3">
-              <td className="head-color">Current Term</td>
-              <td className="table-row-2">{teacher.current_term}</td>
+              <td className="head-color">Designation</td>
+              <td className="table-row-2">{teacher.designation}</td>
             </tr>
             <tr className="text-center mt-3">
               <td className="head-color">Total Due</td>

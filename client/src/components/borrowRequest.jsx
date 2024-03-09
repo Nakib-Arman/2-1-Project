@@ -228,7 +228,7 @@ const BorrowRequests = ({ setAuth }) => {
                         <div key={index} className="box">
                             <span className="option-text">
                                 Name :
-                                <Link to={`/showStudentDetails/${teacher.teacher_id}`} className="option-link">
+                                <Link to={`/teacherProfile/${teacher.teacher_id}`} className="option-link">
                                     {teacher.name}
                                 </Link>
                             </span>
