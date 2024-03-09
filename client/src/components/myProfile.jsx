@@ -287,7 +287,9 @@ const MyProfile = ({ setAuth }) => {
         body: JSON.stringify(body)
       });
       const responseData = await response.json();
-      alert(responseData);
+      if(responseData==='Amount paid is greater than due'){
+        alert(responseData);
+      }
       setShowPayDueModal(false);
       window.location.reload();
     } catch (err) {

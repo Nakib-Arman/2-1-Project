@@ -78,7 +78,7 @@ BEGIN
     SELECT COUNT(*) INTO row_count FROM BOOK_SEARCHED;
     SELECT MIN(SEARCHED_INDEX) INTO t_index FROM BOOK_SEARCHED;
     
-    IF row_count > 5 THEN
+    IF row_count > 1000 THEN
         DELETE FROM BOOK_SEARCHED WHERE SEARCHED_INDEX = t_index;
     END IF;
     
@@ -86,7 +86,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER book_searched_trigger
+CREATE OR REPLACE TRIGGER book_searched_trigger
 AFTER INSERT ON BOOK_SEARCHED
 FOR EACH ROW
 EXECUTE FUNCTION book_searched_trigger_function();

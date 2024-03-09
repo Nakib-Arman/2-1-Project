@@ -66,6 +66,10 @@ const ShowBookDetails = ({ setAuth }) => {
     }
   };
 
+  const removeBook = async (id, e) => {
+    console.log("Hello");
+  }
+
   const NextArrow = ({ onClick }) => (
     <button className="custom-slick-arrow custom-slick-next" onClick={onClick}>
       {'>'}
@@ -231,12 +235,20 @@ const ShowBookDetails = ({ setAuth }) => {
               </button>
             }
             {book?.copy > 0 &&
+            <div>
               <button
                 onClick={(e) => addToCart(book.book_id, e)}
                 className="btn btn-primary w-100"
               >
                 Add to Cart
               </button>
+              <button
+                onClick={(e) => removeBook(book.book_id, e)}
+                className="btn deny-button w-100 mt-3"
+              >
+                Remove Book
+              </button>
+              </div>
             }
           </div>
         </div>
