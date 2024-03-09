@@ -9,3 +9,19 @@
     margin: 20px auto;
   }
   
+
+  .team-members {
+    display: flex;
+    justify-content: space-around;
+}
+
+.member {
+    text-align: center;
+    margin: 20px;
+}
+
+.member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}

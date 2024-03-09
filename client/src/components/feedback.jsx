@@ -84,27 +84,7 @@ const Feedback = ({ setAuth }) => {
         <Fragment>
             <div className='page-container'>
                 <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
-                <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
-
-                    <div className="transparent-buttons">
-                        <button className="btn" onClick={goToHome} style={{ position: 'relative', left: '10px' }}>Home</button>
-                        <button className="btn" onClick={addBook} style={{ position: 'absolute', left: '400px' }}>Add New Book</button>
-                        <button className="btn" onClick={showBooks} style={{ position: 'absolute', left: '540px' }}>Search Books</button>
-                        <button className="btn" style={{ position: 'absolute', left: '670px' }}>My Profile</button>
-                        <button className="btn" onClick={goToCart} style={{ position: 'absolute', left: '770px' }}>Cart</button>
-                        <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
-                            <button>&#9776;</button>
-                        </div>
-                        {isDropdownVisible && (
-                            <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
-                                <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '90%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-                                <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '90%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
-                                <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '90%', textAlign: 'right' }}><b>Acquisition Records</b></button>
-                                <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
-                            </div>
-                        )}
-                    </div>
-                </header>
+                <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Feedback</h1>
                 <div
                     className="add-book-container"
                     style={{

@@ -25,7 +25,8 @@ const HomePage = ({ setAuth }) => {
 
   const getRecentSearchedBooks = async () => {
     try {
-      const response = await fetch("http://localhost:5000/showBooks");
+      console.log("Fetching recent searched books");
+      const response = await fetch("http://localhost:5000/showRecentSearchedBooks",{method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" }});
       const jsonData = await response.json();
       setRecentSearchedBooks(jsonData);
     } catch (err) {

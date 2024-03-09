@@ -120,7 +120,7 @@ app.get("/checkRequest/:id",authorization, async (req,res) =>{
         console.log("called");
         const {id} = req.params;
         const user_id = req.user;
-        const response = await pool.query("SELECT * FROM USER_BORROW_RELATION WHERE USER_ID=$1 AND BOOK_ID=$2",[user_id,id]);
+        const response = await pool.query("SELECT * FROM USER_BORROW_RELATION UBR JOIN USER_REQUEST UR ON (UR.USER_ID=UBR.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (UR.USER_REQUEST_ID=RBR.USER_REQUEST_ID) WHERE UBR.USER_ID=$1 AND UBR.BOOK_ID=$2 AND RBR.REQUEST_STATUS IN('Accepted','Pending')",[user_id,id]);
         //console.log(response.rows);
         res.json(response.rows);
     }catch(err) {
@@ -640,6 +640,30 @@ app.get("/getSearchedStudentRequest/:searchtext",async (req,res) =>{
     }
 })
 
+app.get("/getSearchedTeacherRequest/:searchtext",async (req,res) =>{
+    try{
+        const {searchtext} = req.params;
+        const teachers = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS TEACHER_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN TEACHERS T ON (T.TEACHER_ID = U.USER_ID) WHERE B.IS_VISIBLE=TRUE AND RBR.REQUEST_STATUS='Accepted' AND (LOWER(U.FIRST_NAME) LIKE $1 OR LOWER(U.LAST_NAME) LIKE $1 OR LOWER(B.TITLE) LIKE $1)",[`%${searchtext.toLowerCase()}%`]
+            );
+        res.json(teachers.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
+app.get("/getSearchedTeacherRequest/:searchtext",async (req,res) =>{
+    try{
+        const {searchtext} = req.params;
+        const staffs = await pool.query(
+            "SELECT RBR.USER_REQUEST_ID AS REQUEST_ID,B.BOOK_ID,U.USER_ID AS STAFF_ID,U.FIRST_NAME || ' ' || U.LAST_NAME AS NAME,B.TITLE AS TITLE,UR.REQUEST_DATE AS DATE_BORROWED, RBR.REQUEST_STATUS AS REQUEST_STATUS FROM USER_REQUEST UR JOIN USERS U ON(UR.USER_ID=U.USER_ID) JOIN REQUEST_BOOK_RELATION RBR ON (RBR.USER_REQUEST_ID= UR.USER_REQUEST_ID) JOIN BOOKS B ON (RBR.BOOK_ID = B.BOOK_ID) JOIN SHELVES S ON (S.SHELF_ID=B.SHELF_ID) JOIN USERS US ON(US.USER_ID=S.STAFF_ID) JOIN STAFFS STA ON (STA.STAFF_ID = U.USER_ID) WHERE B.IS_VISIBLE=TRUE AND RBR.REQUEST_STATUS='Accepted' AND (LOWER(U.FIRST_NAME) LIKE $1 OR LOWER(U.LAST_NAME) LIKE $1 OR LOWER(B.TITLE) LIKE $1)",[`%${searchtext.toLowerCase()}%`]
+            );
+        res.json(staffs.rows);
+    }catch (err) {
+        console.error(err.message);
+    }
+})
+
 
 app.post("/addToUserRequest", authorization, async (req, res) => {
     try {
@@ -713,10 +737,30 @@ app.put("/updateUserBook",async (req,res) => {
     }
 })
 
+app.put("/returnedUserBook",async (req,res) => {
+    try{
+        const {user_id,book_id} = req.body;
+        const response = await pool.query("UPDATE USER_BORROW_RELATION SET DATE_RETURNED=CURRENT_DATE WHERE USER_ID=$1 AND BOOK_ID=$2 AND DATE_RETURNED IS NULL",[user_id,book_id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 app.put("/denyStatus/:request_id",async (req,res) => {
     try{
         const {request_id} = req.params;
         const response = await pool.query("UPDATE REQUEST_BOOK_RELATION SET REQUEST_STATUS='Rejected' WHERE USER_REQUEST_ID=$1",[request_id]);
+        res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.put("/returnedStatus/:request_id",async (req,res) =>{
+    try{
+        const {request_id} = req.params;
+        const response = await pool.query("UPDATE REQUEST_BOOK_RELATION SET REQUEST_STATUS='Returned' WHERE USER_REQUEST_ID=$1",[request_id]);
         res.json(response);
     }catch(err){
         console.error(err.message);
@@ -1034,6 +1078,17 @@ app.put("/restoreBook",async (req,res) =>{
         const {id} = req.body;
         const response = await pool.query("CALL RESTORE_BOOK($1)",[id]);
         res.json(response);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/showRecentSearchedBooks",authorization,async (req,res) =>{
+    try{
+        const user_id=req.user;
+        console.log(user_id);
+        const response = await pool.query("SELECT DISTINCT SQ.SEARCHED_INDEX, SQ.BOOK_ID,B.TITLE,B.CATEGORY,P.PUBLICATION_NAME FROM(SELECT DISTINCT BOOK_ID,SEARCHED_INDEX FROM BOOK_SEARCHED WHERE USER_ID=$1) SQ JOIN BOOKS B ON(SQ.BOOK_ID=B.BOOK_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE ORDER BY SQ.SEARCHED_INDEX DESC",[user_id]);
+        res.json(response.rows);
     }catch(err){
         console.error(err.message);
     }

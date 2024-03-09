@@ -187,39 +187,39 @@ const ShowBook = ({ setAuth }) => {
   return (
     <Fragment>
       <div className="page-container">
-      <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
+        <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
-<div className="transparent-buttons" style={{ width: '100%' }}>
-  <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px' }}>Home</button>
-  <div style={{ alignContent: 'center', width: '100%' }}>
-    {userType === 'staff' &&
-      <button className="btn" onClick={addBook}>Add New Book</button>
-    }
-    <button className="btn" style={{ backgroundColor: '#f7e8e8', color: '#5A1917'}}>Search Books</button>
-    <button className="btn" onClick={MyProfile}>My Profile</button>
-    <button className="btn" onClick={goToCart}>Cart</button>
-  </div>
-  <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
-    <button>&#9776;</button>
-  </div>
-  {isDropdownVisible && (
-    <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
-      <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
-      <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
-      <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
-      {userType === 'staff' &&
-        <div style={{alignContent: 'right'}}>
-          <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
-          <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
-          <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
-          <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>View Suggested Books</b></button>
-        </div>
-      }
-      <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
-    </div>
-  )}
-</div>
-</header>
+          <div className="transparent-buttons" style={{ width: '100%' }}>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px' }}>Home</button>
+            <div style={{ alignContent: 'center', width: '100%' }}>
+              {userType === 'staff' &&
+                <button className="btn" onClick={addBook}>Add New Book</button>
+              }
+              <button className="btn" style={{ backgroundColor: '#f7e8e8', color: '#5A1917' }}>Search Books</button>
+              <button className="btn" onClick={MyProfile}>My Profile</button>
+              <button className="btn" onClick={goToCart}>Cart</button>
+            </div>
+            <div className="hamburger-icon" onClick={toggleDropdown} style={{ position: 'absolute', right: '10px' }}>
+              <button>&#9776;</button>
+            </div>
+            {isDropdownVisible && (
+              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
+                <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
+                <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
+                <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
+                {userType === 'staff' &&
+                  <div style={{ alignContent: 'right' }}>
+                    <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
+                    <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
+                    <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
+                    <button onClick={() => handleDropdownItemClick('viewSuggestedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>View Suggested Books</b></button>
+                  </div>
+                }
+                <button onClick={() => handleDropdownItemClick('logOut')} className="logout-button" style={{ width: '90%', textAlign: 'right' }}><b>Log Out</b></button>
+              </div>
+            )}
+          </div>
+        </header>
         <h1 className="text-center mb-4" style={{ color: 'transparent' }}>
           Search Books
         </h1>

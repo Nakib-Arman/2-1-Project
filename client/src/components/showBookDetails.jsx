@@ -221,6 +221,10 @@ const ShowBookDetails = ({ setAuth }) => {
     }
   }
 
+  const handleBookClick = (bookId) => {
+    navigate(`/showBookDetails/${bookId}`);
+  };
+
 
   return (
     <Fragment>

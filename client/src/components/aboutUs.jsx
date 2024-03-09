@@ -44,24 +44,24 @@ const AboutUs = () => {
                     </ul>
 
                     <h2 className='mt-5'>Meet the Team</h2>
-                    <div className="team-members">
-                        <div className="member">
-                            <img src="/nakib_arman.jpg" alt="Nakib Arman" />
-                            <p>
-                                <strong>Nakib Arman</strong>
-                                <br />
-                                Student ID: 2105128
-                            </p>
-                        </div>
-                        <div className="member">
-                            <img src="/shariar_al_kabir.jpg" alt="Shariar Al Kabir" />
-                            <p>
-                                <strong>Shariar Al Kabir</strong>
-                                <br />
-                                Student ID: 2105132
-                            </p>
-                        </div>
-                    </div>
+                    <div class="team-members">
+    <div class="member">
+        {/* <img src="/nakib_arman.jpg" alt="Nakib Arman" /> */}
+        <p>
+            <strong>Nakib Arman</strong>
+            <br />
+            Student ID: 2105128
+        </p>
+    </div>
+    <div class="member">
+        {/* <img src="/shariar_al_kabir.jpg" alt="Shariar Al Kabir" /> */}
+        <p>
+            <strong>Shariar Al Kabir</strong>
+            <br />
+            Student ID: 2105132
+        </p>
+    </div>
+</div>
 
                     <h2 className='mt-5'>Join Us on this Literary Journey</h2>
                     <p>

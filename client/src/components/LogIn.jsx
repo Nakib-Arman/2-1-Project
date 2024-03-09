@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import videoBackground from './video.mp4'; // Make sure to provide the correct path
 
 const LogIn = ({ setAuth }) => {
   const [PHONE, setPHONE] = useState("");
@@ -48,12 +47,6 @@ const LogIn = ({ setAuth }) => {
             <button onClick={gotoSignUp}>Sign Up</button>
           </div>
         </header>
-        <div className="video-background">
-          <video autoPlay muted loop id="video-background">
-            <source src={videoBackground} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-          <div className="overlay">
             <main className="main-content">
               <div className="login-container mt-5">
                 <h1>Log In</h1>
@@ -70,8 +63,6 @@ const LogIn = ({ setAuth }) => {
                 </form>
               </div>
             </main>
-          </div>
-        </div>
       </div>
     </div>
   );

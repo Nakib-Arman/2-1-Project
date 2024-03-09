@@ -96,17 +96,37 @@ const RestoreBorrowedBooks = ({ setAuth }) => {
     }
 
     const getSearchedTeachers = async () => {
-        const response = await fetch(`http://localhost:5000/getSearchedStudentRequest/${searchtext}`);
+        const response = await fetch(`http://localhost:5000/getSearchedTeacherRequest/${searchtext}`);
         const jsonData = await response.json();
         setSearchedTeachers(jsonData);
         setIsSearched(true);
     }
 
     const getSearchedStaffs = async () => {
-        const response = await fetch(`http://localhost:5000/getSearchedStudentRequest/${searchtext}`);
+        const response = await fetch(`http://localhost:5000/getSearchedStaffRequest/${searchtext}`);
         const jsonData = await response.json();
         setSearchedStaffs(jsonData);
         setIsSearched(true);
+    }
+
+    const restoreBook = async(request_id, user_id, book_id) => {
+        const response1 = await fetch(`http://localhost:5000/returnedStatus/${request_id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        const body = { user_id, book_id };
+        const response2 = await fetch("http://localhost:5000/returnedUserBook", {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(body)
+        });
+        if(response1.ok && response2.ok){
+            fetchData();
+        }
     }
 
     useEffect(() => {
@@ -166,7 +186,7 @@ const RestoreBorrowedBooks = ({ setAuth }) => {
                                 Date: {formatDate(student.date_borrowed)}
                             </span>
                             <div className="buttons-container mt-2">
-                                <button className="btn accept-button mr-3">Restore Book</button>
+                                <button className="btn accept-button mr-3" onClick={() => restoreBook(student.request_id,student.student_id,student.book_id)}>Restore Book</button>
                             </div>
                             <p> </p>
                             <p>
@@ -193,7 +213,7 @@ const RestoreBorrowedBooks = ({ setAuth }) => {
                                 Date: {formatDate(teacher.date_borrowed)}
                             </span>
                             <div className="buttons-container mt-2">
-                                <button className="btn accept-button mr-3">Restore Book</button>
+                                <button className="btn accept-button mr-3" onClick={restoreBook}>Restore Book</button>
                             </div>
                             <p> </p>
                             <p>
@@ -220,7 +240,7 @@ const RestoreBorrowedBooks = ({ setAuth }) => {
                                 Date: {formatDate(staff.date_borrowed)}
                             </span>
                             <div className="buttons-container mt-2">
-                                <button className="btn accept-button mr-3">Restore Book</button>
+                                <button className="btn accept-button mr-3" onClick={restoreBook}>Restore Book</button>
                             </div>
                             <p> </p>
                             <p>

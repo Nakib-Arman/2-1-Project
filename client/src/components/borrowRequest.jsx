@@ -204,7 +204,7 @@ const BorrowRequests = ({ setAuth }) => {
                                     <button
                                         className="btn accept-button mr-3"
                                     >
-                                        Restore Book
+                                        Accepted
                                     </button>
                                 </div>
                             }
@@ -241,20 +241,40 @@ const BorrowRequests = ({ setAuth }) => {
                             <span className="option-text">
                                 Date: {formatDate(teacher.date_borrowed)}
                             </span>
-                            <div className="buttons-container mt-2">
-                                <button
-                                    className="btn accept-button mr-3"
-                                    onClick={() => handleAcceptClick(teacher.request_id, teacher.teacher_id, teacher.book_id)}
-                                >
-                                    Accept
-                                </button>
-                                <button
-                                    className="btn deny-button"
-                                    onClick={() => handleDenyClick(teacher.request_id)}
-                                >
-                                    Deny
-                                </button>
-                            </div>
+                            {requestType == 'Pending' &&
+                                <div className="buttons-container mt-2">
+                                    <button
+                                        className="btn accept-button mr-3"
+                                        onClick={() => handleAcceptClick(teacher.request_id, teacher.teacher_id, teacher.book_id)}
+                                    >
+                                        Accept
+                                    </button>
+                                    <button
+                                        className="btn deny-button"
+                                        onClick={() => handleDenyClick(teacher.request_id)}
+                                    >
+                                        Deny
+                                    </button>
+                                </div>
+                            }
+                            {requestType == 'Accepted' &&
+                                <div className="buttons-container mt-2">
+                                    <button
+                                        className="btn accept-button mr-3"
+                                    >
+                                        Accepted
+                                    </button>
+                                </div>
+                            }
+                            {requestType == 'Rejected' &&
+                                <div className="buttons-container mt-2">
+                                    <label
+                                        className="btn" style={{ backgroundColor: '#c90000', color: 'white' }}
+                                    >
+                                        Rejected
+                                    </label>
+                                </div>
+                            }
                             <p> </p>
                             <p>
                                 {teacher.request_status}...
@@ -279,20 +299,40 @@ const BorrowRequests = ({ setAuth }) => {
                             <span className="option-text">
                                 Date: {formatDate(staff.date_borrowed)}
                             </span>
-                            <div className="buttons-container mt-2">
-                                <button
-                                    className="btn accept-button mr-3"
-                                    onClick={() => handleAcceptClick(staff.request_id, staff.staff_id, staff.book_id)}
-                                >
-                                    Accept
-                                </button>
-                                <button
-                                    className="btn deny-button"
-                                    onClick={() => handleDenyClick(staff.request_id)}
-                                >
-                                    Deny
-                                </button>
-                            </div>
+                            {requestType == 'Pending' &&
+                                <div className="buttons-container mt-2">
+                                    <button
+                                        className="btn accept-button mr-3"
+                                        onClick={() => handleAcceptClick(staff.request_id, staff.staff_id, staff.book_id)}
+                                    >
+                                        Accept
+                                    </button>
+                                    <button
+                                        className="btn deny-button"
+                                        onClick={() => handleDenyClick(staff.request_id)}
+                                    >
+                                        Deny
+                                    </button>
+                                </div>
+                            }
+                            {requestType == 'Accepted' &&
+                                <div className="buttons-container mt-2">
+                                    <button
+                                        className="btn accept-button mr-3"
+                                    >
+                                        Accepted
+                                    </button>
+                                </div>
+                            }
+                            {requestType == 'Rejected' &&
+                                <div className="buttons-container mt-2">
+                                    <label
+                                        className="btn" style={{ backgroundColor: '#c90000', color: 'white' }}
+                                    >
+                                        Rejected
+                                    </label>
+                                </div>
+                            }
                             <p> </p>
                             <p>
                                 {staff.request_status}...
