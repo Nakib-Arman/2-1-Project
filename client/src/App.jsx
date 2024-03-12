@@ -26,6 +26,9 @@ import SearchAuthors from "./components/searchAuthors";
 import SearchPublishers from "./components/searchPublishers";
 import MyRequests from "./components/myRequest";  
 import ViewSuggestedBooks from "./components/viewSuggestedBooks";
+import BooksofAuthor from "./components/booksofAuthor";
+import BooksofPublisher from "./components/booksofPublisher";
+import BooksofCategory from "./components/booksofCategory";
 
 const App = () => {
 
@@ -79,6 +82,9 @@ const App = () => {
           <Route exact path="/searchPublishers" element={<SearchPublishers/>}/>
           <Route exact path="/myRequests" element={isAuthenticated ? <MyRequests setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
           <Route exact path="/viewSuggestedBooks" element={isAuthenticated ? <ViewSuggestedBooks setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
+          <Route exact path="/booksofAuthor/:author_id" element={<BooksofAuthor/>}/>
+          <Route exact path="/booksofPublisher/:publisher_id" element={<BooksofPublisher/>}/>
+          <Route exact path="/booksofCategory/:category" element={<BooksofCategory/>}/>
         </Routes>
       </Router>
     </div>

@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import Footer from "./footer";
+import backgroundImage from "./HomePage.jpg";
 
 const ViewSuggestedBooks = ({ setAuth }) => {
     const [books, setBooks] = useState([]);
@@ -39,9 +40,16 @@ const ViewSuggestedBooks = ({ setAuth }) => {
         }
     }
     
+    const containerStyle = {
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundSize: '100%',
+        height: '100%',
+        /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+      };
 
     return (
         <Fragment>
+            <div className="fixed-bg" style={{ ...containerStyle }}></div>
             <div className="page-container">
                 <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Suggested Books</h1>
                 <h1 className="text-center mb-5" style={{ color: "transparent" }}>BIBLIOPHILE</h1>

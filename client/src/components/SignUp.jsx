@@ -1,6 +1,7 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import Select from 'react-select';
+import { Link,useNavigate } from 'react-router-dom';
+import backgroundImage from './LogIn.jpg';
+import './SignUp.css'
 
 const SignUp = () => {
   const [userType, setUserType] = useState('Student');
@@ -118,19 +119,20 @@ const SignUp = () => {
     }
   };
 
+  const containerStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
   useEffect(() => {
     getInfo();
   }, []);
 
   return (
     <Fragment>
-      <header className="header">
-        <div className="transparent-buttons">
-          <button
-            onClick={() => navigate("/LogIn")}
-          >Log In</button>
-        </div>
-      </header>
+      <div style={{ ...containerStyle, height: '100%' }}>
       <div
         className="add-book-container"
         style={{
@@ -140,12 +142,13 @@ const SignUp = () => {
           minHeight: '50vh',
         }}
       >
+        
         <form
-          className="login-container mt-5 mb-5"
+          className="signup-container mt-5"
           onSubmit={submit}
-          style={{ width: '50%' }}
+          style={{ width: '50%',alignContent: 'center' }}
         >
-          <h1>Sign Up</h1>
+          <h1><strong>Sign Up</strong></h1>
           <div>
             <label htmlFor="user_type" className="mt-3">
               Sign Up as a:
@@ -340,7 +343,12 @@ const SignUp = () => {
           }
           <button className="btn btn-success mt-3" onClick={submitSignUp}>Sign Up</button>
         </form>
+        <p style={{ color: '#fffafa'}}>
+            <Link to='/logIn'>Log In?</Link>
+          </p>
       </div>
+      </div>
+      
     </Fragment>
   );
 };

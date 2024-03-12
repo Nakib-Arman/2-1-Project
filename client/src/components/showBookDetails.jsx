@@ -5,9 +5,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartShopping } from "@fortawesome/free-solid-svg-icons";
-import { Navigate } from "react-router-dom";
+import { Link,Navigate } from "react-router-dom";
 import "./showBookDetails.css";
 import Footer from "./footer";
+import blackImage from "./black.jpg";
 
 const ShowBookDetails = ({ setAuth }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -17,6 +18,7 @@ const ShowBookDetails = ({ setAuth }) => {
   const [relatedBooks, setRelatedBooks] = useState([]);
   const [userType, setUserType] = useState([]);
   const [visible, setVisible] = useState([]);
+  const [backgroundImage, setBackgroundImage] = useState("");
 
   const navigate = useNavigate();
 
@@ -28,6 +30,7 @@ const ShowBookDetails = ({ setAuth }) => {
         setBook(jsonData[0]);
         setVisible(jsonData[0].is_visible);
         setAuthors(jsonData);
+        setBackgroundImage(jsonData[0].image_url);
       } catch (err) {
         console.error("Failed to fetch book details:", err);
       }
@@ -225,69 +228,83 @@ const ShowBookDetails = ({ setAuth }) => {
     navigate(`/showBookDetails/${bookId}`);
   };
 
+  const containerStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
+  const containerStyle2 = {
+    backgroundImage: `url('${blackImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
 
   return (
     <Fragment>
+      <div className="fixed-bg" style={{ ...containerStyle , opacity: '0.85'}}></div>
+      <div className="fixed-bg2" style={{...containerStyle2}}></div>
       <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Book Details</h1>
       <h1 className="text-center" style={{ color: "white" }}>BIBLIOPHILE</h1>
-      {/* <div className="head-color fixed-header">
-        <h1 className="text-center">Book Details</h1>
-        <button
-          onClick={goToCart}
-          className="cart-btn"
-          style={{
-            background: "transparent",
-            color: "white",
-            border: "white",
-          }}
-        >
-          <FontAwesomeIcon style={{ height: "25px" }} icon={faCartShopping} />
-        </button>
-      </div> */}
+      
       <div className="book-details-container">
-        <h1 className="text-center mb-4" style={{ color: 'white' }}>
+        <h1 className="text-center mb-4" style={{ color: 'transparent' }}>
           Book Details
         </h1>
         <div className="book-details-grid">
           <div className="book-cover">
             {book && <img src={book.image_url} alt={book.title} />}
           </div>
-          <div className="book-info">
+          <div className="book-info" style={{opacity: '0.8'}}>
             <table className="table">
               <tbody>
                 <tr>
-                  <td className="head-color">ID</td>
-                  <td>{book?.book_id}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{book?.book_id}</td>
                 </tr>
                 <tr>
-                  <td className="head-color">Title</td>
-                  <td>{book?.title}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Title</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{book?.title}</td>
                 </tr>
                 <tr>
-                  <td className="head-color">Category</td>
-                  <td>{book?.category}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Category</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>
+                    <Link to={`/booksofCategory/${book?.category}`} className="new-link">
+                     {book?.category}
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="head-color">Author</td>
-                  <td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Author</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>
                     <ul className="author-list">
                       {authors.map(author => (
-                        <li key={author.author_id}>{author.author_name}</li>
+                        <li key={author.author_id}>
+                          <Link to={`/booksofAuthor/${author.author_id}`} className="new-link">
+                            {author.author_name}
+                          </Link>
+                        </li>
                       ))}
                     </ul>
                   </td>
                 </tr>
                 <tr>
-                  <td className="head-color">Publication</td>
-                  <td>{book?.publication_name}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Publication</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>
+                    <Link to={ `/booksofPublisher/${book?.publisher_id}`} className="new-link">
+                    {book?.publication_name}
+                    </Link>
+                  </td>
                 </tr>
                 <tr>
-                  <td className="head-color">Shelf No</td>
-                  <td>{book?.shelf_id}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Shelf No</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{book?.shelf_id}</td>
                 </tr>
                 <tr>
-                  <td className="head-color">Copies Available</td>
-                  <td>{book?.copy}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Copies Available</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{book?.copy}</td>
                 </tr>
               </tbody>
             </table>
@@ -331,16 +348,21 @@ const ShowBookDetails = ({ setAuth }) => {
           </div>
         </div>
       </div>
-      <div className="container mt-5">
-        <h3 style={{ background: '#555', color: 'white' }}>Related Books</h3>
+      <div className="container mt-5" style={{ opacity: '0.9' }}>
+        <h3 style={{ background: '#9b0500', color: 'white' }}>Related Books</h3>
         <Slider {...settings}>
           {relatedBooks.map((book) => (
-            <div key={book.book_id} className="book-slider-item" style={{ backgroundColor: '#333' }}>
-              <div className="card h-100" style={{ cursor: "pointer" }}>
-                <div className="card-body">
-                  <h5 className="card-title book-title"><i>{book.title}</i></h5>
-                  <p className="card-text"><strong>Publication:</strong> {book.publication_name}</p>
-                  <p className="card-text"><strong>Category:</strong> {book.category}</p>
+            <div key={book.book_id} className="card2" onClick={() => handleBookClick(book.book_id)}>
+              <div className="container">
+                <div calss="row">
+                  <div className="mb-2" style={{ height: '100%' }}>
+                    <img src={book.image_url} alt={book.title} />
+                  </div>
+                  <div calss='card2-body'>
+                    <h5 className="card-title book-title" style={{ color: '#dd0000' }}>{book.title}</h5>
+                    <p className="card-text" style={{ color: 'white',fontSize:'14px' }}><strong>Publication:</strong> {book.publication_name}</p>
+                    <p className="card-text" style={{ color: 'white',fontSize: '14px' }}><strong>Category:</strong> {book.category}</p>
+                  </div>
                 </div>
               </div>
             </div>

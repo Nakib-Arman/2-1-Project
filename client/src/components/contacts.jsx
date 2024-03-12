@@ -3,13 +3,24 @@
 import React, { Fragment } from 'react';
 import './contacts.css'; // Import the corresponding CSS file
 import Footer from './footer';
+import backgroundImage from "./HomePage.jpg";
 
 const ContactUs = () => {
+
+    const containerStyle = {
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundSize: '100%',
+        height: '100%',
+        /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+      };
+
     return (
         <Fragment>
+            <div className="fixed-bg" style={{ ...containerStyle }}></div>
             <div className='page-container'>
-                <div className="contact-container">
-                    <h2>Contact Us</h2>
+            <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Contact Us</h1>
+            <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
+                <div className="aboutus-container" style={{opacity: '0.9'}}>
                     <div className="contact-info">
                         <p>
                             <strong>Shariar Al Kabir</strong>

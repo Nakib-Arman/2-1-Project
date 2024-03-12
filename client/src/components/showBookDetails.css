@@ -43,3 +43,12 @@
   margin-right: 10px; /* Adjust spacing between slides */
 }
 
+.new-link {
+  color: white;
+  text-decoration: none;
+}
+
+.new-link:hover {
+  color: #DD0000;
+  text-decoration: none;
+}

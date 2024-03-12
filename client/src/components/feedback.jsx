@@ -3,6 +3,7 @@
 import React, { Fragment, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Footer from './footer';
+import backgroundImage from "./HomePage.jpg";
 
 const Feedback = ({ setAuth }) => {
 
@@ -19,7 +20,7 @@ const Feedback = ({ setAuth }) => {
             alert("Title is required");
             return;
         }
-        try{
+        try {
             fetch("http://localhost:5000/feedback", {
                 method: "POST",
                 headers: {
@@ -36,7 +37,7 @@ const Feedback = ({ setAuth }) => {
                         alert("Feedback not Submitted");
                     }
                 });
-        }catch(err){
+        } catch (err) {
             console.error(err.message);
         }
     }
@@ -45,44 +46,17 @@ const Feedback = ({ setAuth }) => {
         navigate("/");
     };
 
-    const addBook = () => {
-        navigate('/addBooks');
-    }
-
-    const showBooks = () => {
-        navigate('/showBooks');
-    }
-
-    async function MyProfile() {
-        navigate('/myProfile');
-    }
-
-
-    const goToCart = () => {
-        navigate("/showCart");
+    const containerStyle = {
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundSize: '100%',
+        height: '100%',
+        /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
     };
-
-    const toggleDropdown = () => {
-        setDropdownVisible(!isDropdownVisible);
-    }
-
-    const handleDropdownItemClick = (action) => {
-        if (action === 'viewBorrowRequests') {
-            navigate('/borrowRequests');
-        } else if (action === 'restoreBorrowedBooks') {
-            navigate('/restoreBorrowedBooks');
-        } else if (action === 'acquisitionRecords') {
-            navigate('/acquisitionRecords');
-        } else if (action === 'logOut') {
-            localStorage.removeItem("token");
-            setAuth(false);
-        }
-    }
-
 
     return (
         <Fragment>
-            <div className='page-container'>
+            <div className="fixed-bg" style={{ ...containerStyle }}></div>
+            <div className='page-container' style={{opacity: '0.9'}}>
                 <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
                 <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Feedback</h1>
                 <div
@@ -154,7 +128,7 @@ const Feedback = ({ setAuth }) => {
                     </form>
                 </div>
             </div>
-            <Footer/>
+            <Footer />
         </Fragment>
     );
 };

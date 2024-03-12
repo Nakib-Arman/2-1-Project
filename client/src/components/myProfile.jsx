@@ -3,6 +3,8 @@ import { useParams } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import Footer from "./footer";
 import "./myProfile.css";
+import backgroundImage from "./HomePage.jpg";
+import blackImage from "./black.jpg";
 
 const MyProfile = ({ setAuth }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -338,11 +340,24 @@ const MyProfile = ({ setAuth }) => {
     }
   }
 
+  const containerStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
+  const containerStyle2 = {
+    backgroundImage: `url('${blackImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
 
   return (
     <Fragment>
-      <div className="page-container mb-5">
-
+      <div className="fixed-bg" style={{ ...containerStyle }}></div>
         <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
         <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
@@ -361,7 +376,7 @@ const MyProfile = ({ setAuth }) => {
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
+              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed', left: '74%', width: '25%',top: '70px'}}>
                 <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
                 <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
                 <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
@@ -380,25 +395,25 @@ const MyProfile = ({ setAuth }) => {
         </header>
 
 
-        <div className="book-details-container">
+        <div className="book-details-container" style={{opacity: '0.9'}}>
           {userType === 'staff' && staff &&
             <table className="table mx-auto">
               <tbody>
                 <tr className="text-center">
-                  <td className="head-color">ID</td>
-                  <td className="table-row-2">{staff.staff_id}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.staff_id}</td>
                 </tr>
                 <tr className="text-center">
-                  <td className="head-color">Name</td>
-                  <td className="table-row-2">{staff.first_name} {staff.last_name}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Name</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.first_name} {staff.last_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Phone Number</td>
-                  <td className="table-row-2">{staff.phone_number}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Phone Number</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.phone_number}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Shelves Managed</td>
-                  <td className="table-row-2">
+                  <td className="head-color" style={{border: '1px solid #333'}}>Shelves Managed</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>
                     <ul className="author-list">
                       {shelves.map(shelf => (
                         <li key={shelf.shelf_id}>Shelf ID - {shelf.shelf_id}</li>
@@ -407,8 +422,8 @@ const MyProfile = ({ setAuth }) => {
                   </td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Fine Status</td>
-                  <td className="table-row-2">{staff.due} TK Due</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Fine Status</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.due} TK Due</td>
                 </tr>
               </tbody>
             </table>
@@ -418,32 +433,32 @@ const MyProfile = ({ setAuth }) => {
             <table className="table mx-auto">
               <tbody>
                 <tr className="text-center">
-                  <td className="head-color">ID</td>
-                  <td className="table-row-2">{student.student_id}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.student_id}</td>
                 </tr>
                 <tr className="text-center">
-                  <td className="head-color">Name</td>
-                  <td className="table-row-2">{student.first_name} {student.last_name}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Name</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.first_name} {student.last_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Phone Number</td>
-                  <td className="table-row-2">{student.phone_number}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Phone Number</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.phone_number}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Department</td>
-                  <td className="table-row-2">{student.department_name}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Department</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.department_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Current Level</td>
-                  <td className="table-row-2">{student.current_level}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Current Level</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.current_level}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Current Term</td>
-                  <td className="table-row-2">{student.current_term}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Current Term</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.current_term}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Fine Status</td>
-                  <td className="table-row-2">{student.due} TK Due</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Fine Status</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{student.due} TK Due</td>
                 </tr>
               </tbody>
             </table>
@@ -453,28 +468,28 @@ const MyProfile = ({ setAuth }) => {
             <table className="table mx-auto">
               <tbody>
                 <tr className="text-center">
-                  <td className="head-color">ID</td>
-                  <td className="table-row-2">{teacher.teacher_id}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.teacher_id}</td>
                 </tr>
                 <tr className="text-center">
-                  <td className="head-color">Name</td>
-                  <td className="table-row-2">{teacher.first_name} {teacher.last_name}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Name</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.first_name} {teacher.last_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Phone Number</td>
-                  <td className="table-row-2">{teacher.phone_number}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Phone Number</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.phone_number}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Department</td>
-                  <td className="table-row-2">{teacher.department_name}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Department</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.department_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Designation</td>
-                  <td className="table-row-2">{teacher.designation}</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Designation</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.designation}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color">Fine Status</td>
-                  <td className="table-row-2">{teacher.due} TK Due</td>
+                  <td className="head-color" style={{border: '1px solid #333'}}>Fine Status</td>
+                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.due} TK Due</td>
                 </tr>
               </tbody>
             </table>
@@ -482,7 +497,7 @@ const MyProfile = ({ setAuth }) => {
 
         </div>
         <div>
-          <button className="btn button-color ml-3" onClick={toggleEditModal}>Edit Profile</button>
+          <button className="btn button-color mt-2 ml-3" onClick={toggleEditModal}>Edit Profile</button>
           <button className="btn button-color mt-2 ml-3" onClick={toggleChangePasswordModal}>Change Password</button>
 
           {showEditModal && userType === 'staff' &&
@@ -702,8 +717,6 @@ const MyProfile = ({ setAuth }) => {
             </div>
           </div>
         }
-
-      </div>
       <Footer />
     </Fragment>
   );

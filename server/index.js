@@ -355,9 +355,76 @@ app.get("/showBooks", async (req, res) => {
     }
 })
 
+app.get("/booksofAuthor/:author_id",async (req,res) => {
+    try{
+        const {author_id} = req.params;
+        const books = await pool.query("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) AS COPY,B.TITLE,B.IMAGE_URL,P.PUBLICATION_NAME,C.CATEGORY FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) JOIN CATEGORIES C ON (C.CATEGORY=B.CATEGORY) JOIN BOOK_AUTHOR_RELATION BAH ON (B.BOOK_ID=BAH.BOOK_ID) WHERE BAH.AUTHOR_ID=$1 AND B.IS_VISIBLE=TRUE",[author_id]);
+        
+        res.json(books.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/bookofAuthor/:author_id",async (req,res) => {
+    try{
+        const {author_id} = req.params;
+        const title = req.query.title;
+        const books = await pool.query("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) AS COPY,B.TITLE,B.IMAGE_URL,P.PUBLICATION_NAME,C.CATEGORY FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) JOIN CATEGORIES C ON (C.CATEGORY=B.CATEGORY) JOIN BOOK_AUTHOR_RELATION BAH ON (B.BOOK_ID=BAH.BOOK_ID) WHERE BAH.AUTHOR_ID=$1 AND LOWER(B.TITLE) LIKE $2 AND B.IS_VISIBLE=TRUE",[author_id,`%${title.toLocaleLowerCase()}%`]);
+        res.json(books.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/booksofPublisher/:publisher_id",async (req,res) => {
+    try{
+        const {publisher_id} = req.params;
+        const books = await pool.query("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) AS COPY,B.TITLE,B.IMAGE_URL,P.PUBLICATION_NAME,C.CATEGORY FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) JOIN CATEGORIES C ON (C.CATEGORY=B.CATEGORY) WHERE P.PUBLISHER_ID=$1 AND B.IS_VISIBLE=TRUE",[publisher_id]);
+        
+        res.json(books.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/bookofPublisher/:publisher_id",async (req,res) => {
+    try{
+        const {publisher_id} = req.params;
+        const title = req.query.title;
+        const books = await pool.query("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) AS COPY,B.TITLE,B.IMAGE_URL,P.PUBLICATION_NAME,C.CATEGORY FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) JOIN CATEGORIES C ON (C.CATEGORY=B.CATEGORY) WHERE P.PUBLISHER_ID=$1 AND LOWER(B.TITLE) LIKE $2 AND B.IS_VISIBLE=TRUE",[publisher_id,`%${title.toLocaleLowerCase()}%`]);
+        res.json(books.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/booksofCategory/:category",async (req,res) => {
+    try{
+        const {category} = req.params;
+        const books = await pool.query("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) AS COPY,B.TITLE,B.IMAGE_URL,P.PUBLICATION_NAME,C.CATEGORY FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) JOIN CATEGORIES C ON (C.CATEGORY=B.CATEGORY) WHERE C.CATEGORY=$1 AND B.IS_VISIBLE=TRUE",[category]);
+        
+        res.json(books.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/bookofCategory/:category",async (req,res) => {
+    try{
+        const {category} = req.params;
+        const title = req.query.title;
+        console.log(category);
+        const books = await pool.query("SELECT B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) AS COPY,B.TITLE,B.IMAGE_URL,P.PUBLICATION_NAME,C.CATEGORY FROM BOOKS B JOIN PUBLISHERS P ON (B.PUBLISHER_ID=P.PUBLISHER_ID) JOIN CATEGORIES C ON (C.CATEGORY=B.CATEGORY) WHERE C.CATEGORY=$1 AND LOWER(B.TITLE) LIKE $2 AND B.IS_VISIBLE=TRUE",[category,`%${title.toLocaleLowerCase()}%`]);
+        res.json(books.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
 app.get("/showTopPriority", async (req, res) => {
     try {
-        const books = await pool.query("SELECT DISTINCT BS.BOOK_ID,B.TITLE, B.CATEGORY,COUNT(*) AS COUNT,PU.PUBLICATION_NAME FROM BOOKS B JOIN BOOK_SEARCHED BS ON (B.BOOK_ID=BS.BOOK_ID) JOIN PUBLISHERS PU ON(B.PUBLISHER_ID=PU.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE GROUP BY BS.BOOK_ID,B.TITLE,B.CATEGORY,PU.PUBLICATION_NAME ORDER BY COUNT DESC;");
+        const books = await pool.query("SELECT DISTINCT BS.BOOK_ID,B.IMAGE_URL,B.TITLE, B.CATEGORY,COUNT(*) AS COUNT,PU.PUBLICATION_NAME FROM BOOKS B JOIN BOOK_SEARCHED BS ON (B.BOOK_ID=BS.BOOK_ID) JOIN PUBLISHERS PU ON(B.PUBLISHER_ID=PU.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE GROUP BY BS.BOOK_ID,B.IMAGE_URL,B.TITLE,B.CATEGORY,PU.PUBLICATION_NAME ORDER BY COUNT DESC;");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -485,7 +552,7 @@ app.get("/searchBooks/:title", async (req, res) => {
 app.get("/showBookDetails/:id", async (req, res) => {
     try {
         const books = await pool.query
-            ("SELECT B.IMAGE_URL, B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME, PB.PUBLICATION_NAME, B.SHELF_ID,B.IS_VISIBLE FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
+            ("SELECT B.IMAGE_URL, B.BOOK_ID,COPIES_AVAILABLE(B.BOOK_ID) COPY, B.TITLE, B.CATEGORY, AU.AUTHOR_NAME,AU.AUTHOR_ID, PB.PUBLICATION_NAME,PB.PUBLISHER_ID, B.SHELF_ID,B.IS_VISIBLE FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS AU ON(BAR.AUTHOR_ID=AU.AUTHOR_ID) JOIN PUBLISHERS PB ON(B.PUBLISHER_ID=PB.PUBLISHER_ID) WHERE B.BOOK_ID=$1", [req.params.id]);
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -854,7 +921,7 @@ app.post("/addShelf",async (req,res) =>{
 app.get("/showRelatedBooks/:id", async (req, res) => {
     try {
         console.log(req.params.id);
-        const books = await pool.query("SELECT DISTINCT B.TITLE, P.PUBLICATION_NAME, B.CATEGORY FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS A ON(BAR.AUTHOR_ID=A.AUTHOR_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE AND A.AUTHOR_ID IN(SELECT BAR2.AUTHOR_ID FROM BOOK_AUTHOR_RELATION BAR2 WHERE BAR2.BOOK_ID=$1) UNION (SELECT DISTINCT B.TITLE, P.PUBLICATION_NAME, B.CATEGORY FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS A ON(BAR.AUTHOR_ID=A.AUTHOR_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE AND B.PUBLISHER_ID=(SELECT PUBLISHER_ID FROM BOOKS WHERE IS_VISIBLE=TRUE AND BOOK_ID=$1))", [req.params.id]);
+        const books = await pool.query("SELECT DISTINCT B.TITLE,B.BOOK_ID,B.IMAGE_URL, P.PUBLICATION_NAME, B.CATEGORY FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS A ON(BAR.AUTHOR_ID=A.AUTHOR_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE AND A.AUTHOR_ID IN(SELECT BAR2.AUTHOR_ID FROM BOOK_AUTHOR_RELATION BAR2 WHERE BAR2.BOOK_ID=$1) UNION (SELECT DISTINCT B.TITLE,B.BOOK_ID,B.IMAGE_URL, P.PUBLICATION_NAME, B.CATEGORY FROM BOOKS B JOIN BOOK_AUTHOR_RELATION BAR ON(B.BOOK_ID=BAR.BOOK_ID) JOIN AUTHORS A ON(BAR.AUTHOR_ID=A.AUTHOR_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE AND B.PUBLISHER_ID=(SELECT PUBLISHER_ID FROM BOOKS WHERE IS_VISIBLE=TRUE AND BOOK_ID=$1))", [req.params.id]);
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
@@ -1087,9 +1154,29 @@ app.get("/showRecentSearchedBooks",authorization,async (req,res) =>{
     try{
         const user_id=req.user;
         console.log(user_id);
-        const response = await pool.query("SELECT DISTINCT SQ.SEARCHED_INDEX, SQ.BOOK_ID,B.TITLE,B.CATEGORY,P.PUBLICATION_NAME FROM(SELECT DISTINCT BOOK_ID,SEARCHED_INDEX FROM BOOK_SEARCHED WHERE USER_ID=$1) SQ JOIN BOOKS B ON(SQ.BOOK_ID=B.BOOK_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE ORDER BY SQ.SEARCHED_INDEX DESC",[user_id]);
+        const response = await pool.query("SELECT DISTINCT SQ.SEARCHED_INDEX, SQ.BOOK_ID,B.TITLE,B.IMAGE_URL,B.CATEGORY,P.PUBLICATION_NAME FROM(SELECT DISTINCT BOOK_ID,SEARCHED_INDEX FROM BOOK_SEARCHED WHERE USER_ID=$1) SQ JOIN BOOKS B ON(SQ.BOOK_ID=B.BOOK_ID) JOIN PUBLISHERS P ON(B.PUBLISHER_ID=P.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE ORDER BY SQ.SEARCHED_INDEX DESC",[user_id]);
         res.json(response.rows);
     }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/authorName/:author_id",async (req,res) => {
+    try{
+        const {author_id} = req.params;
+        const response = await pool.query("SELECT AUTHOR_NAME FROM AUTHORS WHERE AUTHOR_ID=$1",[author_id]);
+        res.json(response.rows);
+    }catch(err){
+        console.error(err.message);
+    }
+})
+
+app.get("/publicationName/:publisher_id",async (req,res) => {
+    try{
+        const {publisher_id} = req.params;
+        const response = await pool.query("SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=$1",[publisher_id]);
+        res.json(response.rows);
+    }catch(err) {
         console.error(err.message);
     }
 })

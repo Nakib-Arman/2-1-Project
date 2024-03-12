@@ -4,6 +4,7 @@ import { faCartShopping, faHome } from "@fortawesome/free-solid-svg-icons"; // A
 import { useNavigate } from "react-router-dom";
 import Footer from "./footer";
 import "./showBook.css";
+import backgroundImage from "./HomePage.jpg";
 
 const ShowBook = ({ setAuth }) => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -183,9 +184,17 @@ const ShowBook = ({ setAuth }) => {
     }
   }
 
+  const containerStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
 
   return (
     <Fragment>
+      <div className="fixed-bg" style={{ ...containerStyle }}></div>
       <div className="page-container">
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
@@ -203,7 +212,7 @@ const ShowBook = ({ setAuth }) => {
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
+              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed',left: '74%',top: '70px', width: '25%',zIndex: '1000'}}>
                 <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
                 <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
                 <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
@@ -220,11 +229,14 @@ const ShowBook = ({ setAuth }) => {
             )}
           </div>
         </header>
-        <h1 className="text-center mb-4" style={{ color: 'transparent' }}>
+        <h1 className="text-center" style={{ color: 'transparent' }}>
+          Search Books
+        </h1>
+        <h1 className="text-center mb-3" style={{ color: 'transparent' }}>
           Search Books
         </h1>
         <div className="container">
-          <form onSubmit={searchBooks} className="row search-form">
+          <form onSubmit={searchBooks} className="row search-form" style={{boxShadow:'0 0 10px black',position: 'fixed',zIndex: '500', top:'70px',left: '5%', width: '90%'}}>
             <div className="col-md-3">
               <input
                 type="text"
@@ -237,14 +249,14 @@ const ShowBook = ({ setAuth }) => {
           </form>
         </div>
 
-        <div className="container mt-5">
+        <div className="container mt-5" style={{opacity: '0.9'}}>
           <div className="row">
             {(isSearched ? searchedBooks : books || []).map((book) => (
               <div key={book.book_id} className="col-md-4 mb-4">
                 <div
                   className="card h-100 book-card"
                   onClick={() => showBookByID(book.book_id)}
-                  style={{ cursor: "pointer" }}
+                  style={{ cursor: "pointer", backgroundColor: '#111'}}
                 >
                   <div className="card-body">
                     <img
@@ -252,11 +264,11 @@ const ShowBook = ({ setAuth }) => {
                       alt={book.title}
                       className="book-image"
                     />
-                    <h5 className="card-title book-title">{book.title}</h5>
-                    <p className="card-text">
+                    <h5 className="card-title book-title mt-2" style={{color: '#dd0000'}}>{book.title}</h5>
+                    <p className="card-text" style={{color: 'white'}}>
                       <strong>Publication:</strong> {book.publication_name}
                     </p>
-                    <p className="card-text">
+                    <p className="card-text" style={{color : 'white'}}>
                       <strong>Category:</strong> {book.category}
                     </p>
                   </div>
@@ -280,7 +292,7 @@ const ShowBook = ({ setAuth }) => {
             ))}
           </div>
         </div>
-      </div>
+        </div>
       <Footer />
     </Fragment>
   );

@@ -1,10 +1,11 @@
 /* footer.css (CSS Styles for Footer) */
 
 .footer-container {
-    background-color: #333;
+    background-color: black;
     color: #fff;
     text-align: center;
     padding: 20px;
+    border-top: 1px solid white;
   }
   
   .footer-links {
@@ -25,7 +26,11 @@
   }
   
   .footer-link:hover {
-    background-color: #ffffff; 
-    color: black/* Set a darker shade or a different color on hover */
+    color: #9b0500/* Set a darker shade or a different color on hover */
   }
   
+
+
+  .developer:hover {
+    color: #9b0500;
+  }

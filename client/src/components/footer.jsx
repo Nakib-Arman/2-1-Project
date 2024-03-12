@@ -29,14 +29,14 @@ const Footer = () => {
   }
 
   return (
-    <footer className="footer-container">
+    <footer className="footer-container mt-5">
       <div className="footer-links">
         <button className="footer-link" onClick={LibraryMembers}>Library Members</button>
         <button className="footer-link" onClick={Contacts}>Contact Us</button>
         <button className="footer-link" onClick={Feedback}>Feedback</button>
         <button className="footer-link" onClick={AboutUs}>About Us</button>
       </div>
-      <label onClick={openDeveloperModal}>&copy; 2105128_2105132</label>
+      <label className="developer" onClick={openDeveloperModal}>&copy; 2105128_2105132</label>
       {showDeveloperModal && (
         <div className="developer-modal">
           <h3>Developers</h3>

@@ -126,24 +126,25 @@ body {
   margin-top: 20px;
 }
 
-.table th, .table td {
+.table th,td {
   padding: 10px;
   text-align: left;
-  border: 1px solid #ddd;
 }
 
+
 .table th {
-  background-color: #333;
+  background-color: #111;
   color: white
 }
 
 .table-row {
   cursor: pointer;
-  background-color: #ededed;
+  background-color: #333;
+  color: white;
 }
 
 .table-row:hover {
-  background-color: #ffffff;
+  background-color: #111;
 }
 
 .table-row-2{
@@ -218,6 +219,12 @@ body {
 }
 
 .head-color{
+  background-color: #111;
+  color: rgb(233, 229, 229);
+  height: 65px;
+}
+
+.data-color{
   background-color: #333;
   color: rgb(233, 229, 229);
   height: 65px;
@@ -233,6 +240,32 @@ body {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
 }
 
+.fixed-serch-form {
+  background-color: #333;
+  position: fixed;
+  top: 70px;
+  left: 5%;
+  width: 90%
+}
+
+.fixed-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Adjust the background color as needed */
+  min-height: 800px;
+  z-index: -2;
+}
+
+.fixed-bg2 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%; /* Adjust the background color as needed */
+  min-height: 800px;
+  z-index: -1;
+  opacity: 0.85;
+}
 
 /* BorrowRequests.css */
 
@@ -354,11 +387,39 @@ body {
 }
 
 .page-container {
-  background-color: #fffafa; 
   min-height: 800px;/* Set your desired background color here */
   /* You can add more styles as needed */
 }
 
+
+.card2 {
+  display: flex; /* Use flexbox to arrange child elements horizontally */
+  justify-content: space-between;
+  background-color: #111;
+  height: 250px;
+  border: 1px solid black;
+  box-shadow: 0 0 5px white;
+  cursor: pointer; /* Add cursor pointer for better interaction */
+}
+
+.card2 img {
+  width: 70px;
+  height: 100px;
+  object-fit: cover;
+}
+
+.card2-body {
+  padding: 10px; /* Add padding as needed */
+}
+
+.card2-body h5 {
+  margin-bottom: 10px; /* Adjust margin as needed */
+}
+
+.card2:hover {
+  background-color: #222;
+}
+
 .color{
-  color: #f7e8e8
+  color: #fff7f7
 }

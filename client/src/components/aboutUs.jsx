@@ -2,15 +2,27 @@
 import React, { Fragment } from 'react';
 import './aboutUs.css'; // Create a CSS file for styling
 import Footer from './footer';
+import backgroundImage from "./HomePage.jpg";
+
+
 
 // Functional component for the About Us page
 const AboutUs = () => {
+
+    const containerStyle = {
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundSize: '100%',
+        height: '100%',
+        /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+      };
+
     return (
         <Fragment>
+            <div className="fixed-bg" style={{ ...containerStyle }}></div>
             <div className='page-container'>
                 <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Welcome To Our Library Website</h1>
                 <h1 className="text-center mb-2" style={{ color: "white" }}>BIBLIOPHILE</h1>
-                <div className="aboutus-container">
+                <div className="aboutus-container" style={{opacity: '0.9'}}>
                     <p className='mt-5'>
                         Greetings! We are Nakib Arman and Shariar Al Kabir, students at BUET,
                         on a mission to create an exceptional library experience for you.

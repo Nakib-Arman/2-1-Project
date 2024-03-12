@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import Footer from "./footer";
 import { useNavigate } from "react-router-dom";
+import backgroundImage from "./HomePage.jpg";
 
 const MyRequests = ({ setAuth }) => {
     const [resquests, setRequests] = useState([]);
@@ -60,6 +61,13 @@ const MyRequests = ({ setAuth }) => {
         return formattedDate;
     };
 
+    const containerStyle = {
+        backgroundImage: `url('${backgroundImage}')`,
+        backgroundSize: '100%',
+        height: '100%',
+        /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+      };
+
     useEffect(() => {
         getRequests();
     }, [requestType]);
@@ -67,8 +75,9 @@ const MyRequests = ({ setAuth }) => {
 
     return (
         <Fragment>
+            <div className="fixed-bg" style={{ ...containerStyle }}></div>
             <div className="page-container">
-                <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Borrow Requests</h1>
+                <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>My Requests</h1>
                 <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
                 <div>
                     <select

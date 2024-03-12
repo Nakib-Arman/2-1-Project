@@ -2,6 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Footer from "./footer";
 import "./ShowCart.css";
+import backgroundImage from "./HomePage.jpg";
 
 const ShowCart = ({ setAuth }) => {
   const [cart, setCart] = useState([]);
@@ -178,9 +179,17 @@ const ShowCart = ({ setAuth }) => {
     }
   }
 
+  const containerStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
   return (
     <Fragment>
       <div className="page-container">
+        <div className="fixed-bg" style={{ ...containerStyle }}></div>
         {/* <h2 className="text-center mb-4">Your Cart</h2> */}
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
@@ -198,7 +207,7 @@ const ShowCart = ({ setAuth }) => {
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ opacity: 0.9, border: '1px solid black', position: 'absolute', left: '910px', width: '300px' }}>
+              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed', left: '74%', width: '25%',top:'70px' }}>
                 <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
                 <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
                 <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
@@ -237,15 +246,15 @@ const ShowCart = ({ setAuth }) => {
                 </tr>
               ) : (
             cart.map((book) => (
-              <tr key={book.book_id} className={`table-row ${book.selected ? 'selected' : ''}`}>
-                <td onClick={() => showBookByID(book.book_id)}>{book.title}</td>
-                <td onClick={() => showBookByID(book.book_id)}>{book.publication}</td>
-                <td onClick={() => showBookByID(book.book_id)}>{book.category}</td>
-                <td>
-                  <button className="btn deny-button" onClick={() => deleteBookFromCart(book.book_id)}>Remove From Cart</button>
+              <tr key={book.book_id} style={{opacity: '0.9'}} className={`table-row ${book.selected ? 'selected' : ''}`}>
+                <td onClick={() => showBookByID(book.book_id)} style={{borderLeft: '1px solid #111'}}>{book.title}</td>
+                <td onClick={() => showBookByID(book.book_id)} style={{borderLeft: '1px solid #111'}}>{book.publication}</td>
+                <td onClick={() => showBookByID(book.book_id)} style={{borderLeft: '1px solid #111'}}>{book.category}</td>
+                <td style={{border: '1px solid #111'}}>
+                  <button className="btn deny-button" onClick={() => deleteBookFromCart(book.book_id)} style={{opacity: '1'}}>Remove From Cart</button>
                 </td>
-                <td>
-                  <button className="btn btn-success" onClick={() => { handleSubmitRequest(book.book_id); deleteBookFromCart(book.book_id); }}>Submit Request</button>
+                <td style={{border: '1px solid #111'}}>
+                  <button className="btn btn-success" onClick={() => { handleSubmitRequest(book.book_id); deleteBookFromCart(book.book_id); }} style={{opacity: '1'}}>Submit Request</button>
                 </td>
 
               </tr>
@@ -253,7 +262,7 @@ const ShowCart = ({ setAuth }) => {
             )}
           </tbody>
         </table>
-      </div>
+        </div>
       <Footer />
     </Fragment>
   );
