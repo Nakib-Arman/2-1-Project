@@ -289,7 +289,7 @@ const MyProfile = ({ setAuth }) => {
         body: JSON.stringify(body)
       });
       const responseData = await response.json();
-      if(responseData==='Amount paid is greater than due'){
+      if (responseData === 'Amount paid is greater than due') {
         alert(responseData);
       }
       setShowPayDueModal(false);
@@ -358,6 +358,7 @@ const MyProfile = ({ setAuth }) => {
   return (
     <Fragment>
       <div className="fixed-bg" style={{ ...containerStyle }}></div>
+      <div className="page-container">
         <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
         <h1 className="text-center mb-5 fixed-header head-color">My Profile</h1>
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
@@ -376,7 +377,7 @@ const MyProfile = ({ setAuth }) => {
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed', left: '74%', width: '25%',top: '70px'}}>
+              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed', left: '74%', width: '25%', top: '70px' }}>
                 <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
                 <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
                 <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
@@ -395,25 +396,25 @@ const MyProfile = ({ setAuth }) => {
         </header>
 
 
-        <div className="book-details-container" style={{opacity: '0.9'}}>
+        <div className="book-details-container" style={{ opacity: '0.9' }}>
           {userType === 'staff' && staff &&
             <table className="table mx-auto">
               <tbody>
                 <tr className="text-center">
-                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.staff_id}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>ID</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{staff.staff_id}</td>
                 </tr>
                 <tr className="text-center">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Name</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.first_name} {staff.last_name}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Name</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{staff.first_name} {staff.last_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Phone Number</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.phone_number}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Phone Number</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{staff.phone_number}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Shelves Managed</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Shelves Managed</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>
                     <ul className="author-list">
                       {shelves.map(shelf => (
                         <li key={shelf.shelf_id}>Shelf ID - {shelf.shelf_id}</li>
@@ -422,8 +423,8 @@ const MyProfile = ({ setAuth }) => {
                   </td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Fine Status</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{staff.due} TK Due</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Fine Status</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{staff.due} TK Due</td>
                 </tr>
               </tbody>
             </table>
@@ -433,32 +434,32 @@ const MyProfile = ({ setAuth }) => {
             <table className="table mx-auto">
               <tbody>
                 <tr className="text-center">
-                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.student_id}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>ID</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.student_id}</td>
                 </tr>
                 <tr className="text-center">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Name</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.first_name} {student.last_name}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Name</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.first_name} {student.last_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Phone Number</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.phone_number}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Phone Number</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.phone_number}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Department</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.department_name}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Department</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.department_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Current Level</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.current_level}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Current Level</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.current_level}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Current Term</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.current_term}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Current Term</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.current_term}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Fine Status</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{student.due} TK Due</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Fine Status</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{student.due} TK Due</td>
                 </tr>
               </tbody>
             </table>
@@ -468,28 +469,28 @@ const MyProfile = ({ setAuth }) => {
             <table className="table mx-auto">
               <tbody>
                 <tr className="text-center">
-                  <td className="head-color" style={{border: '1px solid #333'}}>ID</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.teacher_id}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>ID</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{teacher.teacher_id}</td>
                 </tr>
                 <tr className="text-center">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Name</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.first_name} {teacher.last_name}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Name</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{teacher.first_name} {teacher.last_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Phone Number</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.phone_number}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Phone Number</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{teacher.phone_number}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Department</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.department_name}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Department</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{teacher.department_name}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Designation</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.designation}</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Designation</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{teacher.designation}</td>
                 </tr>
                 <tr className="text-center mt-3">
-                  <td className="head-color" style={{border: '1px solid #333'}}>Fine Status</td>
-                  <td className="data-color" style={{border: '1px solid #111'}}>{teacher.due} TK Due</td>
+                  <td className="head-color" style={{ border: '1px solid #333' }}>Fine Status</td>
+                  <td className="data-color" style={{ border: '1px solid #111' }}>{teacher.due} TK Due</td>
                 </tr>
               </tbody>
             </table>
@@ -659,8 +660,8 @@ const MyProfile = ({ setAuth }) => {
               <div className="modal-content">
                 <div className="modal-header">
                   {userType === 'staff' &&
-                  <h5 className="modal-title">Pay Due - {staff.due}</h5>
-        }
+                    <h5 className="modal-title">Pay Due - {staff.due}</h5>
+                  }
                   {userType === 'student' &&
                     <h5 className="modal-title">Pay Due - {student.due}</h5>
                   }
@@ -717,6 +718,7 @@ const MyProfile = ({ setAuth }) => {
             </div>
           </div>
         }
+      </div>
       <Footer />
     </Fragment>
   );

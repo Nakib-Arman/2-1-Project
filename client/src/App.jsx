@@ -24,11 +24,13 @@ import ContactUs from "./components/contacts";
 import LibraryMembers from "./components/libraryMembers";
 import SearchAuthors from "./components/searchAuthors";
 import SearchPublishers from "./components/searchPublishers";
+import SearchCategories from "./components/searchCategories";
 import MyRequests from "./components/myRequest";  
 import ViewSuggestedBooks from "./components/viewSuggestedBooks";
 import BooksofAuthor from "./components/booksofAuthor";
 import BooksofPublisher from "./components/booksofPublisher";
 import BooksofCategory from "./components/booksofCategory";
+import LibraryCatalogue from "./components/libraryCatalogue";
 
 const App = () => {
 
@@ -80,11 +82,13 @@ const App = () => {
           <Route exact path="/libraryMembers" element={<LibraryMembers/>}/>
           <Route exact path="/searchAuthors" element={<SearchAuthors/>}/>
           <Route exact path="/searchPublishers" element={<SearchPublishers/>}/>
+          <Route exact path="/searchCategories" element={<SearchCategories/>}/>
           <Route exact path="/myRequests" element={isAuthenticated ? <MyRequests setAuth={setAuth}/> : <Navigate to = "/LogIn"/>} />
           <Route exact path="/viewSuggestedBooks" element={isAuthenticated ? <ViewSuggestedBooks setAuth={setAuth}/> : <Navigate to = "/LogIn"/>}/>
           <Route exact path="/booksofAuthor/:author_id" element={<BooksofAuthor/>}/>
           <Route exact path="/booksofPublisher/:publisher_id" element={<BooksofPublisher/>}/>
           <Route exact path="/booksofCategory/:category" element={<BooksofCategory/>}/>
+          <Route exact path="/libraryCatalogue" element={<LibraryCatalogue/>}/>
         </Routes>
       </Router>
     </div>

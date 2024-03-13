@@ -1,6 +1,7 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Footer from "./footer";
+import backgroundImage from "./HomePage.jpg";
 
 const TeacherProfile = ({ setAuth }) => {
   const [teacher, setTeacher] = useState({});
@@ -20,16 +21,24 @@ const TeacherProfile = ({ setAuth }) => {
     }
   };
 
+  const containerStyle = {
+    backgroundImage: `url('${backgroundImage}')`,
+    backgroundSize: '100%',
+    height: '100%',
+    /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
+  };
+
   useEffect(() => {
     getInfo();
   }, []);
 
   return (
     <Fragment>
+      <div className="fixed-bg" style={{ ...containerStyle }}></div>
       <div className="page-container">
       <h1 className="text-center mb-5" style={{ color: "white" }}>BIBLIOPHILE</h1>
-      <h1 className="text-center mb-5 fixed-header head-color">Teacher Profile</h1>
-      <div className="book-details-container">
+      <h1 className="fixed-header" style={{ backgroundColor: '#5A1917' }}>Teacher Profile</h1>
+      <div className="book-details-container" style={{opacity: '0.9'}}>
         <table className="table mx-auto">
           <tbody>
             <tr className="text-center">

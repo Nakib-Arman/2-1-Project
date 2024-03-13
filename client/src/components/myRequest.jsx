@@ -38,7 +38,7 @@ const MyRequests = ({ setAuth }) => {
     const deleteRequest = async (book_id) => {
         try {
             console.log("hello");
-            const body= {book_id};
+            const body = { book_id };
             console.log(body);
             const user = await fetch("http://localhost:5000/getID", { method: "GET", headers: { token: localStorage.token, "Content-Type": "application/json" } });
             const user_id = await user.json();
@@ -66,7 +66,7 @@ const MyRequests = ({ setAuth }) => {
         backgroundSize: '100%',
         height: '100%',
         /* Other background properties like backgroundPosition, backgroundRepeat, etc. */
-      };
+    };
 
     useEffect(() => {
         getRequests();
@@ -107,24 +107,24 @@ const MyRequests = ({ setAuth }) => {
                                 <div className="buttons-container mt-2">
                                     <button
                                         className="btn deny-button mr-3"
-                                        onClick={()=>deleteRequest(request.book_id)}
+                                        onClick={() => deleteRequest(request.book_id)}
                                     >
                                         Cancel Request
                                     </button>
                                 </div>
                             }
                             {requestType == 'Accepted' &&
-                            <div>
-                                <span className="option-text">
-                                Date Approved: {formatDate(request.date_borrowed)}
-                            </span>
-                                <div className="buttons-container mt-2">
-                                    <button
-                                        className="btn accept-button mr-3"
-                                    >
-                                        Accepted
-                                    </button>
-                                </div>
+                                <div>
+                                    <span className="option-text">
+                                        Date Approved: {formatDate(request.date_borrowed)}
+                                    </span>
+                                    <div className="buttons-container mt-2">
+                                        <button
+                                            className="btn accept-button mr-3"
+                                        >
+                                            Accepted
+                                        </button>
+                                    </div>
                                 </div>
                             }
                             {requestType == 'Rejected' &&

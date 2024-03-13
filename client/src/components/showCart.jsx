@@ -194,7 +194,7 @@ const ShowCart = ({ setAuth }) => {
         <header className="fixed-header" style={{ height: '70px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#5A1917' }}>
 
           <div className="transparent-buttons" style={{ width: '100%' }}>
-            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px'}}>Home</button>
+            <button className="btn" onClick={() => { navigate("/") }} style={{ position: 'absolute', left: '10px' }}>Home</button>
             <div style={{ alignContent: 'center', width: '100%' }}>
               {userType === 'staff' &&
                 <button className="btn" onClick={addBook}>Add New Book</button>
@@ -207,12 +207,12 @@ const ShowCart = ({ setAuth }) => {
               <button>&#9776;</button>
             </div>
             {isDropdownVisible && (
-              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed', left: '74%', width: '25%',top:'70px' }}>
+              <div className="dropdown-menu" style={{ border: '1px solid black', position: 'fixed', left: '74%', width: '25%', top: '70px' }}>
                 <button onClick={() => handleDropdownItemClick('authorSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Authors</b></button>
                 <button onClick={() => handleDropdownItemClick('publisherSearch')} style={{ width: '90%', textAlign: 'right' }}><b>Search Publishers</b></button>
                 <button onClick={() => handleDropdownItemClick('myRequests')} style={{ width: '90%', textAlign: 'right' }}><b>My Requests</b></button>
                 {userType === 'staff' &&
-                  <div style={{alignContent: 'right'}}>
+                  <div style={{ alignContent: 'right' }}>
                     <button onClick={() => handleDropdownItemClick('viewBorrowRequests')} style={{ width: '100%', textAlign: 'right' }}><b>View Borrow Requests</b></button>
                     <button onClick={() => handleDropdownItemClick('restoreBorrowedBooks')} style={{ width: '100%', textAlign: 'right' }}><b>Restore Borrowed Books</b></button>
                     <button onClick={() => handleDropdownItemClick('acquisitionRecords')} style={{ width: '100%', textAlign: 'right' }}><b>Acquisition Records</b></button>
@@ -238,31 +238,31 @@ const ShowCart = ({ setAuth }) => {
             </tr>
           </thead>
           <tbody>
-          {cart.length === 0 ? (
-                <tr>
-                  <td colSpan="5" className="text-center">
-                    Your cart is empty.
-                  </td>
-                </tr>
-              ) : (
-            cart.map((book) => (
-              <tr key={book.book_id} style={{opacity: '0.9'}} className={`table-row ${book.selected ? 'selected' : ''}`}>
-                <td onClick={() => showBookByID(book.book_id)} style={{borderLeft: '1px solid #111'}}>{book.title}</td>
-                <td onClick={() => showBookByID(book.book_id)} style={{borderLeft: '1px solid #111'}}>{book.publication}</td>
-                <td onClick={() => showBookByID(book.book_id)} style={{borderLeft: '1px solid #111'}}>{book.category}</td>
-                <td style={{border: '1px solid #111'}}>
-                  <button className="btn deny-button" onClick={() => deleteBookFromCart(book.book_id)} style={{opacity: '1'}}>Remove From Cart</button>
+            {cart.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="text-center">
+                  Your cart is empty.
                 </td>
-                <td style={{border: '1px solid #111'}}>
-                  <button className="btn btn-success" onClick={() => { handleSubmitRequest(book.book_id); deleteBookFromCart(book.book_id); }} style={{opacity: '1'}}>Submit Request</button>
-                </td>
-
               </tr>
-            ))
+            ) : (
+              cart.map((book) => (
+                <tr key={book.book_id} style={{ opacity: '0.9' }} className={`table-row ${book.selected ? 'selected' : ''}`}>
+                  <td onClick={() => showBookByID(book.book_id)} style={{ borderLeft: '1px solid #111' }}>{book.title}</td>
+                  <td onClick={() => showBookByID(book.book_id)} style={{ borderLeft: '1px solid #111' }}>{book.publication}</td>
+                  <td onClick={() => showBookByID(book.book_id)} style={{ borderLeft: '1px solid #111' }}>{book.category}</td>
+                  <td style={{ border: '1px solid #111' }}>
+                    <button className="btn deny-button" onClick={() => deleteBookFromCart(book.book_id)} style={{ opacity: '1' }}>Remove From Cart</button>
+                  </td>
+                  <td style={{ border: '1px solid #111' }}>
+                    <button className="btn btn-success" onClick={() => { handleSubmitRequest(book.book_id); deleteBookFromCart(book.book_id); }} style={{ opacity: '1' }}>Submit Request</button>
+                  </td>
+
+                </tr>
+              ))
             )}
           </tbody>
         </table>
-        </div>
+      </div>
       <Footer />
     </Fragment>
   );

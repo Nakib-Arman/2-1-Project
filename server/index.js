@@ -319,7 +319,20 @@ app.get("/shelves",async(req,res)=>{
 
 app.get("/categories",async(req,res)=>{
     try{
-        const categories= await pool.query("SELECT * FROM CATEGORIES ORDER BY CATEGORY");
+        const categories= await pool.query("SELECT C.*, COUNT(B.BOOK_ID) AS BOOK_COUNT  FROM CATEGORIES C LEFT JOIN BOOKS B ON (C.CATEGORY=B.CATEGORY) WHERE B.IS_VISIBLE=TRUE GROUP BY C.CATEGORY ORDER BY CATEGORY");
+        res.json(categories.rows);
+    }
+    catch(err){
+        console.log(err.message);
+    }
+});
+
+app.get("/categories/:name",async(req,res)=>{
+    try{
+        const {name} = req.params;
+        console.log(name);
+        const categories= await pool.query("SELECT C.*, COUNT(B.BOOK_ID) AS BOOK_COUNT FROM CATEGORIES C LEFT JOIN BOOKS B ON (C.CATEGORY=B.CATEGORY) WHERE B.IS_VISIBLE=TRUE GROUP BY C.CATEGORY HAVING LOWER(C.CATEGORY) LIKE $1" ,[`%${name.toLowerCase()}%`]);
+        console.log(categories.rows);
         res.json(categories.rows);
     }
     catch(err){
@@ -329,7 +342,7 @@ app.get("/categories",async(req,res)=>{
 
 app.get("/publishers",async(req,res)=>{
     try{
-        const publishers= await pool.query("SELECT P.*, COUNT(B.BOOK_ID) AS BOOK_COUNT FROM PUBLISHERS P LEFT JOIN BOOKS B ON (P.PUBLISHER_ID=B.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE GROUP BY P.PUBLISHER_ID");
+        const publishers= await pool.query("SELECT P.*, COUNT(B.BOOK_ID) AS BOOK_COUNT FROM PUBLISHERS P LEFT JOIN BOOKS B ON (P.PUBLISHER_ID=B.PUBLISHER_ID) WHERE B.IS_VISIBLE=TRUE GROUP BY P.PUBLISHER_ID ORDER BY P.PUBLICATION_NAME");
         res.json(publishers.rows);
     }catch(err){
         console.log(err.message);
@@ -348,7 +361,7 @@ app.get("/publishers/:name",async (req,res) => {
 
 app.get("/showBooks", async (req, res) => {
     try {
-        const books = await pool.query("SELECT BOOK_ID,IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION_NAME FROM BOOKS B WHERE B.IS_VISIBLE=TRUE ORDER BY TITLE");
+        const books = await pool.query("SELECT BOOK_ID,SHELF_ID,IMAGE_URL,COPIES_AVAILABLE(BOOK_ID) COPY,TITLE,CATEGORY,(SELECT PUBLICATION_NAME FROM PUBLISHERS WHERE PUBLISHER_ID=B.PUBLISHER_ID) AS PUBLICATION_NAME FROM BOOKS B WHERE B.IS_VISIBLE=TRUE ORDER BY TITLE");
         res.json(books.rows);
     } catch (err) {
         console.error(err.message);
